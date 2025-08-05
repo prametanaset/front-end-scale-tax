@@ -17,6 +17,5 @@ definePageMeta({
     { label: "Docs", href: "/docs" },
     { label: "Building Your Application" },
   ],
-})
-
+});
 </script>

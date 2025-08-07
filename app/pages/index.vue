@@ -14,7 +14,7 @@
 definePageMeta({
   breadcrumb: [
     { label: "Home", href: "/" },
-    { label: "Docs", href: "/docs" },
+    { label: "Docs", href: "/" },
     { label: "Building Your Application" },
   ],
 });

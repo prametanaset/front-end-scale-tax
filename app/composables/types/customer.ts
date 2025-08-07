@@ -47,3 +47,15 @@ export interface CustomerContact {
   contact_value: string;
   created_at: string;
 }
+
+export interface CustomerTableRow {
+  id: number;
+  name: string;
+  type: string;
+  email?: string;
+  phone?: string;
+  address: string;
+  tin: string;
+  status: string;
+  created_at: string;
+}

@@ -36,9 +36,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { valueUpdater } from "~/lib/utils";
-import CatalogTableDropdown from "./CatalogTableDropdown.vue";
-import type { Product } from "~/composables/types/product";
 import { useMediaQuery } from "@vueuse/core";
+import CustomerTableDropdown from "./CustomerTableDropdown.vue";
+import type { Customer } from "~/composables/types/customer";
 
 const activeStatus = ref("all");
 const searchQuery = ref("");
@@ -51,98 +51,162 @@ const screenSize = computed(() => {
   return "desktop";
 });
 
-const filteredProducts = computed(() => {
+const filteredCustomers = computed(() => {
   const q = searchQuery.value.trim().toLowerCase();
 
   // กรองจาก tab ก่อน
   let list = data;
   if (activeStatus.value === "0") {
-    list = list.filter((c) => c.vat_type === "include");
+    list = list.filter((c) => c.customer_type === "person");
   } else if (activeStatus.value === "1") {
-    list = list.filter((c) => c.vat_type === "exclude");
-  } else if (activeStatus.value === "2") {
-    list = list.filter((c) => c.vat_type === "exempt");
+    list = list.filter((c) => c.customer_type === "company");
   }
 
   // ถ้ามีข้อความค้นหาให้กรองเพิ่ม
   if (!q) return list;
 
-  return list.filter((product) => {
-    return (
-      product.name.toLowerCase().includes(q) ||
-      product.sku.toLowerCase().includes(q)
-    );
-  });
+  // return list.filter((customer) => {
+  //   return (
+  //     getCustomerDisplayTin(customer).toLowerCase().includes(q) ||
+  //     getCustomerDisplayName(customer).toLowerCase().includes(q) ||
+  //     getCustomerDisplayGmail(customer).toLowerCase().includes(q)
+  //   );
+  // });
 });
 
-const data: Product[] = [
+const data: Customer[] = [
   {
-    id: 1,
+    id: 19,
     store_id: "7719413e-ed02-4411-a73b-0a7dc3341913",
-    sku: "PROD-001",
-    name: "iPhone 16",
-    price: 20900,
-    vat_type: "include",
-    vat_rate: 7,
-    created_at: "2025-07-02T10:05:25.801272Z",
-    updated_at: "2025-07-02T10:05:25.801272Z",
-    product_image: {
-      id: 1,
-      product_id: 1,
-      url: "https://www.uficon.com/app/smush-webp/2023/09/TH_iPhone_15_Pink_PDP_Image_Position-1B_Pink_Color-640x640.jpg.webp",
-    },
-  },
-  {
-    id: 2,
-    store_id: "7719413e-ed02-4411-a73b-0a7dc3341913",
-    sku: "PROD-002",
-    name: "ไข่ไก่",
-    price: 100,
-    vat_type: "exempt",
-    vat_rate: 0,
-    created_at: "2025-07-02T10:16:02.47667Z",
-    updated_at: "2025-07-02T10:16:02.47667Z",
-    product_image: {
-      id: 2,
-      product_id: 2,
-      url: "https://cms.betagro-food.com/wp-content/uploads/2022/06/egg.jpg",
-    },
-  },
-  {
-    id: 6,
-    store_id: "7719413e-ed02-4411-a73b-0a7dc3341913",
-    sku: "PROD-003",
-    name: "15-inch MacBook Air",
-    price: 42800,
-    vat_type: "exclude",
-    vat_rate: 7,
-    created_at: "0001-01-01T00:00:00Z",
-    updated_at: "2025-07-03T07:46:00.610405Z",
-    product_image: {
-      id: 7,
-      product_id: 6,
-      url: "https://media.studio7thailand.com/180705/MacBook_Air_15-inch_M4_Non-AI_Mar25_Sky_Blue_PDP_Image_Position_1__TH-TH.png",
-    },
-  },
-  {
-    id: 7,
-    store_id: "7719413e-ed02-4411-a73b-0a7dc3341913",
-    sku: "PROD-004",
-    name: "iphone",
-    price: 2000,
-    vat_type: "include",
-    vat_rate: 7,
-    created_at: "2025-07-10T18:50:30.371416Z",
-    updated_at: "2025-07-10T18:50:30.371416Z",
-    product_image: {
+    customer_type: "person",
+    status: "active",
+    created_at: "2025-07-08T10:18:30.242381Z",
+    created_by: 1,
+    updated_at: "2025-07-08T10:18:30.242381Z",
+    updated_by: 1,
+    person_customer: {
       id: 8,
-      product_id: 7,
-      url: "https://media.studio7thailand.com/154744/iPhone_16_Pro_Max_White_Titanium_PDP_Image_Position_1a_White_Titanium_Color__TH-TH-square_medium.png",
+      customer_id: 19,
+      first_name: "Tony",
+      last_name: "Stark",
+      tin: "1236785230923",
     },
+    customer_address: {
+      id: 19,
+      customer_id: 19,
+      address_line1: "test address",
+      address_line2: "",
+      province_id: 1,
+      districts_id: 1033,
+      subdistricts_id: 103302,
+      postal_code: "10110",
+    },
+    customer_contacts: [
+      {
+        id: 68,
+        customer_id: 19,
+        contact_type: "email",
+        contact_value: "email@gmail.com",
+        created_at: "2025-07-08T10:18:30.305144Z",
+      },
+      {
+        id: 69,
+        customer_id: 19,
+        contact_type: "phone",
+        contact_value: "0987654321",
+        created_at: "2025-07-08T10:18:30.325641Z",
+      },
+    ],
+  },
+  {
+    id: 21,
+    store_id: "7719413e-ed02-4411-a73b-0a7dc3341913",
+    customer_type: "person",
+    status: "active",
+    created_at: "2025-07-08T12:23:18.503813Z",
+    created_by: 1,
+    updated_at: "2025-07-08T12:23:18.503813Z",
+    updated_by: 1,
+    person_customer: {
+      id: 9,
+      customer_id: 21,
+      first_name: "สมปอง",
+      last_name: "ครองใจ",
+      tin: "1236785230923",
+    },
+    customer_address: {
+      id: 21,
+      customer_id: 21,
+      address_line1: "999/9 ในเมือง",
+      address_line2: "",
+      province_id: 28,
+      districts_id: 4001,
+      subdistricts_id: 400101,
+      postal_code: "40000",
+    },
+    customer_contacts: [
+      {
+        id: 72,
+        customer_id: 21,
+        contact_type: "email",
+        contact_value: "email@gmail.com",
+        created_at: "2025-07-08T12:23:18.566217Z",
+      },
+      {
+        id: 73,
+        customer_id: 21,
+        contact_type: "phone",
+        contact_value: "0123456780",
+        created_at: "2025-07-08T12:23:18.587772Z",
+      },
+    ],
+  },
+  {
+    id: 20,
+    store_id: "7719413e-ed02-4411-a73b-0a7dc3341913",
+    customer_type: "company",
+    status: "active",
+    created_at: "2025-07-08T10:27:55.882166Z",
+    created_by: 1,
+    updated_at: "2025-07-08T12:39:28.194464Z",
+    updated_by: 1,
+    company_customer: {
+      id: 1,
+      customer_id: 20,
+      company_name: "Kon-Lhor Company",
+      tin: "1236785230923",
+      branch_no: "00001",
+    },
+    customer_address: {
+      id: 20,
+      customer_id: 20,
+      address_line1: "company address",
+      address_line2: "",
+      province_id: 28,
+      districts_id: 4001,
+      subdistricts_id: 400101,
+      postal_code: "40000",
+    },
+    customer_contacts: [
+      {
+        id: 74,
+        customer_id: 20,
+        contact_type: "email",
+        contact_value: "test@example.com",
+        created_at: "2025-07-08T12:39:28.275183Z",
+      },
+      {
+        id: 75,
+        customer_id: 20,
+        contact_type: "phone",
+        contact_value: "0987654321",
+        created_at: "2025-07-08T12:39:28.275183Z",
+      },
+    ],
   },
 ];
 
-const columns: ColumnDef<Product>[] = [
+const columns: ColumnDef<Customer>[] = [
   {
     id: "select",
     header: ({ table }) =>
@@ -249,7 +313,7 @@ const columns: ColumnDef<Product>[] = [
       const payment = row.original;
 
       return h("div", { class: "flex justify-center" }, [
-        h(CatalogTableDropdown, { payment }),
+        h(CustomerTableDropdown, { payment }),
       ]);
     },
   },
@@ -347,19 +411,13 @@ const table = useVueTable({
             value="0"
             class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
           >
-            รวมภาษี
+            บุคคลธรรมดา
           </TabsTrigger>
           <TabsTrigger
             value="1"
             class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
           >
-            ยังไม่รวมภาษี
-          </TabsTrigger>
-          <TabsTrigger
-            value="2"
-            class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
-          >
-            ไม่รวมภาษี
+            นิติบุคคล
           </TabsTrigger>
         </TabsList>
       </Tabs>
@@ -410,67 +468,94 @@ const table = useVueTable({
     <div class="mt-2" v-else>
       <Tabs v-model="activeStatus">
         <TabsContent
-          v-for="tab in ['all', '0', '1', '2']"
+          v-for="tab in ['all', '0', '1']"
           :value="tab"
           class="p-0 m-0"
         >
-          <BaseCard
-            v-for="(product, index) in filteredProducts"
-            :key="product.id"
-            :value="`item-${product.id}`"
-            class="px-2 py-4 m-0 overflow-x-hidden"
-          >
-            <div>
-              <div class="flex items-center gap-4 w-full relative m-0">
-                <div
-                  :class="[
-                    'absolute h-[calc(100%+2rem)] w-1 left-[-0.55rem]',
-                    product.vat_type === 'include' ||
-                    product.vat_type === 'exclude'
-                      ? 'bg-primary-500'
-                      : 'bg-green-500',
-                  ]"
-                ></div>
-                <Checkbox :id="`checkbox-${product.id}`" class="ml-2" />
-
-                <div class="flex items-start overflow-hidden min-w-0 mb-3">
+          <Accordion type="single" collapsible class="p-0 m-0">
+            <AccordionItem
+              v-for="(customer, index) in filteredCustomers"
+              :key="customer.id"
+              :value="`item-${customer.id}`"
+              class="px-2 m-0 overflow-x-hidden"
+            >
+              <AccordionTrigger>
+                <div class="flex items-center gap-4 w-full relative m-0">
                   <div
-                    class="truncate overflow-x-hidden whitespace-nowrap min-w-0"
+                    :class="[
+                      'absolute h-[calc(100%+2rem)] w-1 left-[-0.55rem]',
+                      customer.customer_type === 'person'
+                        ? 'bg-primary-500'
+                        : 'bg-green-500',
+                    ]"
+                  ></div>
+                  <Checkbox :id="`checkbox-${customer.id}`" class="ml-2" />
+
+                  <div class="flex items-start overflow-hidden min-w-0 mb-3">
+                    <div
+                      class="truncate overflow-x-hidden whitespace-nowrap min-w-0"
+                    >
+                      <span class="text-sm text-muted-foreground mr-5">
+                        <!-- {{ getCustomerDisplayName(customer) }} -->
+                        Customer name
+                      </span>
+                    </div>
+                  </div>
+                  <p
+                    class="absolute left-10 bottom-[-.5rem] flex flex-nonw gap-2 items-center text-[.8rem] font-normal text-muted-foreground truncate text-muted-600 dark:text-muted-400 w-full"
                   >
-                    <span class="text-sm text-muted-foreground mr-5">
-                      {{ product.name }}
-                    </span>
+                    <Mail :size="15" />
+                    <!-- {{ getCustomerDisplayGmail(customer) }} -->
+                    customer email
+                    <span><strong>วันที่ออกใบ :</strong></span>
+                  </p>
+
+                  <div class="ml-auto">
+                    <CustomerTableDropdown />
+                  </div>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div
+                  class="flex flex-col gap-2 text-sm text-muted-foreground ml-10"
+                >
+                  <div class="">
                     <Badge
                       :class="[
-                        product.vat_type === 'include' ||
-                        product.vat_type === 'exclude'
+                        customer.customer_type === 'person'
                           ? 'bg-primary-500'
                           : 'bg-green-500',
                       ]"
                       >{{
-                        product.vat_type === "exempt"
-                          ? "ไม่รวมภาษี"
-                          : product.vat_type === "include"
-                          ? "รวมภาษี"
-                          : "ยังไม่รวมภาษี"
+                        customer.customer_type === "person"
+                          ? "บุคคลธรรมดา"
+                          : "นิติบุคคล"
                       }}</Badge
                     >
                   </div>
+                  <p>
+                    หมายเลขผู้เสียภาษี :
+                    <!-- <span class="text-muted-600 dark:text-muted-400">{{
+                      getCustomerDisplayTin(customer)
+                    }}</span> -->
+                  </p>
+                  <p>
+                    ที่อยู่ :
+                    <!-- <span class="text-muted-600 dark:text-muted-400"
+                      >{{ customer.customer_address?.address_line1 || "-" }}
+                      {{ locationLabels[customer.id] || "..." }}</span
+                    > -->
+                  </p>
+                  <p>
+                    เบอร์ติดต่อ :
+                    <!-- <span class="text-muted-600 dark:text-muted-400">{{
+                      customer.customer_contacts[1].contact_value || "-"
+                    }}</span> -->
+                  </p>
                 </div>
-                <p
-                  class="absolute left-10 bottom-[-.5rem] flex flex-nonw gap-2 items-center text-[.8rem] font-normal text-muted-foreground truncate text-muted-600 dark:text-muted-400 w-full"
-                >
-                  <strong>SKU :</strong>
-                  {{ product.sku }}
-                  <span><strong>ราคา :</strong> {{ product.price }} บาท</span>
-                </p>
-
-                <div class="ml-auto">
-                  <CatalogTableDropdown />
-                </div>
-              </div>
-            </div>
-          </BaseCard>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </TabsContent>
       </Tabs>
     </div>

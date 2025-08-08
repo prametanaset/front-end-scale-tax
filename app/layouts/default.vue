@@ -2,13 +2,14 @@
   <SidebarProvider>
     <LayoutAppSidebar />
     <SidebarInset>
-      <header class="flex h-16 shrink-0 items-center gap-2 border-b">
-        <div class="flex items-center gap-2 px-4">
-          <SidebarTrigger class="-ml-1 cursor-pointer" />
-          <Separator orientation="vertical" class="mr-2 h-4" />
+      <AppSidebarHeader>
+        <template #title>
           <BaseBreadcrumb />
-        </div>
-      </header>
+        </template>
+        <template #actions>
+          <slot name="header-actions" />
+        </template>
+      </AppSidebarHeader>
       <main>
         <slot />
       </main>
@@ -17,6 +18,8 @@
 </template>
 
 <script lang="ts" setup>
+import AppSidebarHeader from '~/components/layout/AppSidebarHeader.vue';
+
 
 </script>
 

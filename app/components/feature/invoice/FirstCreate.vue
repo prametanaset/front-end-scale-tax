@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center justify-center gap-4">
     <div
-      class="rounded-xl bg-muted acpect-squre w-20 h-20 flex items-center justify-center"
+      class="rounded-2xl shadow-md bg-muted acpect-squre w-16 h-16 flex items-center justify-center"
     >
       <Newspaper class="size-8" />
     </div>

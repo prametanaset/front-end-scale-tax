@@ -1,9 +1,9 @@
 <template>
   <div class="w-full">
-    <label v-if="label" :for="id" class="block text-sm font-medium mb-1">
+    <Label v-if="label" :for="id" class="block text-sm font-medium mb-1">
       {{ label }}
       <span v-if="required" class="text-red-500">*</span>
-    </label>
+    </Label>
 
     <div class="relative flex items-center w-full">
       <slot name="prefix" />
@@ -11,7 +11,7 @@
       <Input
         :id="id"
         v-bind="inputProps"
-        :class="computedClass"
+        :class="cn('shadow-none', computedClass)"
         :disabled="disabled"
         :placeholder="placeholder"
         :type="type"
@@ -35,9 +35,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, toRef, watch } from 'vue'
-import { Input } from '@/components/ui/input'
 import { nanoid } from 'nanoid'
+import { cn } from '~/lib/utils'
 
 const props = defineProps({
   modelValue: { type: [String, Number], default: '' },

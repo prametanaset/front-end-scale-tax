@@ -1,0 +1,27 @@
+<template>
+  <div>
+    <component
+      v-for="(tool, i) in activeTools"
+      :is="tool"
+      :key="i"
+    />
+  </div>
+</template>
+
+<script setup lang="ts">
+import InvoiceTools from './InvoiceTools.vue'
+// import UserTools from './tools/UserTools.vue'
+
+const route = useRoute()
+
+const toolMap: Record<string, any[]> = {
+  'invoices-create': [InvoiceTools],
+  // 'user': [UserTools],
+  // 'dashboard': [InvoiceTools, UserTools],
+}
+
+const activeTools = computed(() => {
+  const name = String(route.name || '') // ป้องกัน undefined
+  return toolMap[name] || []
+})
+</script>

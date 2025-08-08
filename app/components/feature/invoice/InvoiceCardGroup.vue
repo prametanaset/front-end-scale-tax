@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-xl grid grid-cols-1 sm:grid-cols-2 gap-2">
+  <div class="rounded-xl grid grid-cols-1 sm:grid-cols-1 gap-4">
     <template v-if="loading">
       <div class="flex flex-col gap-2">
         <Skeleton class="rounded-xl h-10 w-1/3" />
@@ -11,27 +11,20 @@
       </div>
     </template>
     <template v-else>
-      <Card>
-        <CardHeader>
-          <CardTitle>Card Title</CardTitle>
-          <CardDescription>Card Description</CardDescription>
-        </CardHeader>
-        <CardContent>Card Content</CardContent>
-        <CardFooter>Card Footer</CardFooter>
-      </Card>
-      <Card>
+      <!-- <BaseCard>
         <CardHeader >
           <CardTitle>Card Title</CardTitle>
           <CardDescription>Card Description</CardDescription>
         </CardHeader>
         <CardContent>Card Content</CardContent>
         <CardFooter>Card Footer</CardFooter>
-      </Card>
+      </BaseCard> -->
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
+import { Store } from 'lucide-vue-next'
 const props = defineProps<{
   loading?: boolean
 }>()

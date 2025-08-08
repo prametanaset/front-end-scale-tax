@@ -1,14 +1,18 @@
 <template>
-  <div class="flex flex-col flex-1 gap-4">
-    <div class="flex-1 bg-muted rounded-xl flex items-center justify-center">
-      Top
-    </div>
-    <div class="flex-1 bg-muted rounded-xl flex items-center justify-center">
-      Bottom
-    </div>
+  <div class="flex-1 rounded-xl flex justify-center">
+    <FeatureSummaryTotalBill />
   </div>
+  <div class="flex-1 flex flex-col min-h-0">
+  <Label class="mb-2">หมายเหตุ</Label>
+  <InvoiceNote
+    v-model:note="note"
+    class="flex-1 w-full p-4 overflow-auto"
+  />
+</div>
+
 </template>
 
 <script setup lang="ts">
-// ปรับได้ถ้าต้องการรับ props เพิ่มเติม later
+import InvoiceNote from "@/components/feature/invoice/InvoiceNote.vue";
+const note = ref("");
 </script>

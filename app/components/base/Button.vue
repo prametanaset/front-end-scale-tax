@@ -14,7 +14,7 @@ import { cn } from '~/lib/utils'
 
 const props = defineProps<{
   type?: 'button' | 'submit' | 'reset'
-  variant?: 'default' | 'outline' | 'ghost' | 'destructive' | 'link'
+  variant?: 'default' | 'outline' | 'ghost' | 'destructive' | 'link' | 'secondary' | 'icon'
   disabled?: boolean
   customeClass?: string
   onClick?: (event: MouseEvent) => void

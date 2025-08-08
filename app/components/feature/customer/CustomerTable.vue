@@ -51,6 +51,7 @@ import { mapCustomersToTableRows } from "~/ีutils/format-customer-table-row";
 
 const activeStatus = ref("all");
 const searchQuery = ref("");
+const addCustomer = ref(false);
 
 const isMobile = useMediaQuery("(max-width: 660px)");
 const isTablet = useMediaQuery("(max-width: 968px)");
@@ -61,6 +62,9 @@ const screenSize = computed(() => {
   // if (isTablet.value) return "tablet";
   return "desktop";
 });
+
+const customerStore = useCustomerStore();
+const data = customerStore.customersList;
 
 const filteredCustomers = computed(() => {
   const q = searchQuery.value.trim().toLowerCase();
@@ -84,138 +88,6 @@ const filteredCustomers = computed(() => {
   //   );
   // });
 });
-
-const data: Customer[] = [
-  {
-    id: 19,
-    store_id: "7719413e-ed02-4411-a73b-0a7dc3341913",
-    customer_type: "person",
-    status: "active",
-    created_at: "2025-07-08T10:18:30.242381Z",
-    created_by: 1,
-    updated_at: "2025-07-08T10:18:30.242381Z",
-    updated_by: 1,
-    person_customer: {
-      id: 8,
-      customer_id: 19,
-      first_name: "Tony",
-      last_name: "Stark",
-      tin: "1236785230923",
-    },
-    customer_address: {
-      id: 19,
-      customer_id: 19,
-      address_line1: "test address",
-      address_line2: "",
-      province_id: 1,
-      districts_id: 1033,
-      subdistricts_id: 103302,
-      postal_code: "10110",
-    },
-    customer_contacts: [
-      {
-        id: 68,
-        customer_id: 19,
-        contact_type: "email",
-        contact_value: "email@gmail.com",
-        created_at: "2025-07-08T10:18:30.305144Z",
-      },
-      {
-        id: 69,
-        customer_id: 19,
-        contact_type: "phone",
-        contact_value: "0987654321",
-        created_at: "2025-07-08T10:18:30.325641Z",
-      },
-    ],
-  },
-  {
-    id: 21,
-    store_id: "7719413e-ed02-4411-a73b-0a7dc3341913",
-    customer_type: "person",
-    status: "active",
-    created_at: "2025-07-08T12:23:18.503813Z",
-    created_by: 1,
-    updated_at: "2025-07-08T12:23:18.503813Z",
-    updated_by: 1,
-    person_customer: {
-      id: 9,
-      customer_id: 21,
-      first_name: "สมปอง",
-      last_name: "ครองใจ",
-      tin: "1236785230923",
-    },
-    customer_address: {
-      id: 21,
-      customer_id: 21,
-      address_line1: "999/9 ในเมือง",
-      address_line2: "",
-      province_id: 28,
-      districts_id: 4001,
-      subdistricts_id: 400101,
-      postal_code: "40000",
-    },
-    customer_contacts: [
-      {
-        id: 72,
-        customer_id: 21,
-        contact_type: "email",
-        contact_value: "email@gmail.com",
-        created_at: "2025-07-08T12:23:18.566217Z",
-      },
-      {
-        id: 73,
-        customer_id: 21,
-        contact_type: "phone",
-        contact_value: "0123456780",
-        created_at: "2025-07-08T12:23:18.587772Z",
-      },
-    ],
-  },
-  {
-    id: 20,
-    store_id: "7719413e-ed02-4411-a73b-0a7dc3341913",
-    customer_type: "company",
-    status: "active",
-    created_at: "2025-07-08T10:27:55.882166Z",
-    created_by: 1,
-    updated_at: "2025-07-08T12:39:28.194464Z",
-    updated_by: 1,
-    company_customer: {
-      id: 1,
-      customer_id: 20,
-      company_name: "Kon-Lhor Company",
-      tin: "1236785230923",
-      branch_no: "00001",
-    },
-    customer_address: {
-      id: 20,
-      customer_id: 20,
-      address_line1: "company address",
-      address_line2: "",
-      province_id: 28,
-      districts_id: 4001,
-      subdistricts_id: 400101,
-      postal_code: "40000",
-    },
-    customer_contacts: [
-      {
-        id: 74,
-        customer_id: 20,
-        contact_type: "email",
-        contact_value: "test@example.com",
-        created_at: "2025-07-08T12:39:28.275183Z",
-      },
-      {
-        id: 75,
-        customer_id: 20,
-        contact_type: "phone",
-        contact_value: "0987654321",
-        created_at: "2025-07-08T12:39:28.275183Z",
-      },
-    ],
-  },
-];
 
 const columnHelper = createColumnHelper<CustomerTableRow>();
 
@@ -281,16 +153,10 @@ const columns = [
     cell: ({ row }) => h("div", {}, row.getValue("email")),
   }),
 
-  // ✅ ที่อยู่
-  columnHelper.accessor("address", {
-    header: "ที่อยู่",
-    cell: ({ row }) => h("div", {}, row.getValue("address")),
-  }),
-
   // ✅ ปุ่มการจัดการ (Edit/Delete)
   columnHelper.display({
     id: "actions",
-    header: "จัดการ",
+    header: () => h("div", { class: "text-center" }, "จัดการ"),
     cell: ({ row }) =>
       h("div", { class: "flex justify-center" }, [
         h(CustomerTableDropdown, { customer: row.original }),
@@ -395,7 +261,9 @@ function getStickyLeftValue(columnId: string): string | undefined {
         @update:model-value="table.getColumn('tin')?.setFilterValue($event)"
       />
       <div class="flex gap-2">
-        <BaseButton><Plus class="w-4 h-4" /> เพิ่มสินค้า</BaseButton>
+        <BaseButton @click="addCustomer = true"
+          ><Plus class="w-4 h-4" /> เพิ่มข้อมูลลูกค้า</BaseButton
+        >
         <DropdownMenu v-if="screenSize === 'desktop'">
           <DropdownMenuTrigger as-child>
             <Button variant="outline" class="ml-auto">
@@ -531,7 +399,7 @@ function getStickyLeftValue(columnId: string): string | undefined {
         >
           <Accordion type="single" collapsible class="p-0 m-0">
             <BaseCard
-              v-for="(customer, index) in filteredCustomers"
+              v-for="(customer, index) in tableRows"
               :key="customer.id"
               :value="`item-${customer.id}`"
               class="px-2 py-0 m-0 overflow-x-hidden"
@@ -542,7 +410,7 @@ function getStickyLeftValue(columnId: string): string | undefined {
                     <div
                       :class="[
                         'absolute h-[calc(100%+2rem)] w-1 left-[-0.55rem]',
-                        customer.customer_type === 'person'
+                        customer.type === 'บุคคลธรรมดา'
                           ? 'bg-primary-500'
                           : 'bg-green-500',
                       ]"
@@ -554,8 +422,7 @@ function getStickyLeftValue(columnId: string): string | undefined {
                         class="truncate overflow-x-hidden whitespace-nowrap min-w-0"
                       >
                         <span class="text-sm text-muted-foreground mr-5">
-                          <!-- {{ getCustomerDisplayName(customer) }} -->
-                          Customer name
+                          {{ customer.name }}
                         </span>
                       </div>
                     </div>
@@ -563,13 +430,12 @@ function getStickyLeftValue(columnId: string): string | undefined {
                       class="absolute left-10 bottom-[-.5rem] flex flex-nonw gap-2 items-center text-[.8rem] font-normal text-muted-foreground truncate text-muted-600 dark:text-muted-400 w-full"
                     >
                       <Mail :size="15" />
-                      <!-- {{ getCustomerDisplayGmail(customer) }} -->customer
-                      email
+                      {{ customer.email }}
                       <span><strong>วันที่ออกใบ :</strong></span>
                     </p>
 
-                    <div class="ml-auto">
-                      <CustomerTableDropdown />
+                    <div class="ml-auto" @click.stop>
+                      <CustomerTableDropdown :customer="customer" />
                     </div>
                   </div>
                 </AccordionTrigger>
@@ -580,12 +446,12 @@ function getStickyLeftValue(columnId: string): string | undefined {
                     <div class="">
                       <Badge
                         :class="[
-                          customer.customer_type === 'person'
+                          customer.type === 'บุคคลธรรมดา'
                             ? 'bg-primary-500'
                             : 'bg-green-500',
                         ]"
                         >{{
-                          customer.customer_type === "person"
+                          customer.type === "บุคคลธรรมดา"
                             ? "บุคคลธรรมดา"
                             : "นิติบุคคล"
                         }}</Badge
@@ -593,22 +459,21 @@ function getStickyLeftValue(columnId: string): string | undefined {
                     </div>
                     <p>
                       หมายเลขผู้เสียภาษี :
-                      <!-- <span class="text-muted-600 dark:text-muted-400">{{
-                      getCustomerDisplayTin(customer)
-                    }}</span> -->
+                      <span class="text-muted-600 dark:text-muted-400">{{
+                        customer.tin
+                      }}</span>
                     </p>
                     <p>
                       ที่อยู่ :
-                      <!-- <span class="text-muted-600 dark:text-muted-400"
-                      >{{ customer.customer_address?.address_line1 || "-" }}
-                      {{ locationLabels[customer.id] || "..." }}</span
-                    > -->
+                      <span class="text-muted-600 dark:text-muted-400"
+                        >{{ customer.address || "-" }}
+                      </span>
                     </p>
                     <p>
                       เบอร์ติดต่อ :
-                      <!-- <span class="text-muted-600 dark:text-muted-400">{{
-                      customer.customer_contacts[1].contact_value || "-"
-                    }}</span> -->
+                      <span class="text-muted-600 dark:text-muted-400">{{
+                        customer.phone ? customer.phone : "-"
+                      }}</span>
                     </p>
                   </div>
                 </AccordionContent>
@@ -643,5 +508,6 @@ function getStickyLeftValue(columnId: string): string | undefined {
         </Button>
       </div>
     </div>
+    <FeatureCustomerDialogManagement mode="create" v-model="addCustomer" />
   </div>
 </template>

@@ -2,24 +2,32 @@
   <div class="grid grid-cols-1 gap-5 auto-rows-min">
     <!-- No. -->
     <div class="flex items-center gap-2 w-100">
-      <Label class="w-20">เลขที่</Label>
+      <Label class="w-10">เลขที่</Label>
       <Input
         type="text"
         placeholder="Enter invoice number"
-        class="flex-1"
+        class="flex-1 placeholder:font-semibold"
       />
     </div>
 
     <!-- Date -->
     <div class="flex items-center gap-2">
-      <Label class="w-20">วันที่</Label>
-      <BaseDatePicker class="flex-1 w-78"/>
+      <Label class="w-10">วันที่</Label>
+      <BaseDatePicker class="flex-1 w-88"/>
       <!-- <Input type="datetime-local" placeholder="Datetime Local" class="flex-1"/> -->
     </div>
 
-    <!-- Ref -->
+  
+    <!-- Date -->
+    <div class="flex items-center gap-2 w-100">
+      <Label class="w-10">ลูกค้า</Label>
+      <FeatureInvoiceAddCustomer class="flex-1"/>
+      <!-- <Input type="datetime-local" placeholder="Datetime Local" class="flex-1"/> -->
+    </div>
+
+     <!-- Ref -->
     <div class="flex items-center gap-2">
-      <Label class="w-20">Ref.</Label>
+      <Label class="w-10">Ref.</Label>
       <div>
         <template v-if="!selected">
           <Popover>
@@ -64,6 +72,7 @@
         </template>
       </div>
     </div>
+
   </div>
 </template>
 

@@ -10,7 +10,7 @@
           )"
         >
           <CalendarIcon class="text-muted-foreground" />
-          {{ date ? df.format(date.toDate(getLocalTimeZone())) : "Pick a date" }}
+          {{ date ? df.format(date.toDate(getLocalTimeZone())) : "เพิ่มวันที่" }}
         </Button>
       </PopoverTrigger>
       <PopoverContent class="w-auto p-0" align="start">

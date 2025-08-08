@@ -4,19 +4,21 @@
       <!-- Left Pane -->
       <div
         :class="[
-          'flex flex-col p-4 pr-0 gap-4 transition-all duration-300',
-          isRightExpanded ? 'flex-[3]' : 'flex-[6]',
+          'flex flex-col gap-4 p-4  transition-all duration-300 min-h-0 overflow-auto',
+          isRightExpanded ? 'md:flex-[3]' : 'md:flex-[6]',
         ]"
+        class="flex-1"
       >
-        <template v-if="isLoading">
+        <!-- <template v-if="isLoading">
           <InvoiceSkeleton />
-        </template>
-        <template v-else>
+        </template> -->
+        <!-- <template v-else> -->
           <InvoiceHeader />
           <InvoiceCardGroup />
-          <!-- <InvoiceTable :invoices="invoices" /> -->
-          <FeatureInvoiceProductLine />
-        </template>
+          <div class="flex-1 min-h-0">
+            <FeatureInvoiceProductLine />
+          </div>
+        <!-- </template> -->
       </div>
 
       <!-- Divider -->
@@ -25,9 +27,10 @@
       <!-- Right Pane -->
       <div
         :class="[
-          'flex flex-col gap-4 p-4 pl-0 transition-all duration-300 min-h-0',
-          isRightExpanded ? 'flex-[3]' : 'flex-[2]',
+          'flex flex-col gap-4 p-4  transition-all duration-300 min-h-0 overflow-hidden',
+          isRightExpanded ? 'md:flex-[3]' : 'md:flex-[2]',
         ]"
+        class="flex-1"
       >
         <template v-if="isLoading">
           <Skeleton class="rounded-xl h-10 w-1/4" />
@@ -46,12 +49,16 @@
             <div
               v-if="!isRightExpanded"
               key="summary"
-              class="flex flex-col flex-1 gap-4 min-h-0"
+              class="flex flex-col flex-1 min-h-0 overflow-auto"
             >
               <InvoiceRightPanel />
             </div>
 
-            <div v-else key="preview" class="flex flex-col flex-1 gap-4 min-h-0">
+            <div
+              v-else
+              key="preview"
+              class="flex flex-col flex-1 min-h-0 overflow-auto"
+            >
               <InvoicePreview />
             </div>
           </Transition>

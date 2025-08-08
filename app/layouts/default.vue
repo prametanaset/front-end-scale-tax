@@ -20,6 +20,7 @@
 <script lang="ts" setup>
 import { useMediaQuery } from '@vueuse/core';
 import AppSidebarHeader from '~/components/layout/AppSidebarHeader.vue';
+
 const isStuck = ref(false);
 const sentinel = ref<HTMLElement | null>(null);
 const open = ref(true);
@@ -46,7 +47,6 @@ onMounted(() => {
     open.value = val;
   });
 });
-
 </script>
 
 <style>

@@ -1,6 +1,7 @@
 <template>
   <div class="space-y-4">
-    <Table class="overflow-hidden">
+    <Label class="text-lg font-semibold">รายการสินค้า</Label>
+    <Table>
       <TableHeader>
         <TableRow>
           <TableHead>สินค้า</TableHead>
@@ -71,6 +72,7 @@
         </TableRow>
       </transition-group>
     </Table>
+
     <!-- Add Product Button -->
     <Popover v-if="!products.length">
       <PopoverTrigger as-child>
@@ -186,7 +188,7 @@ const availableProducts = ref([
     sku: "SKU001",
     price: 100,
     taxType: "include",
-    product_image: { url: "https://i.pravatar.cc/100" },
+    product_image: { url: "https://i.pravatar.cc/100?img=1" },
   },
   {
     id: 2,
@@ -194,7 +196,7 @@ const availableProducts = ref([
     sku: "SKU002",
     price: 200,
     taxType: "exclude",
-    product_image: { url: "https://i.pravatar.cc/100" },
+    product_image: { url: "https://i.pravatar.cc/100?img=2" },
   },
   {
     id: 3,
@@ -202,9 +204,82 @@ const availableProducts = ref([
     sku: "SKU003",
     price: 300,
     taxType: "exempt",
-    product_image: { url: "https://i.pravatar.cc/100" },
+    product_image: { url: "https://i.pravatar.cc/100?img=3" },
+  },
+  {
+    id: 4,
+    name: "สินค้า D",
+    sku: "SKU004",
+    price: 120,
+    taxType: "include",
+    product_image: { url: "https://i.pravatar.cc/100?img=4" },
+  },
+  {
+    id: 5,
+    name: "สินค้า E",
+    sku: "SKU005",
+    price: 150,
+    taxType: "exclude",
+    product_image: { url: "https://i.pravatar.cc/100?img=5" },
+  },
+  {
+    id: 6,
+    name: "สินค้า F",
+    sku: "SKU006",
+    price: 180,
+    taxType: "include",
+    product_image: { url: "https://i.pravatar.cc/100?img=6" },
+  },
+  {
+    id: 7,
+    name: "สินค้า G",
+    sku: "SKU007",
+    price: 220,
+    taxType: "exempt",
+    product_image: { url: "https://i.pravatar.cc/100?img=7" },
+  },
+  {
+    id: 8,
+    name: "สินค้า H",
+    sku: "SKU008",
+    price: 170,
+    taxType: "include",
+    product_image: { url: "https://i.pravatar.cc/100?img=8" },
+  },
+  {
+    id: 9,
+    name: "สินค้า I",
+    sku: "SKU009",
+    price: 260,
+    taxType: "exclude",
+    product_image: { url: "https://i.pravatar.cc/100?img=9" },
+  },
+  {
+    id: 10,
+    name: "สินค้า J",
+    sku: "SKU010",
+    price: 190,
+    taxType: "include",
+    product_image: { url: "https://i.pravatar.cc/100?img=10" },
+  },
+  {
+    id: 11,
+    name: "สินค้า K",
+    sku: "SKU011",
+    price: 230,
+    taxType: "exempt",
+    product_image: { url: "https://i.pravatar.cc/100?img=11" },
+  },
+  {
+    id: 12,
+    name: "สินค้า L",
+    sku: "SKU012",
+    price: 250,
+    taxType: "include",
+    product_image: { url: "https://i.pravatar.cc/100?img=12" },
   },
 ]);
+
 
 const handleCreateProduct = async (product: any) => {
   try {

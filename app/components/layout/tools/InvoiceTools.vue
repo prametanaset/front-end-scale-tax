@@ -19,7 +19,7 @@
       <Eye class="w-4 h-4" />
       ตัวอย่าง
     </BaseButton> -->
-    <BaseButton class="rounded-md" variant="outline">
+    <BaseButton class="rounded-md" variant="secondary">
       <Plus class="w-4 h-4" />
       สร้าง
     </BaseButton>

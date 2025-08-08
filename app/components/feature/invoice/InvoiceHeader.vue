@@ -1,7 +1,14 @@
 <template>
   <div class="grid grid-cols-1 gap-5 auto-rows-min">
+    <!-- Date -->
+    <div class="flex items-center gap-2 ">
+      <Label class="w-10">ลูกค้า</Label>
+      <FeatureInvoiceAddCustomer class="flex-1"/>
+      <!-- <Input type="datetime-local" placeholder="Datetime Local" class="flex-1"/> -->
+    </div>
+
     <!-- No. -->
-    <div class="flex items-center gap-2 w-100">
+    <div class="flex items-center gap-2 ">
       <Label class="w-10">เลขที่</Label>
       <Input
         type="text"
@@ -13,15 +20,7 @@
     <!-- Date -->
     <div class="flex items-center gap-2">
       <Label class="w-10">วันที่</Label>
-      <BaseDatePicker class="flex-1 w-88"/>
-      <!-- <Input type="datetime-local" placeholder="Datetime Local" class="flex-1"/> -->
-    </div>
-
-  
-    <!-- Date -->
-    <div class="flex items-center gap-2 w-100">
-      <Label class="w-10">ลูกค้า</Label>
-      <FeatureInvoiceAddCustomer class="flex-1"/>
+      <BaseDatePicker class="flex-1"/>
       <!-- <Input type="datetime-local" placeholder="Datetime Local" class="flex-1"/> -->
     </div>
 

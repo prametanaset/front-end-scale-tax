@@ -51,11 +51,22 @@ export interface CustomerContact {
 export interface CustomerTableRow {
   id: number;
   name: string;
+  first_name?: string;
+  last_name?: string;
   type: string;
   email?: string;
   phone?: string;
   address: string;
   tin: string;
+  branch_no?: string;
   status: string;
   created_at: string;
+  location_data: LocationData;
+}
+
+export interface LocationData {
+  provinces_id?: number;
+  districts_id?: number;
+  subdistricts_id?: number;
+  zip_code?: string;
 }

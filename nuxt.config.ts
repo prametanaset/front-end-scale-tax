@@ -6,20 +6,24 @@ export default defineNuxtConfig({
   css: ["~/assets/css/tailwind.css"],
 
   vite: {
-    server: {
-      strictPort: false,         // if port is busy, pick next
-      allowedHosts: [
-        '2c5ad35b3b67.ngrok-free.app'
-      ],
-      hmr: {
-        host: '2c5ad35b3b67.ngrok-free.app', // ensure HMR WS connects back
-        protocol: 'wss'
-      }
-    },
     plugins: [tailwindcss()],
   },
+  app: {
+    head: {
+      title: "Nuxt", // default fallback title
+      htmlAttrs: {
+        lang: "en",
+      },
+      link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+    },
+  },
 
-  modules: ["shadcn-nuxt", "@nuxtjs/color-mode", "@pinia/nuxt"],
+  modules: [
+    "shadcn-nuxt",
+    "@nuxtjs/color-mode",
+    "@pinia/nuxt",
+    "@nuxtjs/html-validator",
+  ],
 
   shadcn: {
     /**

@@ -1,24 +1,23 @@
 <template>
   <div class="flex flex-col h-[calc(100vh-theme(spacing.20))]">
-    <div class="flex flex-col md:flex-row flex-1 gap-4 min-h-0">
+    <div class="flex flex-col md:flex-row flex-1 min-h-0">
       <!-- Left Pane -->
       <div
         :class="[
-          'flex flex-col gap-4 p-4  transition-all duration-300 min-h-0 overflow-auto',
+          'flex flex-col gap-4 p-4 transition-all duration-300 min-h-0',
           isRightExpanded ? 'md:flex-[3]' : 'md:flex-[6]',
         ]"
         class="flex-1"
       >
-        <!-- <template v-if="isLoading">
+        <template v-if="isLoading">
           <InvoiceSkeleton />
-        </template> -->
-        <!-- <template v-else> -->
+        </template>
+        <template v-else>
           <InvoiceHeader />
-          <InvoiceCardGroup />
-          <div class="flex-1 min-h-0">
+          <div class="flex-1 h-full">
             <FeatureInvoiceProductLine />
           </div>
-        <!-- </template> -->
+        </template>
       </div>
 
       <!-- Divider -->

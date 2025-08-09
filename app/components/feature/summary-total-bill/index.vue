@@ -1,155 +1,242 @@
 <template>
   <BaseCard class="w-full">
-    <CardHeader class="flex flex-col gap-y-0">
+    <CardHeader class="gap-y-1">
       <h3 class="text-xl font-semibold leading-tight tracking-tight">จำนวนเงินในใบแจ้งหนี้</h3>
-      <p class="text-sm font-normal leading-snug text-muted-600 dark:text-white">แสดงเป็นบาท (THB)</p>
+      <p class="text-sm text-muted-foreground">แสดงเป็นบาท (THB)</p>
     </CardHeader>
 
-    <CardContent class="grid gap-4">
-      <!-- Total Display -->
-      <div class="border-b border-muted-200 pb-4 dark:border-muted-800/80">
-        <div class="mb-3 text-2xl font-bold leading-none tracking-normal font-heading">
-          ฿{{ total.toLocaleString(undefined, { minimumFractionDigits: 2 }) }}
-          <span class="inline text-sm font-normal leading-normal tracking-normal text-muted-600 dark:text-white">
-            (รวมภาษีมูลค่าเพิ่ม)
-          </span>
+    <CardContent class="grid gap-5">
+      <!-- TOP: Grand total + discount badge/actions -->
+      <div class="border-b pb-4">
+        <div class="mb-2 flex items-baseline gap-2">
+          <div class="text-3xl font-bold tabular-nums">
+            {{ currency(total) }}
+          </div>
+          <span class="text-sm text-muted-foreground">(รวมภาษีมูลค่าเพิ่ม {{ (vatRate*100).toFixed(0) }}%)</span>
         </div>
 
-        <!-- Discount Popover -->
-        <Popover v-if="false">
-          <PopoverTrigger as-child>
-            <Button
-              variant="secondary"
-              size="sm"
-              class="w-fit truncate rounded-xl bg-primary/15 text-center text-sm font-semibold text-primary-600 dark:text-primary-light cursor-pointer"
-            >
-              <CirclePlus class="mr-1" />
+        <div class="flex items-center gap-2 flex-wrap">
+          <template v-if="hasDiscount">
+            <span class="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm bg-[hsl(var(--muted))]">
+              ส่วนลด:
+              <strong class="tabular-nums">
+                {{ discountType === '%' ? `-${effectiveDiscountValue}%` : `-${currency(effectiveDiscountValue)}` }}
+              </strong>
+            </span>
+            <BaseButton variant="outline" size="sm" class="gap-2" @click="openDialog()">
+              แก้ไขส่วนลด
+            </BaseButton>
+            <BaseButton variant="ghost" size="sm" class="text-destructive" @click="clearDiscount">
+              ลบส่วนลด
+            </BaseButton>
+          </template>
+
+          <template v-else>
+            <BaseButton variant="secondary" size="sm" class="gap-2" @click="openDialog('%')">
+              <CirclePlus class="w-4 h-4" />
               เพิ่มส่วนลด
-            </Button>
-          </PopoverTrigger>
+            </BaseButton>
+          </template>
+        </div>
 
-          <PopoverContent class="w-80" align="start">
-            <div class="grid gap-4">
-              <div class="space-y-2">
-                <h4 class="leading-none">เพิ่มส่วนลด</h4>
-                <p class="text-sm text-muted-foreground">
-                  กรุณาเลือกประเภทและมูลค่าของส่วนลด
-                </p>
-              </div>
-
-              <div class="grid gap-2">
-                <div class="grid grid-cols-3 items-center gap-4">
-                  <label>ประเภท</label>
-                  <Select v-model="discountType">
-                    <SelectTrigger class="col-span-2 h-8 font-normal">
-                      <SelectValue placeholder="เลือกประเภท" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="%">เปอร์เซ็นต์ (%)</SelectItem>
-                      <SelectItem value="฿">บาท (฿)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div class="grid grid-cols-3 items-center gap-4">
-                  <label class="font-semibold">มูลค่า</label>
-                  <Input
-                    v-model.number="discountValue"
-                    type="number"
-                    min="0"
-                    class="col-span-2 h-8 text-center"
-                  />
-                </div>
-              </div>
-            </div>
-          </PopoverContent>
-        </Popover>
-        <Dialog>
-          <form>
-            <DialogTrigger as-child>
-              <BaseButton variant="secondary">
-                <CirclePlus class="h-4 w-4" />
-                เพิ่มส่วนลด
-              </BaseButton>
-            </DialogTrigger>
-            <DialogContent class="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you're
-                  done.
-                </DialogDescription>
-              </DialogHeader>
-              <div class="grid gap-4">
-                <div class="grid gap-3">
-                  <Label for="name-1">Name</Label>
-                  <Input id="name-1" name="name" default-value="Pedro Duarte" />
-                </div>
-                <div class="grid gap-3">
-                  <Label for="username-1">Username</Label>
-                  <Input id="username-1" name="username" default-value="@peduarte" />
-                </div>
-              </div>
-              <DialogFooter>
-                <DialogClose as-child>
-                  <BaseButton variant="outline">
-                    Cancel
-                  </BaseButton>
-                </DialogClose>
-                <BaseButton type="submit">
-                  Save changes
-                </BaseButton>
-              </DialogFooter>
-            </DialogContent>
-          </form>
-        </Dialog>
+        <!-- Live region สำหรับผู้อ่านหน้าจอ -->
+        <p class="sr-only" aria-live="polite">ยอดรวมปัจจุบัน {{ currency(total) }} บาท</p>
       </div>
 
-      <!-- Breakdown -->
-      <div class="border-b border-muted-200 pb-4 dark:border-muted-800/80">
-        <div class="flex justify-between">
-          <p class="text-base font-normal">ยอดก่อนภาษี</p>
-          <p>฿{{ beforeTaxAmount.toFixed(2) }}</p>
+      <!-- BREAKDOWN -->
+      <div class="space-y-2 border-b pb-4">
+        <div class="flex items-center justify-between">
+          <p class="text-base text-muted-foreground">ส่วนลด</p>
+          <p class="tabular-nums">-{{ currency(discountAmount) }}</p>
         </div>
-        <div class="flex justify-between">
-          <p class="text-base font-normal">ส่วนลด</p>
-          <p>฿{{ discountAmount.toFixed(2) }}</p>
+        <div class="flex items-center justify-between">
+          <p class="text-base text-muted-foreground">ยอดก่อนภาษี</p>
+          <p class="tabular-nums">{{ currency(beforeTaxAmount) }}</p>
         </div>
-        <div class="flex justify-between">
-          <p class="text-base font-normal">ภาษี (7%)</p>
-          <p>฿{{ tax.toFixed(2) }}</p>
+        <div class="flex items-center justify-between">
+          <p class="text-base text-muted-foreground">ภาษีมูลค่าเพิ่ม ({{ (vatRate*100).toFixed(0) }}%)</p>
+          <p class="tabular-nums">{{ currency(tax) }}</p>
         </div>
       </div>
     </CardContent>
-    <CardFooter class="flex justify-between text-xl">
-        <p class="text-lg font-suk">รวมทั้งหมด</p>
-        <p class="font-bold">฿{{ total.toFixed(2) }}</p>
+
+    <CardFooter class="flex items-center justify-between">
+      <p class="text-lg">ยอดสุทธิ</p>
+      <p class="text-2xl font-bold tabular-nums">{{ currency(total) }}</p>
     </CardFooter>
+
+    <!-- DIALOG: Add/Edit discount -->
+    <Dialog v-model:open="dialogOpen">
+  <DialogContent class="sm:max-w-[440px]">
+    <DialogHeader>
+      <DialogTitle>ตั้งค่าส่วนลด</DialogTitle>
+      <DialogDescription id="discount-help">
+        เลือกประเภทและระบุมูลค่าส่วนลด
+      </DialogDescription>
+    </DialogHeader>
+
+    <form @submit.prevent="saveDiscount" novalidate>
+      <div class="grid gap-4">
+        <!-- ประเภท -->
+        <div class="grid grid-cols-3 items-center gap-3">
+          <Label for="discount-type">ประเภท</Label>
+          <!-- ใช้ col-span-2 กับตัว control (Trigger) ให้เต็มแถว -->
+          <div class="col-span-2">
+            <Select v-model="draftType">
+              <SelectTrigger id="discount-type" class="h-9 w-full" aria-describedby="discount-help">
+                <SelectValue placeholder="เลือกประเภท" />
+              </SelectTrigger>
+              <!-- ใช้ popper เพื่อไม่ชน stacking ของ Dialog -->
+              <SelectContent position="popper" :side-offset="6">
+                <SelectItem value="%">เปอร์เซ็นต์ (%)</SelectItem>
+                <SelectItem value="฿">บาท (฿)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <!-- มูลค่า -->
+        <div class="grid grid-cols-3 items-center gap-3">
+          <Label for="discount-value">มูลค่า</Label>
+          <div class="col-span-2">
+            <Input
+              id="discount-value"
+              v-model.number="draftValue"
+              type="number"
+              inputmode="decimal"
+              :min="0"
+              :max="draftType === '%' ? 100 : beforeTaxAmount"
+              :step="draftType === '%' ? '0.01' : '0.01'"
+              class="h-9 text-right tabular-nums"
+              placeholder="0"
+              autofocus
+              @wheel.prevent
+              @blur="() => {
+                const min = 0
+                const max = draftType === '%' ? 100 : beforeTaxAmount
+                if (draftValue === undefined || draftValue === null || Number.isNaN(draftValue)) draftValue = 0
+                draftValue = Math.min(max, Math.max(min, Number(draftValue)))
+              }"
+            />
+            <p class="mt-1 text-xs text-muted-foreground" v-if="draftType === '%'">
+              กำหนดได้ 0–100%
+            </p>
+            <p class="mt-1 text-xs text-muted-foreground" v-else>
+              สูงสุด {{ currency(beforeTaxAmount) }} บาท
+            </p>
+            <p class="mt-1 text-xs text-destructive" v-if="errorMsg">{{ errorMsg }}</p>
+          </div>
+        </div>
+      </div>
+
+      <DialogFooter class="mt-4">
+        <DialogClose as-child>
+          <BaseButton type="button" variant="outline">ยกเลิก</BaseButton>
+        </DialogClose>
+        <BaseButton type="submit">บันทึกส่วนลด</BaseButton>
+      </DialogFooter>
+    </form>
+  </DialogContent>
+</Dialog>
+
   </BaseCard>
 </template>
 
 <script setup lang="ts">
 import { CirclePlus } from 'lucide-vue-next'
 
-// Constants
-const beforeTaxAmount = 8000
+/** ปรับได้จากภายนอกถ้าต้องการ */
+const props = withDefaults(defineProps<{
+  beforeTaxAmount?: number,
+  vatRate?: number
+}>(), {
+  beforeTaxAmount: 8000,
+  vatRate: 0.07
+})
 
-// Reactive states
+/** state ส่วนลดจริงที่ใช้คำนวณ */
 const discountType = ref<'%' | '฿' | ''>('')
 const discountValue = ref<number>(0)
 
-// Computed discount amount
+/** dialog draft (เพื่อแก้ไขแบบไม่กระทบค่าจริง) */
+const dialogOpen = ref(false)
+const draftType = ref<'%' | '฿'>('%')
+const draftValue = ref<number>(0)
+const errorMsg = ref('')
+
+function openDialog(defaultType?: '%' | '฿') {
+  draftType.value = (discountType.value || defaultType || '%') as '%' | '฿'
+  draftValue.value = discountValue.value || 0
+  errorMsg.value = ''
+  dialogOpen.value = true
+}
+
+function saveDiscount() {
+  const t = draftType.value
+  let v = Number(draftValue.value) || 0
+
+  if (t === '%') {
+    if (v < 0 || v > 100) {
+      errorMsg.value = 'เปอร์เซ็นต์ต้องอยู่ระหว่าง 0–100'
+      return
+    }
+  } else {
+    if (v < 0) {
+      errorMsg.value = 'มูลค่าส่วนลดต้องไม่ติดลบ'
+      return
+    }
+    if (v > props.beforeTaxAmount) {
+      errorMsg.value = 'มูลค่าส่วนลดต้องไม่เกินยอดก่อนภาษี'
+      return
+    }
+  }
+
+  discountType.value = t
+  discountValue.value = v
+  dialogOpen.value = false
+}
+
+function clearDiscount() {
+  discountType.value = ''
+  discountValue.value = 0
+}
+
+/** helper แปลงสกุลเงิน */
+function currency(n: number) {
+  return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Math.max(0, n))
+}
+
+/** ส่วนลดที่ผ่านการ clamp แล้ว (ใช้แสดง badge) */
+const effectiveDiscountValue = computed(() => {
+  if (discountType.value === '%') return Math.min(100, Math.max(0, discountValue.value))
+  if (discountType.value === '฿') return Math.min(props.beforeTaxAmount, Math.max(0, discountValue.value))
+  return 0
+})
+
+/** ยอดส่วนลดเป็น "บาท" ที่ใช้คำนวณจริง */
 const discountAmount = computed(() => {
   if (discountType.value === '%') {
-    return (beforeTaxAmount * discountValue.value) / 100
+    return (props.beforeTaxAmount * effectiveDiscountValue.value) / 100
   }
   if (discountType.value === '฿') {
-    return Math.min(discountValue.value, beforeTaxAmount)
+    return effectiveDiscountValue.value
   }
   return 0
 })
 
-// Tax & total calculation
-const tax = computed(() => (beforeTaxAmount - discountAmount.value) * 0.07)
-const total = computed(() => (beforeTaxAmount - discountAmount.value) + tax.value)
+/** ฐานภาษี, ภาษี, และยอดรวม */
+const taxBase = computed(() => Math.max(0, props.beforeTaxAmount - discountAmount.value))
+const tax = computed(() => taxBase.value * props.vatRate)
+const total = computed(() => taxBase.value + tax.value)
+
+/** flag มีส่วนลดไหม */
+const hasDiscount = computed(() => discountType.value !== '' && discountAmount.value > 0)
+
+/** expose สำหรับ template */
+const beforeTaxAmount = props.beforeTaxAmount
+const vatRate = props.vatRate
 </script>
+
+<style scoped>
+.tabular-nums { font-variant-numeric: tabular-nums; }
+</style>

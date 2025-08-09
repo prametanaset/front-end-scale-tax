@@ -10,7 +10,7 @@
           <slot name="header-actions" />
         </template>
       </AppSidebarHeader>
-      <section aria-label="Page content">
+      <section aria-label="Page content" class="scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-red-500 scrollbar-track-red-200">
         <slot />
       </section>
     </SidebarInset>

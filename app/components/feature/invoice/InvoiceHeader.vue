@@ -9,8 +9,9 @@
 
     <!-- No. -->
     <div class="flex items-center gap-2 ">
-      <Label class="w-10">เลขที่</Label>
+      <Label for="invoice-number" class="w-10">เลขที่</Label>
       <Input
+        id="invoice-number"
         type="text"
         placeholder="Enter invoice number"
         class="flex-1 placeholder:font-semibold"

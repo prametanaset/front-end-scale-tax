@@ -4,12 +4,12 @@
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>สินค้า</TableHead>
-          <TableHead>จำนวน</TableHead>
-          <TableHead>ส่วนลด</TableHead>
-          <TableHead>ภาษี</TableHead>
-          <TableHead>รวม</TableHead>
-          <TableHead></TableHead>
+          <TableHead scope="col">สินค้า</TableHead>
+          <TableHead scope="col">จำนวน</TableHead>
+          <TableHead scope="col">ส่วนลด</TableHead>
+          <TableHead scope="col">ภาษี</TableHead>
+          <TableHead scope="col">รวม</TableHead>
+          <TableHead scope="col"></TableHead>
         </TableRow>
       </TableHeader>
 
@@ -165,11 +165,11 @@
     </Popover>
 
     <!-- Dialog for New Product -->
-    <BaseAddProductDialog
+    <!-- <BaseAddProductDialog
       v-model="isDialogOpen"
       mode="create"
       @product-added="handleCreateProduct"
-    />
+    /> -->
   </div>
 </template>
 

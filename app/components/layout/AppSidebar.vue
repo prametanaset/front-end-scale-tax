@@ -8,7 +8,7 @@
               <div class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 <!-- <Command class="size-4" /> -->
                 <Avatar class="h-8 w-8 rounded-lg">
-                  <AvatarImage src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpX7YaLKKJiyF4MHkNB3FnOJaIYx3jC5YYQw&s" alt="logo" />
+                  <AvatarImage src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpX7YaLKKJiyF4MHkNB3FnOJaIYx3jC5YYQw&s" alt="Logo" />
                   <AvatarFallback class="rounded-lg"> CN </AvatarFallback>
                 </Avatar>
               </div>
@@ -43,7 +43,6 @@
 <script lang="ts" setup>
 import { Megaphone, PieChart, Home, Users, ShoppingBag, Send, LifeBuoy, FlaskConical } from 'lucide-vue-next';
 import type { SidebarProps } from '@/components/ui/sidebar';
-import type NavCollapsible from '../nav/NavCollapsible.vue';
 
 const props = withDefaults(defineProps<SidebarProps>(), {
   variant: 'inset',
@@ -63,7 +62,7 @@ const data = {
       icon: Home,
     },
     {
-      title: 'รายการใบแจ่้งหนี้',
+      title: 'รายการใบแจ้งหนี้',
       url: '/invoices',
       icon: PieChart,
     },

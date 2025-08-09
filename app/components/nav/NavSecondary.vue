@@ -2,7 +2,7 @@
   <SidebarMenu>
     <SidebarMenuItem v-for="item in items" :key="item.title">
       <SidebarMenuButton as-child :size="null" :is-active="item.url === $route.path" >
-        <NuxtLink :to="item.url" class="flex items-center gap-2">
+        <NuxtLink :to="item.url">
           <component :is="item.icon" class="size-4" />
           <span>{{ item.title }}</span>
         </NuxtLink>

@@ -1,6 +1,6 @@
 <!-- BaseDialog.vue -->
 <template>
-  <Dialog :open="modelValue" @update:open="emit('update:modelValue', $event)">
+  <Dialog :modelValue="modelValue" @update:modelValue="emit('update:modelValue', $event)">
     <DialogTrigger as-child>
       <slot name="trigger">
         <Button variant="outline" :class="bgButton" v-if="showButton">
@@ -24,17 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-
 const props = defineProps<{
   modelValue: boolean;
   text?: string;

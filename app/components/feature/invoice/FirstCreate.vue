@@ -6,12 +6,10 @@
       <Newspaper class="size-8" />
     </div>
     <h2 class="text-2xl font-semibold">Create New Invoice</h2>
-    <NuxtLink to="/invoices/create">
-      <BaseButton variant="default">
+      <BaseButton to="/invoices/create">
         <Plus class="w-4 h-4" />
         Create
       </BaseButton>
-    </NuxtLink>
   </div>
 </template>
 

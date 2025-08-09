@@ -1,3 +1,58 @@
+<template>
+  <Combobox v-model="value" by="ID">
+    <ComboboxAnchor class="w-full h-fit" as-child>
+      <ComboboxTrigger as-child>
+        <BaseButton
+          variant="outline"
+          class="justify-between font-normal text-left rounded-md"
+        >
+          <BaseAvatar
+            v-if="value"
+            :text="`${value.FirstName[0]}${value.LastName[0]}`"
+            :title="`${value.FirstName} ${value.LastName}`"
+            :description="value.Email"
+            :img="value.ImgUrl"
+          />
+          <span  v-else>เพิ่มลูกค้า</span>
+          <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </BaseButton>
+      </ComboboxTrigger>
+    </ComboboxAnchor>
+
+    <ComboboxList class="p-1 w-[var(--reka-popper-anchor-width)]">
+      <div class="relative w-full max-w-sm items-center">
+        <ComboboxInput
+          class="focus-visible:ring-0 rounded-none h-10 w-[var(--reka-popper-anchor-width)]"
+          placeholder="ค้นหาลูกค้า..."
+        />
+        <span
+          class="absolute start-0 inset-y-0 flex items-center justify-center px-3"
+        >
+          <Search class="size-4 text-muted-foreground" />
+        </span>
+      </div>
+
+      <ComboboxEmpty> ไม่มีข้อมูลลูกค้า </ComboboxEmpty>
+
+      <ComboboxGroup>
+        <ComboboxItem
+          v-for="customer in customers"
+          :key="customer.ID"
+          :value="customer"
+          class="cursor-pointer"
+        >
+          <BaseAvatar
+            :text="`${customer.FirstName[0]}${customer.LastName[0]}`"
+            :title="`${customer.FirstName} ${customer.LastName}`"
+            :description="customer.Email"
+            :img="customer.ImgUrl"
+          />
+        </ComboboxItem>
+      </ComboboxGroup>
+    </ComboboxList>
+  </Combobox>
+</template>
+
 <script setup lang="ts">
 import { ChevronsUpDown, Search, Plus } from "lucide-vue-next";
 
@@ -45,58 +100,3 @@ const customers = ref<Customer[]>([
 
 const value = ref<Customer | null>(null);
 </script>
-
-<template>
-  <Combobox v-model="value" by="ID">
-    <ComboboxAnchor class="w-full h-fit" as-child>
-      <ComboboxTrigger as-child>
-        <BaseButton
-          variant="outline"
-          class="justify-between font-normal text-left rounded-md"
-        >
-          <BaseAvatar
-            v-if="value"
-            :text="`${value.FirstName[0]}${value.LastName[0]}`"
-            :title="`${value.FirstName} ${value.LastName}`"
-            :description="value.Email"
-            :img="value.ImgUrl"
-          />
-          <p v-else>เพิ่มลูกค้า</p>
-          <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </BaseButton>
-      </ComboboxTrigger>
-    </ComboboxAnchor>
-
-    <ComboboxList class="p-1 w-[var(--reka-popper-anchor-width)]">
-      <div class="relative w-full max-w-sm items-center">
-        <ComboboxInput
-          class="focus-visible:ring-0 rounded-none h-10 w-[var(--reka-popper-anchor-width)]"
-          placeholder="ค้นหาลูกค้า..."
-        />
-        <span
-          class="absolute start-0 inset-y-0 flex items-center justify-center px-3"
-        >
-          <Search class="size-4 text-muted-foreground" />
-        </span>
-      </div>
-
-      <ComboboxEmpty> ไม่มีข้อมูลลูกค้า </ComboboxEmpty>
-
-      <ComboboxGroup>
-        <ComboboxItem
-          v-for="customer in customers"
-          :key="customer.ID"
-          :value="customer"
-          class="cursor-pointer"
-        >
-          <BaseAvatar
-            :text="`${customer.FirstName[0]}${customer.LastName[0]}`"
-            :title="`${customer.FirstName} ${customer.LastName}`"
-            :description="customer.Email"
-            :img="customer.ImgUrl"
-          />
-        </ComboboxItem>
-      </ComboboxGroup>
-    </ComboboxList>
-  </Combobox>
-</template>

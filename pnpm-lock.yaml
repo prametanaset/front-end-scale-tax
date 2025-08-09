@@ -77,9 +77,6 @@ importers:
       vue3-apexcharts:
         specifier: ^1.8.0
         version: 1.8.0(apexcharts@5.3.2)(vue@3.5.18(typescript@5.8.3))
-      vuedraggable:
-        specifier: ^2.24.3
-        version: 2.24.3
     devDependencies:
       '@iconify-json/radix-icons':
         specifier: ^1.2.2
@@ -3923,9 +3920,6 @@ packages:
   smob@1.5.0:
     resolution: {integrity: sha512-g6T+p7QO8npa+/hNx9ohv1E5pVCmWrVCUzUXJyLdMmftX6ER0oiWY/w9knEonLpnOp6b6FenKnMfR8gqwWdwig==}
 
-  sortablejs@1.10.2:
-    resolution: {integrity: sha512-YkPGufevysvfwn5rfdlGyrGjt7/CRHwvRPogD/lC+TnvcN29jDpCifKP+rBqf+LRldfXSTh+0CGLcSg0VIxq3A==}
-
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
@@ -4449,9 +4443,6 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
-
-  vuedraggable@2.24.3:
-    resolution: {integrity: sha512-6/HDXi92GzB+Hcs9fC6PAAozK1RLt1ewPTLjK0anTYguXLAeySDmcnqE8IC0xa7shvSzRjQXq3/+dsZ7ETGF3g==}
 
   web-streams-polyfill@3.3.3:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
@@ -8647,8 +8638,6 @@ snapshots:
 
   smob@1.5.0: {}
 
-  sortablejs@1.10.2: {}
-
   source-map-js@1.2.1: {}
 
   source-map-support@0.5.21:
@@ -9142,10 +9131,6 @@ snapshots:
       '@vue/shared': 3.5.18
     optionalDependencies:
       typescript: 5.8.3
-
-  vuedraggable@2.24.3:
-    dependencies:
-      sortablejs: 1.10.2
 
   web-streams-polyfill@3.3.3: {}
 

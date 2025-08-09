@@ -10,9 +10,9 @@
           <slot name="header-actions" />
         </template>
       </AppSidebarHeader>
-      <main>
+      <section aria-label="Page content">
         <slot />
-      </main>
+      </section>
     </SidebarInset>
   </SidebarProvider>
 </template>

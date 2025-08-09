@@ -23,6 +23,12 @@
     </SidebarHeader>
     <SidebarContent>
       <SidebarGroup>
+        <SidebarGroupLabel>Quick</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <NavSecondary :items="data.navQuick" />
+        </SidebarGroupContent>
+      </SidebarGroup>
+      <SidebarGroup>
         <SidebarGroupLabel>Platform</SidebarGroupLabel>
         <SidebarGroupContent>
           <NavSecondary :items="data.navMain" />
@@ -41,7 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Megaphone, PieChart, Home, Users, ShoppingBag, Send, LifeBuoy, FlaskConical } from 'lucide-vue-next';
+import { Megaphone, PieChart, Home, Users, ShoppingBag, Send, LifeBuoy, FlaskConical, SquarePen } from 'lucide-vue-next';
 import type { SidebarProps } from '@/components/ui/sidebar';
 
 const props = withDefaults(defineProps<SidebarProps>(), {
@@ -55,17 +61,24 @@ const data = {
     email: 'm@example.com',
     avatar: 'https://i.pravatar.cc/150',
   },
+  navQuick: [
+    {
+      title: 'ออกใบกำกับภาษี',
+      url: '/invoices/create',
+      icon: SquarePen,
+    },
+  ],
   navMain: [
     {
       title: 'หน้าแรก',
       url: '/',
       icon: Home,
     },
-    {
-      title: 'รายการใบแจ้งหนี้',
-      url: '/invoices',
-      icon: PieChart,
-    },
+    // {
+    //   title: 'รายการใบแจ้งหนี้',
+    //   url: '/invoices',
+    //   icon: PieChart,
+    // },
     {
       title: 'แคตตาล็อกสินค้า',
       url: '/catalogs',

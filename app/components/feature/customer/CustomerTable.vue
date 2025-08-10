@@ -23,6 +23,7 @@ import {
   ChevronsUpDown,
   Mail,
   Plus,
+  Search,
 } from "lucide-vue-next";
 import { h, ref } from "vue";
 
@@ -48,6 +49,7 @@ import { useMediaQuery } from "@vueuse/core";
 import CustomerTableDropdown from "./CustomerTableDropdown.vue";
 import type { Customer, CustomerTableRow } from "~/composables/types/customer";
 import { mapCustomersToTableRows } from "~/ีutils/format-customer-table-row";
+import CustomerManageDialog from "./CustomerManageDialog.vue";
 
 const activeStatus = ref("all");
 const searchQuery = ref("");
@@ -254,12 +256,19 @@ function getStickyLeftValue(columnId: string): string | undefined {
 <template>
   <div class="w-full">
     <div class="flex items-center justify-between gap-4">
-      <Input
-        class="max-w-sm"
-        placeholder="ค้นหาด้วย หมายเลขผู้เสียภาษี"
-        :model-value="table.getColumn('tin')?.getFilterValue() as string"
-        @update:model-value="table.getColumn('tin')?.setFilterValue($event)"
-      />
+      <div class="relative w-full max-w-sm items-center">
+        <Input
+          class="max-w-sm pl-10"
+          placeholder="ค้นหาด้วย หมายเลขผู้เสียภาษี"
+          :model-value="table.getColumn('tin')?.getFilterValue() as string"
+          @update:model-value="table.getColumn('tin')?.setFilterValue($event)"
+        />
+        <span
+          class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
+        >
+          <Search class="size-6 text-muted-foreground" />
+        </span>
+      </div>
       <div class="flex gap-2">
         <BaseButton @click="addCustomer = true"
           ><Plus class="w-4 h-4" /> เพิ่มข้อมูลลูกค้า</BaseButton
@@ -508,6 +517,6 @@ function getStickyLeftValue(columnId: string): string | undefined {
         </Button>
       </div>
     </div>
-    <FeatureCustomerDialogManagement mode="create" v-model="addCustomer" />
+    <CustomerManageDialog mode="create" v-model="addCustomer" />
   </div>
 </template>

@@ -8,7 +8,7 @@
         </Button>
       </slot>
     </DialogTrigger>
-    <DialogContent class="sm:max-w-[425px]">
+    <DialogContent class="sm:max-w-[70vw]">
       <DialogHeader>
         <DialogTitle>{{ props.title }}</DialogTitle>
         <DialogDescription>

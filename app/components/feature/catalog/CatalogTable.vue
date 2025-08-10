@@ -15,7 +15,7 @@ import {
   getSortedRowModel,
   useVueTable,
 } from "@tanstack/vue-table";
-import { ArrowUpDown, ChevronDown, Plus } from "lucide-vue-next";
+import { ArrowUpDown, ChevronDown, Plus, Search } from "lucide-vue-next";
 import { h, ref } from "vue";
 
 import { Button } from "@/components/ui/button";
@@ -300,12 +300,19 @@ const table = useVueTable({
 <template>
   <div class="w-full">
     <div class="flex items-center justify-between gap-4">
-      <Input
-        class="max-w-sm"
-        placeholder="ค้นหาด้วย SKU"
-        :model-value="table.getColumn('sku')?.getFilterValue() as string"
-        @update:model-value="table.getColumn('sku')?.setFilterValue($event)"
-      />
+      <div class="relative w-full max-w-sm items-center">
+        <Input
+          class="max-w-sm pl-10"
+          placeholder="ค้นหาด้วย SKU"
+          :model-value="table.getColumn('sku')?.getFilterValue() as string"
+          @update:model-value="table.getColumn('sku')?.setFilterValue($event)"
+        />
+        <span
+          class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
+        >
+          <Search class="size-6 text-muted-foreground" />
+        </span>
+      </div>
       <div class="flex gap-2">
         <BaseButton><Plus class="w-4 h-4" /> เพิ่มสินค้า</BaseButton>
         <DropdownMenu v-if="screenSize === 'desktop'">

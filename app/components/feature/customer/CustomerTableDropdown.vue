@@ -5,8 +5,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CircleEllipsis, Edit, EllipsisVertical, Trash } from "lucide-vue-next";
+import {
+  CircleEllipsis,
+  Edit,
+  EllipsisVertical,
+  History,
+  Trash,
+} from "lucide-vue-next";
 import type { CustomerTableRow } from "~/composables/types/customer";
+import CustomerProfileDialog from "./CustomerProfileDialog.vue";
+import CustomerDialogManage from "./CustomerManageDialog.vue";
 
 const props = defineProps<{
   customer: CustomerTableRow;
@@ -14,6 +22,7 @@ const props = defineProps<{
 
 const detailActive = ref(false);
 const editActive = ref(false);
+const tabsActive = ref<"account" | "etax-history">("account");
 </script>
 
 <template>
@@ -24,8 +33,17 @@ const editActive = ref(false);
           ><EllipsisVertical /> </Button
       ></DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem class="cursor-pointer" @click="detailActive = true">
+        <DropdownMenuItem
+          class="cursor-pointer"
+          @click="(detailActive = true), (tabsActive = 'account')"
+        >
           <CircleEllipsis />รายละเอียด</DropdownMenuItem
+        >
+        <DropdownMenuItem
+          class="cursor-pointer"
+          @click="(detailActive = true), (tabsActive = 'etax-history')"
+        >
+          <History />ประวัติการออกใบกำกับภาษี</DropdownMenuItem
         >
         <DropdownMenuItem class="cursor-pointer" @click="editActive = true"
           ><Edit /> แก้ไข</DropdownMenuItem
@@ -36,15 +54,15 @@ const editActive = ref(false);
         >
       </DropdownMenuContent>
     </DropdownMenu>
-    <FeatureCustomerDialogManagement
+    <CustomerDialogManage
       v-model="editActive"
       mode="edit"
       :customer="props.customer"
     />
-    <BaseDialog
+    <CustomerProfileDialog
       v-model="detailActive"
-      title="รายละเอียด"
-      :show-button="false"
+      :customer="props.customer"
+      :tabActive="tabsActive"
     />
   </div>
 </template>

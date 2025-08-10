@@ -47,6 +47,7 @@ import {
 import { cn, valueUpdater } from "~/lib/utils";
 import { useMediaQuery } from "@vueuse/core";
 import CustomerTableDropdown from "./CustomerTableDropdown.vue";
+import CustomerManageDialog from "./CustomerManageDialog.vue";
 import type { Customer, CustomerTableRow } from "~/composables/types/customer";
 import { mapCustomersToTableRows } from "~/utils/format-customer-table-row";
 

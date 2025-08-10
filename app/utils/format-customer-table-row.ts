@@ -21,8 +21,8 @@ export function mapCustomersToTableRows(
     const tin =
       c.customer_type === "person"
         ? c.person_customer?.tin ?? ""
-        : (c.company_customer?.tin ?? "") +
-          (c.company_customer?.branch_no ?? "");
+        : c.company_customer?.tin ?? "";
+    // + (c.company_customer?.branch_no ?? "");
 
     const address = [
       c.customer_address?.address_line1,

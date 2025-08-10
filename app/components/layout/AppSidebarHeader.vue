@@ -15,12 +15,8 @@
   </header>
 </template>
 
-
 <script lang="ts" setup>
-import ToolsSwitcher from '@/components/layout/tools/ToolsSwitcher.vue'
-
+import ToolsSwitcher from "@/components/layout/tools/ToolsSwitcher.vue";
 </script>
 
-<style>
-
-</style>
+<style></style>

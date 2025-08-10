@@ -2,7 +2,7 @@
 <template>
   <Dialog :open="modelValue" @update:open="emit('update:modelValue', $event)">
     <DialogTrigger as-child></DialogTrigger>
-    <DialogContent class="sm:max-w-[70vw] sm:h-[80vh] h-dvh flex flex-col">
+    <DialogContent class="sm:max-w-[50vw] sm:h-[80vh] h-[90vh] flex flex-col">
       <DialogHeader>
         <DialogTitle>รายละเอียดลูกค้า</DialogTitle>
         <DialogDescription></DialogDescription>
@@ -11,7 +11,7 @@
       <!-- Tabs Section -->
       <div class="flex-1 flex flex-col items-start">
         <Tabs v-model="active" class="w-full">
-          <TabsList class="justify-start">
+          <TabsList class="justify-start w-full grid-cols-2">
             <TabsTrigger value="account">รายละเอียด</TabsTrigger>
             <TabsTrigger value="etax-history">
               <History />
@@ -19,34 +19,61 @@
             </TabsTrigger>
           </TabsList>
           <TabsContent value="account">
-            <div class="rounded-md overflow-hidden h-full flex flex-col gap-13">
+            <div class="rounded-md overflow-hidden h-full flex flex-col gap-10">
               <div
-                class="cover bg-linear-to-bl from-violet-500 to-fuchsia-500 w-full h-35 relative"
+                class="rounded-md cover bg-linear-to-bl from-violet-500 to-fuchsia-500 w-full h-35 relative"
               >
                 <Avatar class="w-25 h-25 absolute bottom-[-2rem] left-6">
-                  <AvatarImage src="https://i.pravatar.cc/100" alt="@unovue" />
-                  <AvatarFallback>{{ customer.name }}</AvatarFallback>
+                  <!-- <AvatarImage src="https://i.pravatar.cc/100" alt="@unovue" /> -->
+                  <AvatarFallback v-if="customer.type === 'นิติบุคคล'">
+                    {{ customer.name[0] }}{{ customer.name[1] }}</AvatarFallback
+                  >
+                  <AvatarFallback v-else
+                    >{{ customer.first_name?.[0]
+                    }}{{ customer.last_name?.[0] }}</AvatarFallback
+                  >
                 </Avatar>
               </div>
-              <div class="">
-                <div class="grid grid-cols-2 gap-4 space-y-4">
-                  <div class="flex-1">
-                    <Label for="taxId">ชื่อ</Label>
-                    <Input
-                      id="taxId"
-                      v-model="customer.first_name"
-                      placeholder="13 หลัก"
-                    />
+
+              <div class="border-md border-gray-500 sm:p-6 space-y-2 h-full">
+                <BaseCard class="p-4">
+                  <h2>ข้อมูลส่วนตัว</h2>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div class="">
+                      <Label>ชื่อ</Label>
+                      <p>{{ customer.name }}</p>
+                    </div>
+                    <div class="">
+                      <Label>ประเภทลูกค้า</Label>
+                      <p>{{ customer.type }}</p>
+                    </div>
+                    <div
+                      :class="customer.type === 'นิติบุคคล' ? '' : 'col-span-2'"
+                    >
+                      <Label>หมายเลขผู้เสียภาษี</Label>
+                      <p>{{ customer.tin }}</p>
+                    </div>
+                    <div v-if="customer.type === 'นิติบุคคล'" class="">
+                      <Label>เลขสาขา</Label>
+                      <p>{{ customer.branch_no }}</p>
+                    </div>
+                    <div class="">
+                      <Label>อีเมล</Label>
+                      <p>{{ customer.email }}</p>
+                    </div>
+                    <div class="">
+                      <Label>เบอร์ติดต่อ</Label>
+                      <p>{{ customer.phone }}</p>
+                    </div>
                   </div>
-                  <div class="flex-1">
-                    <Label for="taxId">นามสกุล</Label>
-                    <Input
-                      id="taxId"
-                      v-model="customer.last_name"
-                      placeholder="13 หลัก"
-                    />
+                </BaseCard>
+
+                <BaseCard class="p-4">
+                  <h2>ที่อยู่</h2>
+                  <div class="">
+                    <p>{{ customer.address }}</p>
                   </div>
-                </div>
+                </BaseCard>
               </div>
             </div>
           </TabsContent>

@@ -26,7 +26,7 @@
       <!-- Right Pane -->
       <div
         :class="[
-          'flex flex-col gap-4 p-4  transition-all duration-300 min-h-0 overflow-hidden',
+          'flex flex-col gap-4 p-4 transition-all duration-300 min-h-0 overflow-hidden',
           isRightExpanded ? 'md:flex-[3]' : 'md:flex-[2]',
         ]"
         class="flex-1"

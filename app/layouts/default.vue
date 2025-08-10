@@ -20,7 +20,7 @@
         class="flex-1 min-h-0 overflow-y-auto"
       >
         <!-- ถ้ายังอยากได้ padding/gap เหมือนเดิม ให้ห่ออีกชั้น -->
-        <div class="flex flex-col gap-4 p-4">
+        <div class="flex flex-col gap-4">
           <slot />
         </div>
       </div>

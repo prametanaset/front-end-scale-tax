@@ -1,6 +1,5 @@
 <template>
-  <div>
-  <div class="flex flex-1 flex-col gap-6 ">
+  <div class="flex flex-1 flex-col p-4 gap-4 h-[calc(100vh-theme(spacing.20))]">
 
     <!-- Row 1: KPIs -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -153,7 +152,6 @@
         </div>
       </div>
     </div>
-</div>
   </div>
 </template>
 
@@ -210,7 +208,6 @@ const invoices: Invoice[] = [
   { id: 2, no: "INV-2025-0007", customer: "Acme Corp",       avatar: "https://i.pravatar.cc/48?img=12", status: "Pending",date: "2025-08-17", total: 3200 },
   { id: 3, no: "INV-2025-0006", customer: "Globex",          avatar: "https://i.pravatar.cc/48?img=13", status: "Unpaid", date: "2025-08-16", total: 12750 },
   { id: 4, no: "INV-2025-0005", customer: "Soylent LLC",     avatar: "https://i.pravatar.cc/48?img=14", status: "Paid",   date: "2025-08-15", total: 4900 },
-  { id: 5, no: "INV-2025-0004", customer: "Initech",         avatar: "https://i.pravatar.cc/48?img=15", status: "Pending",date: "2025-08-14", total: 2100 },
 ]
 
 function statusVariant(s: Invoice["status"]) {

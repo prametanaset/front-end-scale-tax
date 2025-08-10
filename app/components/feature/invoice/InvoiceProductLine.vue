@@ -46,10 +46,123 @@
     </div>
 
     <div v-else class="flex gap-6 min-h-0 flex-1">
-      <div class="flex-1 min-h-0">
-        <div class="overflow-x-auto rounded-lg border h-[calc(100dvh-260px)] md:h-full">
-          <div class="min-w-[880px] flex flex-col h-full min-h-0">
-            <!-- หัวตาราง (นิ่ง) -->
+  <div class="flex-1 min-h-0">
+    <!-- Mobile layout: Card list -->
+    <div class="md:hidden space-y-3">
+      <div
+        v-for="(product, idx) in products"
+        :key="product.id"
+        :id="`product-${product.id}`"
+        class="rounded-lg border bg-[hsl(var(--card))] p-3"
+      >
+        <div class="flex items-center gap-3">
+          <img
+            :src="product.product_image.url"
+            :alt="product.sku"
+            class="w-12 h-12 rounded-xl object-cover"
+            width="48" height="48"
+            loading="lazy" decoding="async"
+          />
+          <div class="min-w-0">
+            <p class="font-medium truncate">{{ product.name }}</p>
+            <p class="text-xs text-muted-foreground truncate">SKU: {{ product.sku }}</p>
+            <p class="text-xs text-muted-foreground">
+              {{ currency(product.price) }} ฿ / {{ product.unit }}
+            </p>
+          </div>
+          <BaseButton
+            variant="ghost"
+            size="icon"
+            class="ml-auto"
+            @click="removeProduct(product.id)"
+            aria-label="ลบรายการ"
+          >
+            <Trash class="w-5 h-5 text-red-500" />
+          </BaseButton>
+        </div>
+
+        <div class="mt-3 grid grid-cols-2 gap-3">
+          <div class="col-span-2">
+            <Label class="text-xs text-muted-foreground mb-1 block">จำนวน</Label>
+            <NumberField v-model="product.quantity" :min="1" :step="1" class="w-full">
+              <NumberFieldContent>
+                <NumberFieldDecrement aria-label="ลดจำนวน" />
+                <NumberFieldInput class="text-center" />
+                <NumberFieldIncrement aria-label="เพิ่มจำนวน" />
+              </NumberFieldContent>
+            </NumberField>
+          </div>
+
+          <div>
+            <Label class="text-xs text-muted-foreground mb-1 block">ส่วนลด</Label>
+            <NumberField v-model="product.discountValue" :min="0" :step="1" class="w-full">
+              <NumberFieldInput class="text-right" placeholder="0" />
+            </NumberField>
+          </div>
+
+          <div>
+            <Label class="text-xs text-muted-foreground mb-1 block">รูปแบบ</Label>
+            <Select v-model="product.discountType">
+              <SelectTrigger class="h-9 w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="%">%</SelectItem>
+                <SelectItem value="฿">฿</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div class="col-span-2">
+            <Label class="text-xs text-muted-foreground mb-1 block">ภาษี</Label>
+            <Select v-model="product.taxType">
+              <SelectTrigger class="h-9 w-full">
+                <SelectValue placeholder="ภาษี" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="include">รวมภาษี</SelectItem>
+                <SelectItem value="exclude">ไม่รวมภาษี</SelectItem>
+                <SelectItem value="exempt">ยกเว้นภาษี</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div class="mt-3 flex items-center justify-between">
+          <span class="text-sm text-muted-foreground">รวม</span>
+          <span class="tabular-nums font-semibold">{{ currency(lineTotal(product)) }} ฿</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop/Tablet layout: Sticky header table -->
+    <div class="hidden md:block rounded-lg border overflow-hidden h-full min-h-0">
+      <div class="flex flex-col h-full min-h-0">
+        <!-- หัวตาราง sticky -->
+        <div class="overflow-x-auto">
+          <Table class="table-fixed">
+            <colgroup>
+              <col style="width:42%" />
+              <col style="width:14%" />
+              <col style="width:16%" />
+              <col style="width:12%" />
+              <col style="width:16%" />
+            </colgroup>
+            <TableHeader class="bg-[hsl(var(--card))] sticky top-0 z-10">
+              <TableRow>
+                <TableHead>สินค้า</TableHead>
+                <TableHead>จำนวน</TableHead>
+                <TableHead>ส่วนลด</TableHead>
+                <TableHead>ภาษี</TableHead>
+                <TableHead class="text-right">รวม</TableHead>
+              </TableRow>
+            </TableHeader>
+          </Table>
+        </div>
+
+        <!-- ตัวตารางเลื่อนในแนวตั้ง -->
+        <div class="flex-1 min-h-0 overflow-auto">
+          <div class="overflow-x-auto h-full">
             <Table class="table-fixed">
               <colgroup>
                 <col style="width:42%" />
@@ -58,151 +171,106 @@
                 <col style="width:12%" />
                 <col style="width:16%" />
               </colgroup>
-              <TableHeader class="bg-[hsl(var(--card))]">
-                <TableRow>
-                  <TableHead>สินค้า</TableHead>
-                  <TableHead>จำนวน</TableHead>
-                  <TableHead>ส่วนลด</TableHead>
-                  <TableHead>ภาษี</TableHead>
-                  <TableHead class="text-right">รวม</TableHead>
+              <TableBody>
+                <TableRow
+                  v-for="(product, idx) in products"
+                  :key="product.id"
+                  :id="`product-${product.id}`"
+                  class="group"
+                >
+                  <TableCell>
+                    <div class="flex items-center gap-3">
+                      <img
+                        :src="product.product_image.url"
+                        :alt="product.sku"
+                        class="w-12 h-12 rounded-xl object-cover"
+                        width="48" height="48"
+                        loading="lazy" decoding="async"
+                      />
+                      <div class="min-w-0">
+                        <p class="font-medium truncate">{{ product.name }}</p>
+                        <p class="text-xs text-muted-foreground truncate">SKU: {{ product.sku }}</p>
+                        <p class="text-xs text-muted-foreground">
+                          {{ currency(product.price) }} ฿ / {{ product.unit }}
+                        </p>
+                      </div>
+                    </div>
+                  </TableCell>
+
+                  <TableCell>
+                    <NumberField v-model="product.quantity" :min="1" :step="1" class="w-[130px]">
+                      <NumberFieldContent>
+                        <NumberFieldDecrement aria-label="ลดจำนวน" />
+                        <NumberFieldInput class="text-center" />
+                        <NumberFieldIncrement aria-label="เพิ่มจำนวน" />
+                      </NumberFieldContent>
+                    </NumberField>
+                  </TableCell>
+
+                  <TableCell>
+                    <div class="flex items-center gap-2">
+                      <NumberField v-model="product.discountValue" :min="0" :step="1" class="w-[120px]">
+                        <NumberFieldInput class="text-right" placeholder="0" />
+                      </NumberField>
+
+                      <Select v-model="product.discountType">
+                        <SelectTrigger class="h-9 w-[72px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="%">%</SelectItem>
+                          <SelectItem value="฿">฿</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </TableCell>
+
+                  <TableCell>
+                    <Select v-model="product.taxType">
+                      <SelectTrigger class="h-9 w-full">
+                        <SelectValue placeholder="ภาษี" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="include">รวมภาษี</SelectItem>
+                        <SelectItem value="exclude">ไม่รวมภาษี</SelectItem>
+                        <SelectItem value="exempt">ยกเว้นภาษี</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+
+                  <TableCell class="text-right align-middle">
+                    <div class="flex items-center justify-end gap-2">
+                      <span class="tabular-nums font-medium">
+                        {{ currency(lineTotal(product)) }} ฿
+                      </span>
+                      <BaseButton
+                        variant="ghost"
+                        size="icon"
+                        class="opacity-0 group-hover:opacity-100 transition-opacity"
+                        @click="removeProduct(product.id)"
+                        aria-label="ลบรายการ"
+                      >
+                        <Trash class="w-5 h-5 text-red-500" />
+                      </BaseButton>
+                    </div>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
+              </TableBody>
             </Table>
-
-            <!-- ตัวตาราง (เลื่อน) -->
-            <div class="flex-1 min-h-0 overflow-y-auto">
-              <Table class="table-fixed">
-                <colgroup>
-                  <col style="width:42%" />
-                  <col style="width:14%" />
-                  <col style="width:16%" />
-                  <col style="width:12%" />
-                  <col style="width:16%" />
-                </colgroup>
-                <TableBody>
-                  <TableRow
-                    v-for="(product, idx) in products"
-                    :key="product.id"
-                    :id="`product-${product.id}`"
-                    class="group"
-                  >
-                    <!-- สินค้า -->
-                    <TableCell>
-                      <div class="flex items-center gap-3">
-                        <img
-                          :src="product.product_image.url"
-                          :alt="product.sku"
-                          class="w-12 h-12 rounded-xl object-cover"
-                          width="48" height="48"
-                          loading="lazy" decoding="async"
-                        />
-                        <div class="min-w-0">
-                          <p class="font-medium truncate">{{ product.name }}</p>
-                          <p class="text-xs text-muted-foreground truncate">SKU: {{ product.sku }}</p>
-                          <p class="text-xs text-muted-foreground">{{ currency(product.price) }} ฿ / {{ product.unit }}</p>
-                        </div>
-                      </div>
-                    </TableCell>
-
-                    <!-- จำนวน (Stepper + input) -->
-                    <TableCell>
-                      <div class="flex items-center gap-2">
-                        <BaseButton size="icon" variant="outline" class="h-8 w-8" @click="decrease(idx)" aria-label="ลดจำนวน">
-                          -
-                        </BaseButton>
-                        <Input
-                          v-model.number="product.quantity"
-                          type="number"
-                          inputmode="numeric"
-                          min="1"
-                          class="w-[72px] text-center"
-                          @keydown.up.prevent="increase(idx)"
-                          @keydown.down.prevent="decrease(idx)"
-                        />
-                        <BaseButton size="icon" variant="outline" class="h-8 w-8" @click="increase(idx)" aria-label="เพิ่มจำนวน">
-                          +
-                        </BaseButton>
-                      </div>
-                    </TableCell>
-
-                    <!-- ส่วนลด -->
-                    <TableCell>
-                      <div class="flex items-center gap-2">
-                        <Input
-                          v-model.number="product.discountValue"
-                          type="number"
-                          min="0"
-                          class="w-[96px] text-right"
-                          placeholder="0"
-                        />
-                        <select v-model="product.discountType" class="h-9 px-2 rounded-md border bg-background">
-                          <option value="%">%</option>
-                          <option value="฿">฿</option>
-                        </select>
-                      </div>
-                    </TableCell>
-
-                    <!-- ภาษี -->
-                    <TableCell>
-                      <select v-model="product.taxType" class="h-9 px-2 rounded-md border bg-background w-full">
-                        <option value="include">รวมภาษี</option>
-                        <option value="exclude">ไม่รวมภาษี</option>
-                        <option value="exempt">ยกเว้นภาษี</option>
-                      </select>
-                    </TableCell>
-
-                    <!-- รวม -->
-                    <TableCell class="text-right align-middle">
-                      <div class="flex items-center justify-end gap-2">
-                        <span class="tabular-nums font-medium">
-                          {{ currency(lineTotal(product)) }} ฿
-                        </span>
-                        <BaseButton
-                          variant="ghost"
-                          size="icon"
-                          class="opacity-0 group-hover:opacity-100 transition-opacity"
-                          @click="removeProduct(product.id)"
-                          aria-label="ลบรายการ"
-                        >
-                          <Trash class="w-5 h-5 text-red-500" />
-                        </BaseButton>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
           </div>
         </div>
       </div>
-
-      <!-- สรุปรายการ -->
-      <!-- <div class="w-full md:w-[340px] shrink-0">
-        <div class="rounded-xl border p-4 bg-[hsl(var(--card))] space-y-3 sticky md:top-4">
-          <div class="flex items-center justify-between">
-            <span class="text-sm text-muted-foreground">จำนวนรายการ</span>
-            <span class="text-sm">{{ products.length }}</span>
-          </div>
-          <div class="flex items-center justify-between">
-            <span class="text-sm text-muted-foreground">ยอดก่อนภาษี</span>
-            <span class="text-sm tabular-nums">{{ currency(subtotal) }} ฿</span>
-          </div>
-          <div class="flex items-center justify-between" v-if="vatAmount > 0">
-            <span class="text-sm text-muted-foreground">ภาษีมูลค่าเพิ่ม (7%)</span>
-            <span class="text-sm tabular-nums">{{ currency(vatAmount) }} ฿</span>
-          </div>
-          <div class="pt-2 border-t flex items-center justify-between">
-            <span class="font-semibold">ยอดสุทธิ</span>
-            <span class="font-semibold tabular-nums">{{ currency(grandTotal) }} ฿</span>
-          </div>
-        </div>
-      </div> -->
     </div>
+  </div>
+
+  <!-- สรุปรายการ (ถ้าจะเปิดทีหลัง)… -->
+</div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Plus, Trash } from "lucide-vue-next";
+
 
 type Product = {
   id: number;
@@ -263,15 +331,6 @@ function clearAll() {
   products.value = [];
 }
 
-function increase(index: number) {
-  const it = products.value[index];
-  if (it) it.quantity += 1;
-}
-function decrease(index: number) {
-  const it = products.value[index];
-  if (it && it.quantity > 1) it.quantity -= 1;
-}
-
 function currency(n: number) {
   return new Intl.NumberFormat("th-TH", { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(n);
 }
@@ -290,29 +349,19 @@ function lineTotal(p: Product) {
   if (p.taxType === "exempt" || p.taxType === "include") {
     return Math.max(0, afterDisc);
   }
-  // exclude: แสดงรวมก่อน VAT (รวม VAT จะคำนวณในสรุป)
   return Math.max(0, afterDisc);
 }
 
 const subtotal = computed(() => products.value.reduce((s, p) => s + lineTotal(p), 0));
 
 const vatAmount = computed(() => {
-  // คิด VAT 7% เฉพาะรายการที่ taxType !== 'exempt'
   const base = products.value
     .filter(p => p.taxType !== "exempt")
     .reduce((s, p) => s + lineTotal(p), 0);
-
-  // ถ้า include: ถือว่ามี VAT อยู่แล้วในราคา (แสดง 7% ของราคาที่รวม)
-  // ถ้า exclude: บวกเพิ่ม 7%
-  // เพื่อความง่าย ที่สรุปนี้จะคิด VAT จากยอดของรายการ include+exclude ทั้งหมด
   return Math.round(base * 0.07 * 100) / 100;
 });
 
-const grandTotal = computed(() => {
-  // include: ราคาแถวเป็นราคารวมแล้ว
-  // exclude: ที่สรุปนี้บวก VAT เข้าไป
-  return subtotal.value + vatAmount.value;
-});
+const grandTotal = computed(() => subtotal.value + vatAmount.value);
 </script>
 
 <style scoped>

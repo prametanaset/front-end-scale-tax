@@ -1,21 +1,25 @@
 <template>
   <Breadcrumb>
     <BreadcrumbList>
-      <template v-for="(item, index) in breadcrumbItems" :key="index">
+      <template v-for="(item, index) in breadcrumbItems" :key="item.href ?? item.label">
         <BreadcrumbItem class="hidden md:block">
-          <template v-if="item.href">
+          <!-- ลิงก์ปกติ: ใช้ asChild ป้องกัน <a> ซ้อน <a> -->
+          <BreadcrumbLink v-if="item.href" asChild>
             <NuxtLink :to="item.href">
-              <BreadcrumbLink>
-                {{ item.label }}
-              </BreadcrumbLink>
-            </NuxtLink>
-          </template>
-          <template v-else>
-            <BreadcrumbPage>
               {{ item.label }}
-            </BreadcrumbPage>
-          </template>
+            </NuxtLink>
+          </BreadcrumbLink>
+
+          <!-- หน้า current: ไม่ใช้ BreadcrumbPage เพื่อเลี่ยง role="link" -->
+          <span
+            v-else
+            aria-current="page"
+            class="text-foreground font-normal"
+          >
+            {{ item.label }}
+          </span>
         </BreadcrumbItem>
+
         <BreadcrumbSeparator
           v-if="index < breadcrumbItems.length - 1"
           class="hidden md:block"
@@ -26,14 +30,9 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute();
-
+const route = useRoute()
 const breadcrumbItems = computed(() => {
-  const meta = route.meta.breadcrumb as
-    | { label: string; href?: string }[]
-    | undefined;
-  return meta ?? [];
-});
+  const meta = route.meta.breadcrumb as { label: string; href?: string }[] | undefined
+  return meta ?? []
+})
 </script>
-
-<style></style>

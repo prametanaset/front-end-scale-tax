@@ -48,8 +48,7 @@ import { cn, valueUpdater } from "~/lib/utils";
 import { useMediaQuery } from "@vueuse/core";
 import CustomerTableDropdown from "./CustomerTableDropdown.vue";
 import type { Customer, CustomerTableRow } from "~/composables/types/customer";
-import { mapCustomersToTableRows } from "~/ีutils/format-customer-table-row";
-import CustomerManageDialog from "./CustomerManageDialog.vue";
+import { mapCustomersToTableRows } from "~/utils/format-customer-table-row";
 
 const activeStatus = ref("all");
 const searchQuery = ref("");

@@ -8,7 +8,7 @@
               <div class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 <!-- <Command class="size-4" /> -->
                 <Avatar class="h-8 w-8 rounded-lg">
-                  <AvatarImage src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpX7YaLKKJiyF4MHkNB3FnOJaIYx3jC5YYQw&s" alt="logo" />
+                  <AvatarImage src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpX7YaLKKJiyF4MHkNB3FnOJaIYx3jC5YYQw&s" alt="Logo" />
                   <AvatarFallback class="rounded-lg"> CN </AvatarFallback>
                 </Avatar>
               </div>
@@ -22,6 +22,12 @@
       </SidebarMenu>
     </SidebarHeader>
     <SidebarContent>
+      <SidebarGroup>
+        <SidebarGroupLabel>Quick</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <NavSecondary :items="data.navQuick" />
+        </SidebarGroupContent>
+      </SidebarGroup>
       <SidebarGroup>
         <SidebarGroupLabel>Platform</SidebarGroupLabel>
         <SidebarGroupContent>
@@ -41,9 +47,8 @@
 </template>
 
 <script lang="ts" setup>
-import { Megaphone, PieChart, Home, Users, ShoppingBag, Send, LifeBuoy, FlaskConical } from 'lucide-vue-next';
+import { Megaphone, PieChart, Home, Users, ShoppingBag, Send, LifeBuoy, FlaskConical, SquarePen } from 'lucide-vue-next';
 import type { SidebarProps } from '@/components/ui/sidebar';
-import type NavCollapsible from '../nav/NavCollapsible.vue';
 
 const props = withDefaults(defineProps<SidebarProps>(), {
   variant: 'inset',
@@ -56,17 +61,24 @@ const data = {
     email: 'm@example.com',
     avatar: 'https://i.pravatar.cc/150',
   },
+  navQuick: [
+    {
+      title: 'ออกใบกำกับภาษี',
+      url: '/invoices/create',
+      icon: SquarePen,
+    },
+  ],
   navMain: [
     {
       title: 'หน้าแรก',
       url: '/',
       icon: Home,
     },
-    {
-      title: 'รายการใบแจ่้งหนี้',
-      url: '/invoices',
-      icon: PieChart,
-    },
+    // {
+    //   title: 'รายการใบแจ้งหนี้',
+    //   url: '/invoices',
+    //   icon: PieChart,
+    // },
     {
       title: 'แคตตาล็อกสินค้า',
       url: '/catalogs',

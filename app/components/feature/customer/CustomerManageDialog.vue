@@ -51,7 +51,7 @@ const activeTab = ref<"person" | "corporate">("corporate");
     <!-- เปลี่ยนสี ความทึบ และเบลอของฉากหลังตรงนี้ -->
 
     <DialogContent
-      class="sm:max-w-4xl w-full max-h-[90dvh] bg-background overflow-hidden"
+      class="sm:max-w-xl w-full max-h-[90dvh] bg-background overflow-hidden"
     >
       <div class="grid gap-6">
         <!-- Left: Tabs Form -->
@@ -105,26 +105,26 @@ const activeTab = ref<"person" | "corporate">("corporate");
                 </CardHeader>
                 <CardContent class="space-y-4">
                   <div>
-                    <Label for="storeName">ชื่อร้านค้า</Label>
-                    <Input
+                    <BaseInput
                       id="storeName"
+                      label="ชื่อร้านค้า"
                       v-model="localCustomer.name"
                       placeholder="ชื่อบริษัท / ร้านค้า"
                     />
                   </div>
                   <div class="flex gap-4">
                     <div class="flex-1">
-                      <Label for="taxId">เลขประจำตัวผู้เสียภาษี</Label>
-                      <Input
+                      <BaseInput
                         id="taxId"
+                        label="เลขประจำตัวผู้เสียภาษี"
                         v-model="localCustomer.tin"
                         placeholder="13 หลัก"
                       />
                     </div>
                     <div class="w-[120px]">
-                      <Label for="branchCode">เลขที่สาขา</Label>
-                      <Input
+                      <BaseInput
                         id="branchCode"
+                        label="เลขที่สาขา"
                         v-model="localCustomer.branch_no"
                         placeholder="5 หลัก"
                         maxlength="5"
@@ -133,17 +133,17 @@ const activeTab = ref<"person" | "corporate">("corporate");
                   </div>
                   <div class="grid gap-4 grid-cols-2">
                     <div>
-                      <Label for="email">อีเมล</Label>
-                      <Input
+                      <BaseInput
                         id="email"
+                        label="อีเมล"
                         v-model="localCustomer.email"
                         placeholder="ที่อยู่อีเมล"
                       />
                     </div>
                     <div>
-                      <Label for="phone">เบอร์โทรศัพท์</Label>
-                      <Input
+                      <BaseInput
                         id="phone"
+                        label="เบอร์โทรศัพท์"
                         v-model="localCustomer.phone"
                         placeholder="เบอร์ติดต่อ"
                       />
@@ -190,17 +190,17 @@ const activeTab = ref<"person" | "corporate">("corporate");
                 <CardContent class="space-y-4">
                   <div class="grid gap-4 grid-cols-2">
                     <div>
-                      <Label for="firstName">ชื่อ</Label>
-                      <Input
+                      <BaseInput
                         id="firstName"
+                        label="ชื่อจริง"
                         v-model="localCustomer.first_name"
                         placeholder="ชื่อจริง"
                       />
                     </div>
                     <div>
-                      <Label for="lastName">นามสกุล</Label>
-                      <Input
+                      <BaseInput
                         id="lastName"
+                        label="นามสกุล"
                         v-model="localCustomer.last_name"
                         placeholder="นามสกุล"
                       />
@@ -208,9 +208,9 @@ const activeTab = ref<"person" | "corporate">("corporate");
                   </div>
                   <div class="flex gap-4">
                     <div class="flex-1">
-                      <Label for="taxId">เลขประจำตัวผู้เสียภาษี</Label>
-                      <Input
+                      <BaseInput
                         id="taxId"
+                        label="เลขบัตรประชาชน"
                         v-model="localCustomer.tin"
                         placeholder="13 หลัก"
                       />
@@ -218,17 +218,17 @@ const activeTab = ref<"person" | "corporate">("corporate");
                   </div>
                   <div class="grid gap-4 grid-cols-2">
                     <div>
-                      <Label for="email">อีเมล</Label>
-                      <Input
+                      <BaseInput
                         id="email"
+                        label="อีเมล"
                         v-model="localCustomer.email"
                         placeholder="ที่อยู่อีเมล"
                       />
                     </div>
                     <div>
-                      <Label for="phone">เบอร์โทรศัพท์</Label>
-                      <Input
+                      <BaseInput
                         id="phone"
+                        label="เบอร์โทรศัพท์"
                         v-model="localCustomer.phone"
                         placeholder="เบอร์ติดต่อ"
                       />
@@ -255,9 +255,9 @@ const activeTab = ref<"person" | "corporate">("corporate");
                   /> -->
                 </CardContent>
                 <CardFooter class="flex justify-end">
-                  <Button>บันทึก</Button>
+                  <BaseButton class="rounded-md">บันทึก</BaseButton>
                   <DialogClose as-child>
-                    <Button variant="ghost">ปิด</Button>
+                    <BaseButton variant="ghost" class="rounded-md">ปิด</BaseButton>
                   </DialogClose>
                 </CardFooter>
               </Card>

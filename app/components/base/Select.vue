@@ -1,7 +1,7 @@
 <!-- components/BaseSelect.vue -->
 <template>
   <div class="inline-block">
-    <Select v-model="localValue">
+    <Select v-model="localValue" :options="props.options">
       <SelectTrigger :class="triggerClass" :aria-label="ariaLabel">
         <SelectValue :placeholder="placeholder || 'Select'" />
       </SelectTrigger>
@@ -35,17 +35,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-
 type Option = { value: string; label: string; disabled?: boolean }
 type GroupedOption = { groupLabel: string; items: Option[] }
 

@@ -1,7 +1,10 @@
 <template>
-  <SidebarProvider v-model:open="open">
+  <!-- 1) ล็อกความสูงทั้งหน้า + ซ่อนสกรอลกรอบนอก -->
+  <SidebarProvider v-model:open="open" class="h-dvh overflow-hidden">
     <LayoutAppSidebar />
-    <SidebarInset>
+
+    <!-- 2) คอลัมน์หลักต้องมี h-full + min-h-0 -->
+    <SidebarInset class=" min-h-0 flex-col">
       <AppSidebarHeader>
         <template #title>
           <BaseBreadcrumb />
@@ -10,45 +13,40 @@
           <slot name="header-actions" />
         </template>
       </AppSidebarHeader>
-      <main>
-        <slot />
-      </main>
+
+      <!-- 3) ให้ตัวนี้เป็นคนเลื่อน -->
+      <div
+        aria-label="Page content"
+        class="flex-1 min-h-0 overflow-y-auto"
+      >
+        <!-- ถ้ายังอยากได้ padding/gap เหมือนเดิม ให้ห่ออีกชั้น -->
+        <div class="flex flex-col gap-4">
+          <slot />
+        </div>
+      </div>
     </SidebarInset>
   </SidebarProvider>
 </template>
 
 <script lang="ts" setup>
-import { useMediaQuery } from '@vueuse/core';
-import AppSidebarHeader from '~/components/layout/AppSidebarHeader.vue';
+import { useMediaQuery } from '@vueuse/core'
+import AppSidebarHeader from '~/components/layout/AppSidebarHeader.vue'
 
-const isStuck = ref(false);
-const sentinel = ref<HTMLElement | null>(null);
-const open = ref(true);
-const isLg = useMediaQuery("(min-width: 1457px)");
+const isStuck = ref(false)
+const sentinel = ref<HTMLElement | null>(null)
+const open = ref(true)
+const isLg = useMediaQuery('(min-width: 1457px)')
 
 onMounted(() => {
   const observer = new IntersectionObserver(
     ([e]) => {
-      if (e) {
-        isStuck.value = !e.isIntersecting;
-      }
+      if (e) isStuck.value = !e.isIntersecting
     },
-    { threshold: [1] }
-  );
-  if (sentinel.value) {
-    observer.observe(sentinel.value);
-  }
+    { threshold: [1] },
+  )
+  if (sentinel.value) observer.observe(sentinel.value)
 
-  // ตั้งค่าครั้งแรกตามขนาดจริงบน client
-  open.value = isLg.value;
-
-  // ฟังการเปลี่ยนแปลงครั้งต่อ ๆ ไป
-  watch(isLg, (val) => {
-    open.value = val;
-  });
-});
+  open.value = isLg.value
+  watch(isLg, (val) => { open.value = val })
+})
 </script>
-
-<style>
-
-</style>

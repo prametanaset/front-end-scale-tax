@@ -13,7 +13,7 @@ const route = useRoute();
 
 const toolMap: Record<string, any[]> = {
   "invoices-create": [InvoiceTools],
-  mail: [MailTools],
+  // mail: [MailTools],
   // 'user': [UserTools],
   // 'dashboard': [InvoiceTools, UserTools],
 };

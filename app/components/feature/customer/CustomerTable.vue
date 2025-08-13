@@ -24,6 +24,7 @@ import {
   Mail,
   Plus,
   Search,
+  X,
 } from "lucide-vue-next";
 import { h, ref } from "vue";
 
@@ -67,28 +68,28 @@ const screenSize = computed(() => {
 
 const customerStore = useCustomerStore();
 const data = customerStore.customersList;
+const tableRows = mapCustomersToTableRows(data);
 
 const filteredCustomers = computed(() => {
   const q = searchQuery.value.trim().toLowerCase();
 
   // กรองจาก tab ก่อน
-  let list = data;
+  let list = tableRows;
   if (activeStatus.value === "0") {
-    list = list.filter((c) => c.customer_type === "person");
+    list = list.filter((c) => c.type === "บุคคลธรรมดา");
   } else if (activeStatus.value === "1") {
-    list = list.filter((c) => c.customer_type === "company");
+    list = list.filter((c) => c.type === "นิติบุคคล");
   }
 
   // ถ้ามีข้อความค้นหาให้กรองเพิ่ม
   if (!q) return list;
 
-  // return list.filter((customer) => {
-  //   return (
-  //     getCustomerDisplayTin(customer).toLowerCase().includes(q) ||
-  //     getCustomerDisplayName(customer).toLowerCase().includes(q) ||
-  //     getCustomerDisplayGmail(customer).toLowerCase().includes(q)
-  //   );
-  // });
+  return list.filter((customer) => {
+    return (
+      customer.name.toLowerCase().includes(q) ||
+      customer.tin.toLowerCase().includes(q)
+    );
+  });
 });
 
 const columnHelper = createColumnHelper<CustomerTableRow>();
@@ -120,6 +121,7 @@ const columns = [
   // ✅ หมายเลขผู้เสียภาษี (TIN)
   columnHelper.accessor("tin", {
     header: "หมายเลขผู้เสียภาษี",
+    meta: { label: "หมายเลขผู้เสียภาษี" },
     cell: ({ row }) => h("div", {}, row.getValue("tin")),
     enablePinning: true,
   }),
@@ -127,6 +129,7 @@ const columns = [
   // ✅ ชื่อ
   columnHelper.accessor("name", {
     header: "ชื่อ",
+    meta: { label: "ชื่อ" },
     cell: ({ row }) =>
       h(
         "div",
@@ -139,6 +142,7 @@ const columns = [
   // ✅ ประเภทลูกค้า
   columnHelper.accessor("type", {
     header: "ประเภทลูกค้า",
+    meta: { label: "ประเภทลูกค้า" },
     cell: ({ row }) => h("div", {}, row.getValue("type")),
     enableSorting: true,
   }),
@@ -146,19 +150,21 @@ const columns = [
   // ✅ เบอร์โทรศัพท์
   columnHelper.accessor("phone", {
     header: "เบอร์โทรศัพท์",
+    meta: { label: "เบอร์โทรศัพท์" },
     cell: ({ row }) => h("div", {}, row.getValue("phone")),
   }),
 
   // ✅ อีเมล
   columnHelper.accessor("email", {
     header: "อีเมล",
+    meta: { label: "อีเมล" },
     cell: ({ row }) => h("div", {}, row.getValue("email")),
   }),
 
   // ✅ ปุ่มการจัดการ (Edit/Delete)
   columnHelper.display({
     id: "actions",
-    header: () => h("div", { class: "text-center" }, "จัดการ"),
+    enableHiding: false,
     cell: ({ row }) =>
       h("div", { class: "flex justify-center" }, [
         h(CustomerTableDropdown, { customer: row.original }),
@@ -167,7 +173,6 @@ const columns = [
   }),
 ];
 
-const tableRows = mapCustomersToTableRows(data);
 const sorting = ref<SortingState>([]);
 const columnFilters = ref<ColumnFiltersState>([]);
 const columnVisibility = ref<VisibilityState>({});
@@ -176,7 +181,7 @@ const expanded = ref<ExpandedState>({});
 const columnPinning = ref<ColumnPinningState>({});
 
 const table = useVueTable({
-  data: tableRows,
+  data: filteredCustomers,
   columns,
   getCoreRowModel: getCoreRowModel(),
   getPaginationRowModel: getPaginationRowModel(),
@@ -256,19 +261,10 @@ function getStickyLeftValue(columnId: string): string | undefined {
 <template>
   <div class="w-full">
     <div class="flex items-center justify-between gap-4">
-      <div class="relative w-full max-w-sm items-center">
-        <Input
-          class="max-w-sm pl-10"
-          placeholder="ค้นหาด้วย หมายเลขผู้เสียภาษี"
-          :model-value="table.getColumn('tin')?.getFilterValue() as string"
-          @update:model-value="table.getColumn('tin')?.setFilterValue($event)"
-        />
-        <span
-          class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
-        >
-          <Search class="size-6 text-muted-foreground" />
-        </span>
-      </div>
+      <BaseSearchInput
+        place-holder="ค้นหาด้วย หมายเลขผู้เสียภาษี หรือ ชื่อลูกค้า"
+        v-model="searchQuery"
+      />
       <div class="flex gap-2">
         <BaseButton @click="addCustomer = true"
           ><Plus class="w-4 h-4" /> เพิ่มข้อมูลลูกค้า</BaseButton
@@ -293,14 +289,14 @@ function getStickyLeftValue(columnId: string): string | undefined {
                 }
               "
             >
-              {{ column.id }}
+              {{ column.columnDef.meta?.label }}
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
     </div>
-    <div v-if="screenSize !== 'desktop'" class="mt-2">
-      <Tabs v-model="activeStatus">
+    <div class="mt-2">
+      <Tabs v-if="screenSize == 'desktop'" v-model="activeStatus">
         <TabsList class="inline-flex space-x-2 p-0 bg-transparent">
           <TabsTrigger
             value="all"
@@ -322,6 +318,18 @@ function getStickyLeftValue(columnId: string): string | undefined {
           </TabsTrigger>
         </TabsList>
       </Tabs>
+      <Select v-else v-model="activeStatus">
+        <SelectTrigger>
+          <SelectValue placeholder="ทั้งหมด" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value="all"> ทั้งหมด </SelectItem>
+            <SelectItem value="0"> บุคคลธรรมดา </SelectItem>
+            <SelectItem value="1"> นิติบุคคล </SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
     </div>
     <div v-if="screenSize === 'desktop'" class="rounded-md border mt-4">
       <Table class="relative">
@@ -408,7 +416,7 @@ function getStickyLeftValue(columnId: string): string | undefined {
         >
           <Accordion type="single" collapsible class="p-0 m-0">
             <BaseCard
-              v-for="(customer, index) in tableRows"
+              v-for="(customer, index) in filteredCustomers"
               :key="customer.id"
               :value="`item-${customer.id}`"
               class="px-2 py-0 m-0 overflow-x-hidden"

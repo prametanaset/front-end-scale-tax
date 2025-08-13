@@ -128,7 +128,7 @@ const data: Customer[] = [
       id: 1,
       customer_id: 20,
       company_name: "Kon-Lhor Company",
-      tin: "1236785230923",
+      tin: "2465796315786",
       branch_no: "00001",
     },
     customer_address: {

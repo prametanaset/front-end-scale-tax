@@ -5,6 +5,7 @@ import type {
   ExpandedState,
   SortingState,
   VisibilityState,
+  ColumnMeta,
 } from "@tanstack/vue-table";
 import {
   FlexRender,
@@ -15,7 +16,7 @@ import {
   getSortedRowModel,
   useVueTable,
 } from "@tanstack/vue-table";
-import { ArrowUpDown, ChevronDown, Plus, Search } from "lucide-vue-next";
+import { ArrowUpDown, ChevronDown, Plus, Search, X } from "lucide-vue-next";
 import { h, ref } from "vue";
 
 import { Button } from "@/components/ui/button";
@@ -37,8 +38,8 @@ import {
 } from "@/components/ui/table";
 import { valueUpdater } from "~/lib/utils";
 import CatalogTableDropdown from "./CatalogTableDropdown.vue";
-import type { Product } from "~/composables/types/product";
 import { useMediaQuery } from "@vueuse/core";
+import type { Product } from "~/composables/types/product";
 
 const activeStatus = ref("all");
 const searchQuery = ref("");
@@ -166,16 +167,19 @@ const columns: ColumnDef<Product>[] = [
   {
     accessorKey: "sku",
     header: "SKU",
+    meta: { label: "SKU" },
     cell: ({ row }) => h("div", { class: "capitalize" }, row.getValue("sku")),
   },
   {
     accessorKey: "name",
     header: "ชื่อสินค้า",
+    meta: { label: "ชื่อสินค้า" },
     cell: ({ row }) => h("div", { class: "lowercase" }, row.getValue("name")),
   },
   {
     accessorKey: "vat_type",
     header: "ประเภทภาษี",
+    meta: { label: "ประเภทภาษี" },
     cell: ({ row }) =>
       h(
         "div",
@@ -189,6 +193,7 @@ const columns: ColumnDef<Product>[] = [
   },
   {
     accessorKey: "vat_rate",
+    meta: { label: "ภาษี" },
     header: ({ column }) => {
       return h(
         "div",
@@ -215,6 +220,7 @@ const columns: ColumnDef<Product>[] = [
   },
   {
     accessorKey: "price",
+    meta: { label: "ราคา" },
     header: ({ column }) => {
       return h(
         "div",
@@ -262,7 +268,7 @@ const rowSelection = ref({});
 const expanded = ref<ExpandedState>({});
 
 const table = useVueTable({
-  data,
+  data: filteredProducts,
   columns,
   getCoreRowModel: getCoreRowModel(),
   getPaginationRowModel: getPaginationRowModel(),
@@ -300,19 +306,11 @@ const table = useVueTable({
 <template>
   <div class="w-full">
     <div class="flex items-center justify-between gap-4">
-      <div class="relative w-full max-w-sm items-center">
-        <Input
-          class="max-w-sm pl-10"
-          placeholder="ค้นหาด้วย SKU"
-          :model-value="table.getColumn('sku')?.getFilterValue() as string"
-          @update:model-value="table.getColumn('sku')?.setFilterValue($event)"
-        />
-        <span
-          class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
-        >
-          <Search class="size-6 text-muted-foreground" />
-        </span>
-      </div>
+      <BaseSearchInput
+        place-holder="ค้นหาด้วย SKU หรือ ชื่อสินค้า"
+        v-model="searchQuery"
+      />
+
       <div class="flex gap-2">
         <BaseButton><Plus class="w-4 h-4" /> เพิ่มสินค้า</BaseButton>
         <DropdownMenu v-if="screenSize === 'desktop'">
@@ -335,14 +333,14 @@ const table = useVueTable({
                 }
               "
             >
-              {{ column.id }}
+              {{ column.columnDef.meta?.label }}
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
     </div>
-    <div v-if="screenSize !== 'desktop'" class="mt-2">
-      <Tabs v-model="activeStatus">
+    <div class="mt-2">
+      <Tabs v-if="screenSize === 'desktop'" v-model="activeStatus">
         <TabsList class="inline-flex space-x-2 p-0 bg-transparent">
           <TabsTrigger
             value="all"
@@ -370,6 +368,19 @@ const table = useVueTable({
           </TabsTrigger>
         </TabsList>
       </Tabs>
+      <Select v-else v-model="activeStatus">
+        <SelectTrigger>
+          <SelectValue placeholder="ทั้งหมด" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value="all"> ทั้งหมด </SelectItem>
+            <SelectItem value="0"> รวมภาษี </SelectItem>
+            <SelectItem value="1"> ยังไม่รวมภาษี </SelectItem>
+            <SelectItem value="2"> ไม่รวมภาษี </SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
     </div>
     <div v-if="screenSize === 'desktop'" class="rounded-md border mt-4">
       <Table>

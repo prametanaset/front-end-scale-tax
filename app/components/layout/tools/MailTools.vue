@@ -1,13 +1,6 @@
 <template>
   <div class="flex items-center w-full gap-4">
-    <div class="relative w-full max-w-sm items-center">
-      <Input id="search" type="text" placeholder="ค้นหาอีเมล" class="pl-10" />
-      <span
-        class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
-      >
-        <Search class="size-6 text-muted-foreground" />
-      </span>
-    </div>
+    <BaseSearchInput v-model="q" place-holder="ค้นหาอีเมล" />
 
     <Popover>
       <PopoverTrigger as-child>
@@ -42,6 +35,7 @@ import { Plus, Send, Search, CalendarIcon } from "lucide-vue-next";
 import { cn } from "~/lib/utils"; // Add this import for the cn utility
 
 const showMail = ref("all");
+const q = ref("");
 
 const dateRange = ref({
   start: undefined,

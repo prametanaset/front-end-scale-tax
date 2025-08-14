@@ -40,9 +40,12 @@ import { valueUpdater } from "~/lib/utils";
 import CatalogTableDropdown from "./CatalogTableDropdown.vue";
 import { useMediaQuery } from "@vueuse/core";
 import type { Product } from "~/composables/types/product";
+import { Badge } from "~/components/ui/badge";
 
 const activeStatus = ref("all");
 const searchQuery = ref("");
+const activeDialogAddProduct = ref(false);
+const catalogStore = useCatalogStore();
 
 const isMobile = useMediaQuery("(max-width: 660px)");
 const isTablet = useMediaQuery("(max-width: 968px)");
@@ -76,72 +79,7 @@ const filteredProducts = computed(() => {
   });
 });
 
-const data: Product[] = [
-  {
-    id: 1,
-    store_id: "7719413e-ed02-4411-a73b-0a7dc3341913",
-    sku: "PROD-001",
-    name: "iPhone 16",
-    price: 20900,
-    vat_type: "include",
-    vat_rate: 7,
-    created_at: "2025-07-02T10:05:25.801272Z",
-    updated_at: "2025-07-02T10:05:25.801272Z",
-    product_image: {
-      id: 1,
-      product_id: 1,
-      url: "https://www.uficon.com/app/smush-webp/2023/09/TH_iPhone_15_Pink_PDP_Image_Position-1B_Pink_Color-640x640.jpg.webp",
-    },
-  },
-  {
-    id: 2,
-    store_id: "7719413e-ed02-4411-a73b-0a7dc3341913",
-    sku: "PROD-002",
-    name: "ไข่ไก่",
-    price: 100,
-    vat_type: "exempt",
-    vat_rate: 0,
-    created_at: "2025-07-02T10:16:02.47667Z",
-    updated_at: "2025-07-02T10:16:02.47667Z",
-    product_image: {
-      id: 2,
-      product_id: 2,
-      url: "https://cms.betagro-food.com/wp-content/uploads/2022/06/egg.jpg",
-    },
-  },
-  {
-    id: 6,
-    store_id: "7719413e-ed02-4411-a73b-0a7dc3341913",
-    sku: "PROD-003",
-    name: "15-inch MacBook Air",
-    price: 42800,
-    vat_type: "exclude",
-    vat_rate: 7,
-    created_at: "0001-01-01T00:00:00Z",
-    updated_at: "2025-07-03T07:46:00.610405Z",
-    product_image: {
-      id: 7,
-      product_id: 6,
-      url: "https://media.studio7thailand.com/180705/MacBook_Air_15-inch_M4_Non-AI_Mar25_Sky_Blue_PDP_Image_Position_1__TH-TH.png",
-    },
-  },
-  {
-    id: 7,
-    store_id: "7719413e-ed02-4411-a73b-0a7dc3341913",
-    sku: "PROD-004",
-    name: "iphone",
-    price: 2000,
-    vat_type: "include",
-    vat_rate: 7,
-    created_at: "2025-07-10T18:50:30.371416Z",
-    updated_at: "2025-07-10T18:50:30.371416Z",
-    product_image: {
-      id: 8,
-      product_id: 7,
-      url: "https://media.studio7thailand.com/154744/iPhone_16_Pro_Max_White_Titanium_PDP_Image_Position_1a_White_Titanium_Color__TH-TH-square_medium.png",
-    },
-  },
-];
+const data: Product[] = catalogStore.productsList;
 
 const columns: ColumnDef<Product>[] = [
   {
@@ -180,16 +118,23 @@ const columns: ColumnDef<Product>[] = [
     accessorKey: "vat_type",
     header: "ประเภทภาษี",
     meta: { label: "ประเภทภาษี" },
-    cell: ({ row }) =>
-      h(
-        "div",
-        { class: "lowercase" },
+    cell: ({ row }) => {
+      const label =
         row.getValue("vat_type") === "include"
           ? "รวมภาษี"
           : row.getValue("vat_type") === "exclude"
           ? "ยังไม่รวมภาษี"
-          : "ยกเว้นภาษี"
-      ),
+          : "ไม่รวมภาษี";
+
+      const color =
+        row.getValue("vat_type") === "include"
+          ? "bg-primary-500"
+          : row.getValue("vat_type") === "exclude"
+          ? "bg-green-500"
+          : "bg-gray-500";
+
+      return h(Badge, { class: color }, () => label);
+    },
   },
   {
     accessorKey: "vat_rate",
@@ -252,10 +197,10 @@ const columns: ColumnDef<Product>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const product = row.original;
 
       return h("div", { class: "flex justify-center" }, [
-        h(CatalogTableDropdown, { payment }),
+        h(CatalogTableDropdown, { product }),
       ]);
     },
   },
@@ -312,7 +257,13 @@ const table = useVueTable({
       />
 
       <div class="flex gap-2">
-        <BaseButton><Plus class="w-4 h-4" /> เพิ่มสินค้า</BaseButton>
+        <BaseButton @click="activeDialogAddProduct = true"
+          ><Plus class="w-4 h-4" /> เพิ่มสินค้า</BaseButton
+        >
+        <FeatureCatalogManageDialog
+          mode="create"
+          v-model="activeDialogAddProduct"
+        />
         <DropdownMenu v-if="screenSize === 'desktop'">
           <DropdownMenuTrigger as-child>
             <Button variant="outline" class="ml-auto">
@@ -484,7 +435,7 @@ const table = useVueTable({
                 </p>
 
                 <div class="ml-auto">
-                  <CatalogTableDropdown />
+                  <CatalogTableDropdown :product="product" />
                 </div>
               </div>
             </div>

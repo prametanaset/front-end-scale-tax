@@ -170,9 +170,9 @@ const activeTab = ref<"person" | "corporate">("corporate");
                   /> -->
                 </CardContent>
                 <CardFooter class="flex justify-end">
-                  <Button>บันทึก</Button>
+                  <BaseButton>บันทึก</BaseButton>
                   <DialogClose as-child>
-                    <Button variant="ghost">ปิด</Button>
+                    <BaseButton variant="ghost">ปิด</BaseButton>
                   </DialogClose>
                 </CardFooter>
               </Card>
@@ -255,9 +255,9 @@ const activeTab = ref<"person" | "corporate">("corporate");
                   /> -->
                 </CardContent>
                 <CardFooter class="flex justify-end">
-                  <BaseButton class="rounded-md">บันทึก</BaseButton>
+                  <BaseButton>บันทึก</BaseButton>
                   <DialogClose as-child>
-                    <BaseButton variant="ghost" class="rounded-md">ปิด</BaseButton>
+                    <BaseButton variant="ghost">ปิด</BaseButton>
                   </DialogClose>
                 </CardFooter>
               </Card>

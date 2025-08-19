@@ -4,7 +4,7 @@
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton size="lg" as-child>
-            <a href="#">
+            <NuxtLink to="#">
               <div
                 class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
               >
@@ -21,7 +21,7 @@
                 <span class="truncate font-semibold">Muji</span>
                 <span class="truncate text-xs">สำนักงานใหญ่</span>
               </div>
-            </a>
+            </NuxtLink>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>

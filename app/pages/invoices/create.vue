@@ -48,7 +48,7 @@
             <div
               v-if="!isRightExpanded"
               key="summary"
-              class="flex flex-col flex-1 min-h-0 overflow-auto"
+              class="flex flex-col flex-1 min-h-0 overflow-auto overflow-visible"
             >
               <InvoiceRightPanel />
             </div>

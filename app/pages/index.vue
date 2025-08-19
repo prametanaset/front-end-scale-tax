@@ -27,7 +27,22 @@
           <span class="text-xs text-muted-foreground">หน่วย: รายการ</span>
         </div>
         <div class="px-4 pb-4">
-          <ChartLine :series="salesSeries" theme="primary" aspect="aspect-[3/1]" height="h-48" width="w-full" />
+          <!-- <ChartLine :series="salesSeries" theme="primary" aspect="aspect-[3/1]" height="h-48" width="w-full" /> -->
+          <BarChart
+            index="name"
+            :data="data"
+            :categories="['total', 'predicted']"
+            :y-formatter="
+              (tick, i) => {
+                return typeof tick === 'number'
+                  ? `$ ${new Intl.NumberFormat('us').format(tick).toString()}`
+                  : '';
+              }
+            "
+            :type="'stacked'"
+            :rounded-corners="4"
+            class="h-48 w-full"
+          />
         </div>
       </div>
 
@@ -176,7 +191,43 @@ const kpis = [
 
 /* ===== Charts (yours) ===== */
 const salesSeries = [{ name: "Sales", data: [12, 25, 18, 30, 22, 35, 28, 42] }]
-
+const data = [
+  {
+    name: "Jan",
+    total: Math.floor(Math.random() * 2000) + 500,
+    predicted: Math.floor(Math.random() * 2000) + 500,
+  },
+  {
+    name: "Feb",
+    total: Math.floor(Math.random() * 2000) + 500,
+    predicted: Math.floor(Math.random() * 2000) + 500,
+  },
+  {
+    name: "Mar",
+    total: Math.floor(Math.random() * 2000) + 500,
+    predicted: Math.floor(Math.random() * 2000) + 500,
+  },
+  {
+    name: "Apr",
+    total: Math.floor(Math.random() * 2000) + 500,
+    predicted: Math.floor(Math.random() * 2000) + 500,
+  },
+  {
+    name: "May",
+    total: Math.floor(Math.random() * 2000) + 500,
+    predicted: Math.floor(Math.random() * 2000) + 500,
+  },
+  {
+    name: "Jun",
+    total: Math.floor(Math.random() * 2000) + 500,
+    predicted: Math.floor(Math.random() * 2000) + 500,
+  },
+  {
+    name: "Jul",
+    total: Math.floor(Math.random() * 2000) + 500,
+    predicted: Math.floor(Math.random() * 2000) + 500,
+  },
+];
 const start = Date.UTC(2025, 6, 25)
 const days = Array.from({ length: 16 }, (_, i) => start + i * 24 * 3600 * 1000)
 const requests = days.map((x) => ({ x, y: 1 }))

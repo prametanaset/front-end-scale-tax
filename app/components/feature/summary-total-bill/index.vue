@@ -8,12 +8,12 @@
     <CardContent class="grid gap-5">
       <!-- TOP: Grand total + discount badge/actions -->
       <div class="border-b pb-4">
-        <div class="mb-2 flex items-baseline gap-2">
+        <!-- <div class="mb-2 flex items-baseline gap-2">
           <div class="text-3xl font-bold tabular-nums">
             {{ currency(total) }}
           </div>
           <span class="text-sm text-muted-foreground">(รวมภาษีมูลค่าเพิ่ม {{ (vatRate*100).toFixed(0) }}%)</span>
-        </div>
+        </div> -->
 
         <div class="flex items-center gap-2 flex-wrap">
           <template v-if="hasDiscount">
@@ -67,7 +67,7 @@
 
     <!-- DIALOG: Add/Edit discount -->
     <Dialog v-model:open="dialogOpen">
-  <DialogContent class="sm:max-w-[440px]">
+    <DialogContent class="sm:max-w-[440px]">
     <DialogHeader>
       <DialogTitle>ตั้งค่าส่วนลด</DialogTitle>
       <DialogDescription id="discount-help">
@@ -137,8 +137,7 @@
       </DialogFooter>
     </form>
   </DialogContent>
-</Dialog>
-
+    </Dialog>
   </BaseCard>
 </template>
 

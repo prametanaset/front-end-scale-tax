@@ -13,10 +13,10 @@
           <InvoiceSkeleton />
         </template>
         <template v-else>
-          <InvoiceHeader />
+          <!-- <InvoiceHeader />
           <div class="flex-1 h-full">
             <FeatureInvoiceProductLine />
-          </div>
+          </div> -->
         </template>
       </div>
 

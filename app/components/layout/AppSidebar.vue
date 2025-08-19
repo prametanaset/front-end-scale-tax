@@ -9,13 +9,14 @@
                 class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
               >
                 <!-- <Command class="size-4" /> -->
-                <Avatar class="h-8 w-8 rounded-lg">
+                <!-- <Avatar class="h-8 w-8 rounded-lg">
                   <AvatarImage
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpX7YaLKKJiyF4MHkNB3FnOJaIYx3jC5YYQw&s"
                     alt="Logo"
                   />
                   <AvatarFallback class="rounded-lg"> CN </AvatarFallback>
-                </Avatar>
+                </Avatar> -->
+                <Command class="size-4" />
               </div>
               <div class="grid flex-1 text-left text-sm leading-tight">
                 <span class="truncate font-semibold">Muji</span>
@@ -91,6 +92,11 @@ const data = {
       url: "/invoices/create",
       icon: SquarePen,
     },
+    {
+      title: "อีเมล",
+      url: "/mail",
+      icon: Send,
+    },
   ],
   navMain: [
     {
@@ -112,11 +118,6 @@ const data = {
       title: "ลูกค้า",
       url: "/customers",
       icon: Users,
-    },
-    {
-      title: "อีเมล",
-      url: "/mail",
-      icon: Send,
     },
     {
       title: "ทดสอบ",

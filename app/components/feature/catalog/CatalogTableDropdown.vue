@@ -22,9 +22,9 @@ const props = defineProps<{
         ><EllipsisVertical /> </Button
     ></DropdownMenuTrigger>
     <DropdownMenuContent>
-      <DropdownMenuItem class="cursor-pointer"
+      <!-- <DropdownMenuItem class="cursor-pointer"
         ><CircleEllipsis /> รายละเอียด</DropdownMenuItem
-      >
+      > -->
       <DropdownMenuItem @click="activeEditProduct = true" class="cursor-pointer"
         ><Edit /> แก้ไข</DropdownMenuItem
       >

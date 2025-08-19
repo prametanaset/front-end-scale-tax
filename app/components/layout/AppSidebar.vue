@@ -50,6 +50,18 @@
       </SidebarGroup>
 
       <SidebarGroup class="mt-auto">
+        <div class="space-y-1">
+          <Transition name="fade">
+            <p
+              v-if="open"
+              class="text-sm group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:pointer-events-none"
+            >
+              ใช้ไป 3.3GB จาก 10GB
+            </p>
+          </Transition>
+
+          <Progress v-model="progress" class="w-full mb-4" />
+        </div>
         <SidebarGroupContent>
           <NavSecondary :items="data.navSecondary" />
         </SidebarGroupContent>
@@ -73,13 +85,15 @@ import {
   FlaskConical,
   SquarePen,
 } from "lucide-vue-next";
-import type { SidebarProps } from "@/components/ui/sidebar";
+import { useSidebar, type SidebarProps } from "@/components/ui/sidebar";
 
 const props = withDefaults(defineProps<SidebarProps>(), {
   variant: "inset",
   collapsible: "icon",
 });
 
+const progress = ref(33);
+const { open } = useSidebar();
 const data = {
   user: {
     name: "shadcn",
@@ -151,4 +165,16 @@ const data = {
 };
 </script>
 
-<style></style>
+<style scoped>
+.fade-enter-active {
+  transition: opacity 2s ease;
+}
+
+.fade-leave-active {
+  transition: opacity 0.1s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

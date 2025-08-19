@@ -27,7 +27,14 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { valueUpdater } from "~/lib/utils";
 import CatalogTableDropdown from "./CatalogTableDropdown.vue";
 import { useMediaQuery, useDebounceFn } from "@vueuse/core";
@@ -76,7 +83,12 @@ interface CatalogResponse {
   data: Product[];
 }
 
-const { data: apiRes, pending, error, refresh } = await useFetch<CatalogResponse>("/api/products", {
+const {
+  data: apiRes,
+  pending,
+  error,
+  refresh,
+} = await useFetch<CatalogResponse>("/api/products", {
   query: apiQuery,
 });
 
@@ -131,7 +143,8 @@ const columns: ColumnDef<Product>[] = [
         modelValue:
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate"),
-        "onUpdate:modelValue": (value) => table.toggleAllPageRowsSelected(!!value),
+        "onUpdate:modelValue": (value) =>
+          table.toggleAllPageRowsSelected(!!value),
         ariaLabel: "Select all",
       }),
     cell: ({ row }) =>
@@ -147,13 +160,15 @@ const columns: ColumnDef<Product>[] = [
     accessorKey: "sku",
     header: "SKU",
     meta: { label: "SKU" as const },
-    cell: ({ row }) => h("div", { class: "capitalize" }, row.getValue("sku") ?? "-"),
+    cell: ({ row }) =>
+      h("div", { class: "capitalize" }, row.getValue("sku") ?? "-"),
   },
   {
     accessorKey: "name",
     header: "ชื่อสินค้า",
     meta: { label: "ชื่อสินค้า" as const },
-    cell: ({ row }) => h("div", { class: "lowercase" }, row.getValue("name") ?? "-"),
+    cell: ({ row }) =>
+      h("div", { class: "lowercase" }, row.getValue("name") ?? "-"),
   },
   {
     accessorKey: "vat_type",
@@ -161,8 +176,18 @@ const columns: ColumnDef<Product>[] = [
     meta: { label: "ประเภทภาษี" as const },
     cell: ({ row }) => {
       const vt = row.getValue("vat_type");
-      const label = vt === "include" ? "รวมภาษี" : vt === "exclude" ? "ยังไม่รวมภาษี" : "ไม่รวมภาษี";
-      const color = vt === "include" ? "bg-primary-500" : vt === "exclude" ? "bg-green-500" : "bg-gray-500";
+      const label =
+        vt === "include"
+          ? "รวมภาษี"
+          : vt === "exclude"
+          ? "ยังไม่รวมภาษี"
+          : "ไม่รวมภาษี";
+      const color =
+        vt === "include"
+          ? "bg-red-500"
+          : vt === "exclude"
+          ? "bg-green-500"
+          : "bg-gray-500";
       return h(Badge, { class: color }, () => label);
     },
   },
@@ -180,7 +205,8 @@ const columns: ColumnDef<Product>[] = [
           () => ["ภาษี %", h(ArrowUpDown, { class: "ml-2 h-4 w-4" })]
         ),
       ]),
-    cell: ({ row }) => h("div", { class: "text-right" }, `${row.getValue("vat_rate") ?? "-"} %`),
+    cell: ({ row }) =>
+      h("div", { class: "text-right" }, `${row.getValue("vat_rate") ?? "-"} %`),
   },
   {
     accessorKey: "price",
@@ -210,7 +236,9 @@ const columns: ColumnDef<Product>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const product = row.original;
-      return h("div", { class: "flex justify-center" }, [h(CatalogTableDropdown, { product })]);
+      return h("div", { class: "flex justify-center" }, [
+        h(CatalogTableDropdown, { product }),
+      ]);
     },
   },
 ];
@@ -235,11 +263,21 @@ const table = useVueTable({
   onRowSelectionChange: (u) => valueUpdater(u, rowSelection),
   onExpandedChange: (u) => valueUpdater(u, expanded),
   state: {
-    get sorting() { return sorting.value; },
-    get columnFilters() { return columnFilters.value; },
-    get columnVisibility() { return columnVisibility.value; },
-    get rowSelection() { return rowSelection.value; },
-    get expanded() { return expanded.value; },
+    get sorting() {
+      return sorting.value;
+    },
+    get columnFilters() {
+      return columnFilters.value;
+    },
+    get columnVisibility() {
+      return columnVisibility.value;
+    },
+    get rowSelection() {
+      return rowSelection.value;
+    },
+    get expanded() {
+      return expanded.value;
+    },
   },
 });
 </script>
@@ -257,7 +295,10 @@ const table = useVueTable({
         <BaseButton @click="activeDialogAddProduct = true">
           <Plus class="w-4 h-4" /> เพิ่มสินค้า
         </BaseButton>
-        <FeatureCatalogManageDialog mode="create" v-model="activeDialogAddProduct" />
+        <FeatureCatalogManageDialog
+          mode="create"
+          v-model="activeDialogAddProduct"
+        />
 
         <DropdownMenu v-if="screenSize === 'desktop'">
           <DropdownMenuTrigger as-child>
@@ -267,7 +308,9 @@ const table = useVueTable({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuCheckboxItem
-              v-for="column in table.getAllColumns().filter((c) => c.getCanHide())"
+              v-for="column in table
+                .getAllColumns()
+                .filter((c) => c.getCanHide())"
               :key="column.id"
               class="capitalize"
               :model-value="column.getIsVisible()"
@@ -283,16 +326,28 @@ const table = useVueTable({
     <div class="mt-2">
       <Tabs v-if="screenSize === 'desktop'" v-model="activeStatus">
         <TabsList class="inline-flex space-x-2 p-0 bg-transparent">
-          <TabsTrigger value="all" class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none">
+          <TabsTrigger
+            value="all"
+            class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
+          >
             ทั้งหมด
           </TabsTrigger>
-          <TabsTrigger value="0" class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none">
+          <TabsTrigger
+            value="0"
+            class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
+          >
             รวมภาษี
           </TabsTrigger>
-          <TabsTrigger value="1" class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none">
+          <TabsTrigger
+            value="1"
+            class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
+          >
             ยังไม่รวมภาษี
           </TabsTrigger>
-          <TabsTrigger value="2" class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none">
+          <TabsTrigger
+            value="2"
+            class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
+          >
             ไม่รวมภาษี
           </TabsTrigger>
         </TabsList>
@@ -311,10 +366,16 @@ const table = useVueTable({
     </div>
 
     <!-- ตาราง (desktop) -->
-    <div v-if="screenSize === 'desktop'" class="rounded-md border mt-4">
-      <Table>
-        <TableHeader>
-          <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+    <ScrollArea
+      v-if="screenSize === 'desktop'"
+      class="rounded-md border min-h-0 max-h-[calc(100vh-theme(spacing.64)-16px)] overflow-y-auto mt-4"
+    >
+      <Table div-classname="overflow-clip">
+        <TableHeader class="sticky top-0 z-10 bg-background">
+          <TableRow
+            v-for="headerGroup in table.getHeaderGroups()"
+            :key="headerGroup.id"
+          >
             <TableHead v-for="header in headerGroup.headers" :key="header.id">
               <FlexRender
                 v-if="!header.isPlaceholder"
@@ -329,7 +390,10 @@ const table = useVueTable({
             <template v-for="row in table.getRowModel().rows" :key="row.id">
               <TableRow :data-state="row.getIsSelected() && 'selected'">
                 <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
-                  <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
+                  <FlexRender
+                    :render="cell.column.columnDef.cell"
+                    :props="cell.getContext()"
+                  />
                 </TableCell>
               </TableRow>
               <TableRow v-if="row.getIsExpanded()">
@@ -341,17 +405,21 @@ const table = useVueTable({
           </template>
           <TableRow v-else>
             <TableCell :colspan="columns.length" class="h-24 text-center">
-              {{ pending ? 'กำลังโหลด...' : 'No results.' }}
+              {{ pending ? "กำลังโหลด..." : "No results." }}
             </TableCell>
           </TableRow>
         </TableBody>
       </Table>
-    </div>
+    </ScrollArea>
 
     <!-- การ์ด (mobile) -->
     <div class="mt-2" v-else>
       <Tabs v-model="activeStatus">
-        <TabsContent v-for="tab in ['all', '0', '1', '2']" :value="tab" class="p-0 m-0">
+        <TabsContent
+          v-for="tab in ['all', '0', '1', '2']"
+          :value="tab"
+          class="p-0 m-0"
+        >
           <BaseCard
             v-for="(product, index) in filteredProducts"
             :key="product.id"
@@ -363,20 +431,24 @@ const table = useVueTable({
                 <div
                   :class="[
                     'absolute h-[calc(100%+2rem)] w-1 left-[-0.55rem]',
-                    product.vat_type === 'include' || product.vat_type === 'exclude'
+                    product.vat_type === 'include' ||
+                    product.vat_type === 'exclude'
                       ? 'bg-primary-500'
                       : 'bg-green-500',
                   ]"
                 />
                 <Checkbox :id="`checkbox-${product.id}`" class="ml-2" />
                 <div class="flex items-start overflow-hidden min-w-0 mb-3">
-                  <div class="truncate overflow-x-hidden whitespace-nowrap min-w-0">
+                  <div
+                    class="truncate overflow-x-hidden whitespace-nowrap min-w-0"
+                  >
                     <span class="text-sm text-muted-foreground mr-5">
                       {{ product.name }}
                     </span>
                     <Badge
                       :class="[
-                        product.vat_type === 'include' || product.vat_type === 'exclude'
+                        product.vat_type === 'include' ||
+                        product.vat_type === 'exclude'
                           ? 'bg-primary-500'
                           : 'bg-green-500',
                       ]"
@@ -391,7 +463,9 @@ const table = useVueTable({
                     </Badge>
                   </div>
                 </div>
-                <p class="absolute left-10 bottom-[-.5rem] flex flex-nonw gap-2 items-center text-[.8rem] font-normal text-muted-foreground truncate text-muted-600 dark:text-muted-400 w-full">
+                <p
+                  class="absolute left-10 bottom-[-.5rem] flex flex-nonw gap-2 items-center text-[.8rem] font-normal text-muted-foreground truncate text-muted-600 dark:text-muted-400 w-full"
+                >
                   <strong>SKU :</strong> {{ product.sku }}
                   <span><strong>ราคา :</strong> {{ product.price }} บาท</span>
                 </p>
@@ -435,7 +509,7 @@ const table = useVueTable({
         <Button
           variant="outline"
           size="sm"
-          :disabled="(page * perPage) >= total || pending"
+          :disabled="page * perPage >= total || pending"
           @click="page = page + 1"
         >
           ถัดไป
@@ -443,6 +517,8 @@ const table = useVueTable({
       </div>
     </div>
 
-    <div v-if="error" class="text-red-600 text-sm">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>
+    <div v-if="error" class="text-red-600 text-sm">
+      เกิดข้อผิดพลาดในการโหลดข้อมูล
+    </div>
   </div>
 </template>

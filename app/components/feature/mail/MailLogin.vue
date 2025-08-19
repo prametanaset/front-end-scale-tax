@@ -19,15 +19,24 @@
 
       <h1 class="text-xl font-semibold mb-2 text-center">ยินดีต้อนรับสู่เมล</h1>
 
-      <div class="flex mt-15 items-end gap-2">
-        <Checkbox
-          v-model="acceptTerms"
-          id="acceptTerms"
-          :required="true"
-          class="mt-1"
+      <Button
+        variant="outline"
+        type="button"
+        class="py-2 sm:py-3 text-sm sm:text-sm rounded-full relative z-10 cursor-pointer mt-3"
+      >
+        <img
+          src="~/assets/img/google.png"
+          alt="Google logo"
+          width="20"
+          height="20"
+          class="mr-2 h-5 w-5"
         />
-        <Label for="acceptTerms" class="text-sm leading-5">
-          ข้าพเจ้ายอมรับ
+        เชื่อมต่อกับ Google
+      </Button>
+      <div class="flex mt-2 items-end gap-2">
+        <p class="text-xs text-gray-500 mt-6 max-w-xs text-center">
+          การ "เชื่อมต่อกับ Google" ด้านบน
+          ถือว่าคุณรับทราบว่าคุณได้อ่านและเข้าใจ
           <a
             href="/terms"
             target="_blank"
@@ -43,23 +52,9 @@
           >
             นโยบายความเป็นส่วนตัว
           </a>
-        </Label>
+          ที่เกี่ยวข้องกับการใช้งาน e-Tax Mail ของคุณ
+        </p>
       </div>
-      <Button
-        variant="outline"
-        type="button"
-        :disabled="!acceptTerms"
-        class="py-2 sm:py-3 text-sm sm:text-sm rounded-full relative z-10 cursor-pointer mt-3"
-      >
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png"
-          alt="Google logo"
-          width="20"
-          height="20"
-          class="mr-2 h-5 w-5"
-        />
-        เชื่อมต่อกับ Google
-      </Button>
     </div>
   </div>
 </template>

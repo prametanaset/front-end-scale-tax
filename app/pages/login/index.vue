@@ -17,13 +17,13 @@
         :staticity="10"
         refresh
       /> -->
-       <video
+      <video
         muted
         autoplay
         loop
         playsinline
         class="w-full h-full object-cover"
-        src="/videos/blackhole.mp4"
+        src="/videos/blackhole2.mp4"
       ></video>
 
       <!-- Cursor -->

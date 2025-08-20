@@ -1,5 +1,5 @@
 <template>
-  <ScrollArea class="h-[calc(100vh-theme(spacing.40))] focus-visible:ring-0">
+  <ScrollArea class="h-[calc(dvh-theme(spacing.40))]">
     <!-- ตัว container ที่เป็นพื้นที่ลาก-selection -->
     <div ref="gridWrap" class="relative select-none" @mousedown="onMouseDown">
       <!-- กรอบลาก (marquee box) -->

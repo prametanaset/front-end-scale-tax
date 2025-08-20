@@ -39,7 +39,7 @@
           >
             <Command class="h-4 w-4" />
           </div>
-          Acme Inc.
+          Sunscaleup
         </a>
       </div>
 

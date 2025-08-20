@@ -10,7 +10,7 @@ export default defineNuxtConfig({
       tailwindcss(),
     ],
   },
-  
+
   app: {
     head: {
       title: "Nuxt", // default fallback title
@@ -23,6 +23,7 @@ export default defineNuxtConfig({
       ],
       link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
     },
+    pageTransition: { name: "page", mode: "out-in" },
   },
 
   modules: [
@@ -60,7 +61,7 @@ export default defineNuxtConfig({
      */
     componentDir: "app/components/ui",
   },
-  
+
   colorMode: {
     classSuffix: "",
   },

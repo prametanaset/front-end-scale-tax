@@ -62,10 +62,12 @@
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem class="cursor-pointer">
-            <LogOut />
-            Log out
-          </DropdownMenuItem>
+          <NuxtLink to="/login">
+            <DropdownMenuItem class="cursor-pointer">
+              <LogOut />
+              Log out
+            </DropdownMenuItem>
+          </NuxtLink>
         </DropdownMenuContent>
       </DropdownMenu>
     </SidebarMenuItem>

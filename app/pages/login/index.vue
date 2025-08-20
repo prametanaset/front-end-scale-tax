@@ -5,18 +5,26 @@
       <span
         class="absolute inset-0 flex items-center justify-center pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300/80 bg-clip-text text-8xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10"
       >
-        Sunscaleup
+        <!-- Sunscaleup -->
       </span>
 
       <!-- พื้นหลัง -->
-      <ParticlesBg
+      <!-- <ParticlesBg
         class="absolute inset-0"
         :quantity="100"
         :ease="100"
         :color="isDark ? '#FFF' : '#000'"
         :staticity="10"
         refresh
-      />
+      /> -->
+       <video
+        muted
+        autoplay
+        loop
+        playsinline
+        class="w-full h-full object-cover"
+        src="/videos/blackhole.mp4"
+      ></video>
 
       <!-- Cursor -->
       <FluidCursor />

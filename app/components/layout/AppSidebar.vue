@@ -60,7 +60,7 @@
             </p>
           </Transition>
 
-          <Progress v-model="progress" class="w-full mb-4" />
+          <Progress v-model="progress" class="w-[90%] mb-4" />
         </div>
         <SidebarGroupContent>
           <NavSecondary :items="data.navSecondary" />
@@ -115,7 +115,7 @@ const data = {
   navMain: [
     {
       title: "หน้าแรก",
-      url: "/",
+      url: "/dashboard",
       icon: Home,
     },
     // {

@@ -53,13 +53,20 @@
           <span class="text-xs text-muted-foreground">ช่วงไฮไลต์ {{ highlightLabel }}</span>
         </div>
         <div class="px-4 pb-4">
-          <ChartColumn
-            :series="series"
-            theme="primary"
-            aspect="aspect-[16/6]"
-            height="h-48"
-            :highlightFrom="highlightFrom"
-            :highlightTo="highlightTo"
+          <BarChart
+            index="name"
+            :data="data"
+            :categories="['total', 'predicted']"
+            :y-formatter="
+              (tick, i) => {
+                return typeof tick === 'number'
+                  ? `$ ${new Intl.NumberFormat('us').format(tick).toString()}`
+                  : '';
+              }
+            "
+            :type="'stacked'"
+            :rounded-corners="4"
+            class="h-48 w-full"
           />
         </div>
       </div>
@@ -189,8 +196,6 @@ const kpis = [
   { label: "อัตราเติบโต", value: "12.7%", delta: 0.9, subtext: "เทียบเดือนก่อน", icon: TrendingUp },
 ]
 
-/* ===== Charts (yours) ===== */
-const salesSeries = [{ name: "Sales", data: [12, 25, 18, 30, 22, 35, 28, 42] }]
 const data = [
   {
     name: "Jan",
@@ -232,10 +237,7 @@ const start = Date.UTC(2025, 6, 25)
 const days = Array.from({ length: 16 }, (_, i) => start + i * 24 * 3600 * 1000)
 const requests = days.map((x) => ({ x, y: 1 }))
 const tokens = days.map((x) => ({ x, y: 0 }))
-const series = [
-  { name: "requests", data: requests },
-  { name: "input tokens", data: tokens },
-]
+
 const highlightFrom = Date.UTC(2025, 6, 27, 0)
 const highlightTo = Date.UTC(2025, 6, 29, 0)
 const highlightLabel = computed(() => {

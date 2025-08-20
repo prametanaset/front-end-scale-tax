@@ -10,6 +10,7 @@ export default defineNuxtConfig({
       tailwindcss(),
     ],
   },
+  
   app: {
     head: {
       title: "Nuxt", // default fallback title
@@ -29,7 +30,24 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "@pinia/nuxt",
     "@nuxtjs/html-validator",
+    '@nuxtjs/google-fonts'
   ],
+
+  googleFonts: {
+    families: {
+      "IBM Plex Sans Thai": {
+        wght: [100, 200, 300, 400, 500, 600, 700],
+      },
+      Poppins: {
+        wght: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+        ital: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+      },
+      "Noto Sans Thai": {
+        wght: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+      },
+    },
+    display: "swap",
+  },
 
   shadcn: {
     /**
@@ -42,9 +60,11 @@ export default defineNuxtConfig({
      */
     componentDir: "app/components/ui",
   },
+  
   colorMode: {
     classSuffix: "",
   },
+
   htmlValidator: {
     usePrettier: true,
     logLevel: 'verbose',

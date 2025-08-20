@@ -1,5 +1,5 @@
 <template>
-  <ScrollArea class="h-[calc(100vh-theme(spacing.40))]">
+  <ScrollArea class="h-[calc(100vh-theme(spacing.40))] focus-visible:ring-0">
     <!-- ตัว container ที่เป็นพื้นที่ลาก-selection -->
     <div ref="gridWrap" class="relative select-none" @mousedown="onMouseDown">
       <!-- กรอบลาก (marquee box) -->
@@ -109,6 +109,7 @@ watch(selectFileCount, (count) => {
 const gridWrap = ref<HTMLElement | null>(null);
 const grid = ref<HTMLElement | null>(null);
 
+const startSelectedIndex = ref<number | null>(null);
 const lastSelectedIndex = ref<number | null>(null);
 
 function clearAll() {
@@ -140,14 +141,27 @@ function selectRange(a: number, b: number, { additive = false } = {}) {
 
 function onItemClick(index: number, e: MouseEvent) {
   const additive = e.metaKey || e.ctrlKey;
-  const range = e.shiftKey && lastSelectedIndex.value !== null;
+  const withShift = e.shiftKey;
 
-  if (range) {
-    selectRange(lastSelectedIndex.value!, index, { additive });
+  if (withShift) {
+    // ถ้าเพิ่งเริ่มกด shift ครั้งแรก -> เซ็ต start index
+    if (startSelectedIndex.value === null) {
+      startSelectedIndex.value = index;
+    }
+    // เลือกช่วงจาก start index -> index
+    selectRange(startSelectedIndex.value, index, { additive });
+    lastSelectedIndex.value = index;
   } else if (additive) {
+    // toggle แบบเลือกเพิ่ม/ลบ
     toggleSingle(index);
+    // อัพเดต start ให้ใช้เป็นฐานถ้า user จะ shift ต่อ
+    startSelectedIndex.value = index;
+    lastSelectedIndex.value = index;
   } else {
+    // เลือกใหม่ทั้งหมด
     selectOnly(index);
+    startSelectedIndex.value = index;
+    lastSelectedIndex.value = index;
   }
 }
 

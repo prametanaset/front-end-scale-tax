@@ -1,8 +1,6 @@
 <template>
-  <ScrollArea
-    class="min-h-0 max-h-[calc(100vh-theme(spacing.40))] rounded-md border"
-  >
-    <Table class="relative" div-classname="overflow-clip">
+  <ScrollArea class="max-h-[calc(100vh-theme(spacing.40))]">
+    <Table div-classname="min-h-0 max-h-[calc(100vh-theme(spacing.40))]">
       <!-- ✅ header sticky -->
       <TableHeader class="sticky top-0 z-10 bg-background">
         <TableRow
@@ -36,7 +34,7 @@
               <TableCell
                 v-for="cell in row.getVisibleCells()"
                 :key="cell.id"
-                class="px-4 py-2"
+                class="px-4 py-2 cursor-pointer"
                 :class="
                   cn(
                     { 'sticky bg-background/95': cell.column.getIsPinned() },
@@ -94,13 +92,34 @@ import { ScrollAreaViewport } from "reka-ui";
 import { Checkbox } from "~/components/ui/checkbox";
 import { valueUpdater, cn } from "~/lib/utils";
 
+type FileItem = {
+  id: number;
+  fileName: string;
+  type: string;
+  size: string;
+  selected: boolean;
+};
 const columnHelper = createColumnHelper<any>();
 
-const data = Array.from({ length: 30 }, (_, i) => ({
-  fileName: `TS27042568_INV-${i + 1}.pdf`,
-  type: "PDF",
-  size: `${Math.floor(Math.random() * 10).toFixed(1) + 1} MB`,
-}));
+const props = defineProps<{
+  files: FileItem[];
+}>();
+
+const emit = defineEmits<{
+  (e: "update:filter", value: string): void;
+  (selectFIleCount: "selectFileCount", count: number): void;
+  (e: "update:files", files: FileItem[]): void;
+}>();
+
+const files = ref(props.files);
+
+const selectFileCount = computed(
+  () => files.value.filter((f) => f.selected).length
+);
+
+watch(selectFileCount, (count) => {
+  emit("selectFileCount", count);
+});
 
 const columns = [
   // ✅ Checkbox Select
@@ -155,7 +174,7 @@ const rowSelection = ref({});
 const expanded = ref<ExpandedState>({});
 
 const table = useVueTable({
-  data,
+  data: files.value,
   columns,
   getCoreRowModel: getCoreRowModel(),
   getSortedRowModel: getSortedRowModel(),

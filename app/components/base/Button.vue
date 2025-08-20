@@ -28,38 +28,48 @@
 </template>
 
 <script setup lang="ts">
-import { cn } from '~/lib/utils'
+import { cn } from "~/lib/utils";
 
 // ไม่ให้ attrs ไปติดกับ root <template> เอง
-defineOptions({ inheritAttrs: false })
+defineOptions({ inheritAttrs: false });
 
-const props = withDefaults(defineProps<{
-  to?: string
-  type?: 'button' | 'submit' | 'reset'
-  variant?: 'default' | 'outline' | 'ghost' | 'destructive' | 'link' | 'secondary' | 'icon'
-  disabled?: boolean
-}>(), {
-  type: 'button',
-  variant: 'default',
-  disabled: false
-})
+const props = withDefaults(
+  defineProps<{
+    to?: string;
+    type?: "button" | "submit" | "reset";
+    variant?:
+      | "default"
+      | "outline"
+      | "ghost"
+      | "destructive"
+      | "link"
+      | "secondary"
+      | "icon";
+    disabled?: boolean;
+  }>(),
+  {
+    type: "button",
+    variant: "default",
+    disabled: false,
+  }
+);
 
 defineEmits<{
-  (e: 'click', ev: MouseEvent): void
-}>()
+  (e: "click", ev: MouseEvent): void;
+}>();
 
-const attrs = useAttrs()
+const attrs = useAttrs();
 
 // ดึง class จาก attrs แล้ว merge กับค่าเริ่มต้นให้เหมือนกันทั้ง SSR/Client
 const mergedClass = computed(() =>
-  cn('rounded-full cursor-pointer', (attrs.class as string) || '')
-)
+  cn("rounded-full cursor-pointer", (attrs.class as string) || "")
+);
 
 // ส่งต่อ attrs อื่น ๆ ยกเว้น class (เพราะจัดการเองแล้ว)
 const restAttrs = computed(() => {
-  const { class: _c, ...rest } = attrs as Record<string, unknown>
-  return rest
-})
+  const { class: _c, ...rest } = attrs as Record<string, unknown>;
+  return rest;
+});
 
-const { to, type, variant, disabled } = props
+const { to, type, variant, disabled } = toRefs(props);
 </script>

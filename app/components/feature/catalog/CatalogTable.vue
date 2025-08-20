@@ -184,7 +184,7 @@ const columns: ColumnDef<Product>[] = [
           : "ไม่รวมภาษี";
       const color =
         vt === "include"
-          ? "bg-red-500"
+          ? "bg-purple-500"
           : vt === "exclude"
           ? "bg-green-500"
           : "bg-gray-500";
@@ -368,9 +368,9 @@ const table = useVueTable({
     <!-- ตาราง (desktop) -->
     <ScrollArea
       v-if="screenSize === 'desktop'"
-      class="rounded-md border min-h-0 max-h-[calc(100vh-theme(spacing.64)-16px)] overflow-y-auto mt-4"
+      class="rounded-md border max-h-[calc(100vh-theme(spacing.64)-16px)] overflow-y-auto mt-4"
     >
-      <Table div-classname="overflow-clip">
+      <Table div-classname="min-h-0 max-h-[calc(100vh-theme(spacing.64)-18px)]">
         <TableHeader class="sticky top-0 z-10 bg-background">
           <TableRow
             v-for="headerGroup in table.getHeaderGroups()"

@@ -36,7 +36,7 @@
               </span>
             </div>
             <div>
-              <BaseTheme class="w-full" />
+              <BaseModeSwitcher class="w-full" />
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />

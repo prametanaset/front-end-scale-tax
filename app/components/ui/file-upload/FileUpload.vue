@@ -47,38 +47,48 @@
               :key="`file-${idx}`"
               :initial="{ opacity: 0, scaleX: 0 }"
               :animate="{ opacity: 1, scaleX: 1 }"
-              class="relative z-40 mx-auto flex w-full flex-col items-start justify-start overflow-hidden rounded-md bg-white p-4 shadow-sm md:h-24 dark:bg-neutral-900"
+              class="relative z-40 mx-auto flex w-full gap-2 flex-row items-center justify-start overflow-hidden rounded-md bg-white p-4 shadow-sm md:h-24 dark:bg-neutral-900"
             >
-              <div class="flex w-full items-center justify-between gap-4">
-                <Motion
-                  as="p"
-                  :initial="{ opacity: 0 }"
-                  :animate="{ opacity: 1 }"
-                  class="max-w-xs truncate text-base text-neutral-700 dark:text-neutral-300"
-                >
-                  {{ file.name }}
-                </Motion>
-              </div>
+              <Avatar class="h-10 w-10 rounded-lg">
+                <AvatarImage
+                  src="https://github.com/unovue.png"
+                  alt="fileImg"
+                />
+                <AvatarFallback class="rounded-lg"> CN </AvatarFallback>
+              </Avatar>
 
-              <div
-                class="mt-2 flex w-full flex-row items-start justify-between text-sm text-neutral-600 md:flex-row md:items-center dark:text-neutral-400 gap-2"
-              >
-                <Motion
-                  as="p"
-                  :initial="{ opacity: 0 }"
-                  :animate="{ opacity: 1 }"
-                  class="rounded-md bg-gray-100 px-1.5 py-1 text-sm dark:bg-neutral-800"
+              <div class="flex flex-col justify-between w-full">
+                <div class="flex w-full items-center justify-between gap-4">
+                  <Motion
+                    as="p"
+                    :initial="{ opacity: 0 }"
+                    :animate="{ opacity: 1 }"
+                    class="max-w-xs truncate text-base text-neutral-700 dark:text-neutral-300"
+                  >
+                    {{ file.name }}
+                  </Motion>
+                </div>
+
+                <div
+                  class="mt-2 flex w-full flex-row items-start justify-between text-sm text-neutral-600 md:flex-row md:items-center dark:text-neutral-400 gap-2"
                 >
-                  {{ file.type || "unknown type" }}
-                </Motion>
-                <Motion
-                  as="p"
-                  :initial="{ opacity: 0 }"
-                  :animate="{ opacity: 1 }"
-                  class="w-fit shrink-0 rounded-lg px-2 py-1 text-sm text-neutral-600 shadow-input dark:bg-neutral-800 dark:text-white"
-                >
-                  {{ (file.size / (1024 * 1024)).toFixed(2) }} MB
-                </Motion>
+                  <Motion
+                    as="p"
+                    :initial="{ opacity: 0 }"
+                    :animate="{ opacity: 1 }"
+                    class="rounded-md bg-gray-100 px-1.5 py-1 text-sm dark:bg-neutral-800"
+                  >
+                    {{ file.type || "unknown type" }}
+                  </Motion>
+                  <Motion
+                    as="p"
+                    :initial="{ opacity: 0 }"
+                    :animate="{ opacity: 1 }"
+                    class="w-fit shrink-0 rounded-lg px-2 py-1 text-sm text-neutral-600 shadow-input dark:bg-neutral-800 dark:text-white"
+                  >
+                    {{ (file.size / (1024 * 1024)).toFixed(2) }} MB
+                  </Motion>
+                </div>
               </div>
             </Motion>
             <TooltipProvider>

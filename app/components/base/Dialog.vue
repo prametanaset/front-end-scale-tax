@@ -1,5 +1,5 @@
 <template>
-  <Dialog :open="modelValue" @update:open="emit('update:modelValue', $event)">
+  <Dialog :open="modelValue" @update:open="onUpdateOpen">
     <DialogTrigger as-child>
       <slot name="trigger">
         <BaseButton variant="default" :class="bgButton" v-if="showButton">
@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  modelValue: boolean;
+  modelValue?: boolean;
   text?: string;
   title?: string;
   description?: string;
@@ -36,4 +36,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
 }>();
+
+function onUpdateOpen(value: boolean) {
+  emit("update:modelValue", value);
+}
 </script>

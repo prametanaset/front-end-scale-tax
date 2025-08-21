@@ -25,15 +25,15 @@
         </div>
         <Input id="password" type="password" required />
       </div>
-      <BaseButton to="/dashboard" type="submit" class="w-full">
+      <BaseButton type="submit" class="w-full">
         เข้าสู่ระบบ
       </BaseButton>
     </div>
     <div class="text-center text-sm">
       ยังไม่มีบัญชีใช่ไหม?
-      <a href="#" class="underline underline-offset-4">
+      <NuxtLink to="/dashboard" class="underline underline-offset-4">
         สมัครสมาชิก
-      </a>
+      </NuxtLink>
     </div>
   </form>
 </template>

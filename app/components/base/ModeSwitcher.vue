@@ -1,16 +1,15 @@
 <template>
-  <Tabs v-model="colorMode" class="w-[400px]">
+  <Tabs v-model="colorMode.preference" class="w-[400px]">
     <TabsList>
-      <TabsTrigger value="light"><SunIcon /> </TabsTrigger>
-      <TabsTrigger value="dark"><MoonIcon /></TabsTrigger>
-      <TabsTrigger value="system"><Monitor /></TabsTrigger>
+      <TabsTrigger value="light" class="cursor-pointer"><SunIcon /> </TabsTrigger>
+      <TabsTrigger value="dark" class="cursor-pointer"><MoonIcon /></TabsTrigger>
+      <TabsTrigger value="system" class="cursor-pointer"><Monitor /></TabsTrigger>
     </TabsList>
   </Tabs>
 </template>
 
 <script setup lang="ts">
-import { useColorMode } from "@vueuse/core";
 import { SunIcon, MoonIcon, Monitor } from "lucide-vue-next";
 
-const colorMode = useColorMode(); // Ref<'light' | 'dark' | 'auto'>
+const colorMode = useColorMode();
 </script>

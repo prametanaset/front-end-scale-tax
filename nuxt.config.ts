@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   css: ["~/assets/css/tailwind.css"],
-
+  ssr: true,
   vite: {
     plugins: [
       tailwindcss(),
@@ -89,7 +89,8 @@ export default defineNuxtConfig({
         'attribute-boolean-style': 'off',
         'doctype-style': 'off',
         // Unreasonable rule
-        'no-inline-style': 'off'
+        'no-inline-style': 'off',
+        'no-autoplay': 'off',
       }
     }
   }

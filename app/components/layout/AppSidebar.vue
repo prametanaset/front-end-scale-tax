@@ -59,8 +59,10 @@
               ใช้ไป 3.3GB จาก 10GB
             </p>
           </Transition>
-
+          <!-- html-validate-disable prefer-native-element -->
           <Progress v-model="progress" class="w-[90%] mb-4" />
+          <!-- html-validate-enable prefer-native-element -->
+
         </div>
         <SidebarGroupContent>
           <NavSecondary :items="data.navSecondary" />
@@ -167,7 +169,7 @@ const data = {
 
 <style scoped>
 .fade-enter-active {
-  transition: opacity 2s ease;
+  transition: opacity 0.5s ease;
 }
 
 .fade-leave-active {

@@ -23,7 +23,7 @@
         loop
         playsinline
         class="w-full h-full object-cover"
-        src="/videos/blackhole2.mp4"
+        src="/videos/solar.mp4"
       ></video>
 
       <!-- Cursor -->

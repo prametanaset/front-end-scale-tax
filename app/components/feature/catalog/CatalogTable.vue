@@ -5,7 +5,6 @@ import type {
   ExpandedState,
   SortingState,
   VisibilityState,
-  ColumnMeta,
 } from "@tanstack/vue-table";
 import {
   FlexRender,
@@ -370,7 +369,7 @@ const table = useVueTable({
       v-if="screenSize === 'desktop'"
       class="rounded-md border max-h-[calc(100vh-theme(spacing.64)-16px)] overflow-y-auto mt-4"
     >
-      <Table div-classname="min-h-0 max-h-[calc(100vh-theme(spacing.64)-18px)]">
+      <Table div-classname="min-h-0 max-h-[calc(100vh-theme(spacing.64)-19px)]">
         <TableHeader class="sticky top-0 z-10 bg-background">
           <TableRow
             v-for="headerGroup in table.getHeaderGroups()"
@@ -413,7 +412,10 @@ const table = useVueTable({
     </ScrollArea>
 
     <!-- การ์ด (mobile) -->
-    <div class="mt-2" v-else>
+    <div
+      class="mt-2 max-h-[calc(100vh-theme(spacing.64)-30px)] overflow-y-auto"
+      v-else
+    >
       <Tabs v-model="activeStatus">
         <TabsContent
           v-for="tab in ['all', '0', '1', '2']"
@@ -480,7 +482,10 @@ const table = useVueTable({
     </div>
 
     <!-- แถบสรุป + เปลี่ยนหน้า (server-side) -->
-    <div class="flex items-center justify-end gap-2 py-4">
+    <div
+      v-if="screenSize === 'desktop'"
+      class="flex items-center justify-end gap-2 py-4"
+    >
       <div class="flex-1 text-sm text-muted-foreground">
         ทั้งหมด {{ total }} รายการ • หน้า {{ page }} • ต่อหน้า {{ perPage }}
       </div>

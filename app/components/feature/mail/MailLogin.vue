@@ -25,7 +25,7 @@
         class="py-2 sm:py-3 text-sm sm:text-sm rounded-full relative z-10 cursor-pointer mt-3"
       >
         <img
-          src="~/assets/img/google.png"
+          src="/img/google.png"
           alt="Google logo"
           width="20"
           height="20"

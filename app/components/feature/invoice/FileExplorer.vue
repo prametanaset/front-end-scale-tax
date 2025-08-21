@@ -2,7 +2,11 @@
   <div class="space-y-3">
     <!-- Toolbar -->
     <div class="toolbar flex items-center justify-between gap-2">
-      <BaseSearchInput place-holder="ค้นหาไฟล์" v-model="searchQuery" />
+      <BaseSearchInput
+        type="text"
+        place-holder="ค้นหาไฟล์"
+        v-model="searchQuery"
+      />
       <div class="flex gap-4 items-center">
         <div
           :class="[
@@ -18,7 +22,8 @@
           </p>
         </div>
         <BaseButton class="text-sm" :disabled="!canDownload"
-          ><Download /><span>ดาวน์โหลด</span></BaseButton
+          ><Download />
+          <p>ดาวน์โหลด</p></BaseButton
         >
         <BaseButton variant="ghost" @click="showFileIcon = !showFileIcon">
           <List class="h-4 w-4" v-if="showFileIcon" />

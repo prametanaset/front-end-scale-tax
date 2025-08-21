@@ -1,22 +1,22 @@
-<!-- BaseDialog.vue -->
 <template>
-  <Dialog :modelValue="modelValue" @update:modelValue="emit('update:modelValue', $event)">
+  <Dialog :open="modelValue" @update:open="emit('update:modelValue', $event)">
     <DialogTrigger as-child>
       <slot name="trigger">
-        <Button variant="outline" :class="bgButton" v-if="showButton">
-          {{ props.text }}
-        </Button>
+        <BaseButton variant="default" :class="bgButton" v-if="showButton">
+          {{ text }}
+        </BaseButton>
       </slot>
     </DialogTrigger>
-    <DialogContent class="sm:max-w-[70vw]">
-      <DialogHeader>
-        <DialogTitle>{{ props.title }}</DialogTitle>
-        <DialogDescription>
-          {{ props.description }}
-        </DialogDescription>
+
+    <DialogContent class="px-0">
+      <DialogHeader class="px-6">
+        <DialogTitle>{{ title }}</DialogTitle>
+        <DialogDescription>{{ description }}</DialogDescription>
       </DialogHeader>
+
       <slot name="content" />
-      <DialogFooter>
+
+      <DialogFooter class="px-6">
         <slot name="footer" />
       </DialogFooter>
     </DialogContent>

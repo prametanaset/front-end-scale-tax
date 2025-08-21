@@ -1,17 +1,18 @@
 <template>
-  <Dialog :open="modelValue" @update:open="emit('update:modelValue', $event)">
-    <DialogContent class="sm:max-w-[600px]">
-      <DialogHeader>
-        <DialogTitle>
-          {{ mode === "edit" ? "แก้ไขสินค้า" : "เพิ่มสินค้าใหม่" }}
-        </DialogTitle>
-        <DialogDescription>
-          กรอกรายละเอียดสินค้า เลือกรูปแบบภาษี แล้วตรวจสอบราคาสุทธิ
-        </DialogDescription>
-      </DialogHeader>
-
-      <Card class="border shadow-sm rounded-lg">
-        <CardContent class="py-6 px-4 space-y-5">
+  <BaseDialog
+    v-model="active"
+    :title="mode === 'edit' ? 'แก้ไขสินค้า' : 'เพิ่มสินค้าใหม่'"
+    :description="'กรอกรายละเอียดสินค้า เลือกรูปแบบภาษี แล้วตรวจสอบราคาสุทธิ'"
+    text="เพิ่มสินค้า"
+  >
+    <template
+      #content
+      class="sm:max-w-[600px] max-h-[calc(100vh-theme(spacing.20))] overflow-hidden"
+    >
+      <div
+        class="max-h-[calc(100vh-theme(spacing.80)-5rem)] md:max-h-none overflow-y-auto"
+      >
+        <div class="py-2 px-4 space-y-4">
           <!-- รหัส -->
           <div class="space-y-2">
             <Label for="name">รหัสสินค้า</Label>
@@ -23,48 +24,36 @@
             <Input id="name" v-model="newProduct.name" />
           </div>
 
-          <!-- ราคาขาย -->
-          <div class="space-y-2">
-            <Label for="price">ราคาขาย</Label>
-            <Input id="price" type="number" v-model="newProduct.price" />
-          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <!-- ราคาขาย -->
+            <div class="space-y-2">
+              <Label for="price">ราคาขาย</Label>
+              <Input id="price" type="number" v-model="newProduct.price" />
+            </div>
 
-          <!-- ประเภทภาษี -->
-          <div class="space-y-2">
-            <Label>ประเภทภาษี</Label>
-            <Select v-model="newProduct.taxType">
-              <SelectTrigger class="w-full">
-                <SelectValue placeholder="เลือกภาษี" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="include">รวม VAT 7%</SelectItem>
-                <SelectItem value="exclude">ไม่รวม VAT</SelectItem>
-                <SelectItem value="exempt">ยกเว้นภาษี</SelectItem>
-              </SelectContent>
-            </Select>
+            <!-- ประเภทภาษี -->
+            <div class="space-y-2">
+              <Label>ประเภทภาษี</Label>
+              <Select v-model="newProduct.taxType">
+                <SelectTrigger class="w-full">
+                  <SelectValue placeholder="เลือกภาษี" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="include">รวม VAT 7%</SelectItem>
+                  <SelectItem value="exclude">ไม่รวม VAT</SelectItem>
+                  <SelectItem value="exempt">ยกเว้นภาษี</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <!-- ลิงก์รูป -->
           <div class="space-y-2">
-            <Label for="image">ลิงก์รูป</Label>
-            <Input id="image" v-model="newProduct.image" placeholder="URL" />
-          </div>
-
-          <!-- รูปภาพ -->
-          <div class="flex justify-center">
-            <div v-if="newProduct.image" class="w-32 h-32">
-              <img
-                :src="newProduct.image"
-                alt="preview"
-                class="w-32 h-32 object-cover rounded-md border shadow"
-              />
-            </div>
-            <div
-              v-else
-              class="w-32 h-32 flex items-center justify-center text-gray-500 bg-gray-50 rounded-md border border-dashed"
+            <FileUpload
+              class="rounded-lg border border-dashed border-neutral-200 dark:border-neutral-800"
             >
-              ยังไม่มีรูปสินค้า
-            </div>
+              <FileUploadGrid />
+            </FileUpload>
           </div>
 
           <!-- ราคาสุทธิ -->
@@ -88,23 +77,24 @@
               }}
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+    </template>
 
-      <DialogFooter class="pt-6">
-        <DialogClose as-child>
-          <BaseButton type="button" variant="outline">ยกเลิก</BaseButton>
-        </DialogClose>
-        <BaseButton @click="handleSave">
-          {{ mode === "edit" ? "บันทึกการแก้ไข" : "เพิ่มสินค้า" }}
-        </BaseButton>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
+    <template #footer class="pt-6 px-6">
+      <DialogClose as-child>
+        <BaseButton type="button" variant="outline">ยกเลิก</BaseButton>
+      </DialogClose>
+      <BaseButton @click="handleSave">
+        {{ mode === "edit" ? "บันทึกการแก้ไข" : "เพิ่มสินค้า" }}
+      </BaseButton>
+    </template>
+  </BaseDialog>
 </template>
 
 <script lang="ts" setup>
 import { BaseButton } from "#components";
+import { Plus } from "lucide-vue-next";
 import { computed, ref } from "vue";
 import type { Product } from "~/composables/types/product";
 
@@ -117,6 +107,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;
 }>();
+
+const active = ref(props.modelValue);
 
 const newProduct = ref({
   sku: "",
@@ -169,6 +161,12 @@ watch(
   },
   { immediate: true }
 );
+
+watch(
+  () => props.modelValue,
+  (val) => (active.value = val)
+);
+watch(active, (val) => emit("update:modelValue", val));
 </script>
 
 <style></style>

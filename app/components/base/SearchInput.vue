@@ -1,6 +1,12 @@
 <template>
   <div class="relative w-full max-w-md items-center">
-    <Input class="max-w-md pl-10" :placeholder="placeHolder" v-model="qLocal" />
+    <Input
+      name="input"
+      :type="props.type"
+      class="max-w-md pl-10"
+      :placeholder="placeHolder"
+      v-model="qLocal"
+    />
     <span
       class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
     >
@@ -23,6 +29,7 @@ import { Search, X } from "lucide-vue-next";
 const props = defineProps<{
   placeHolder?: string;
   modelValue?: string;
+  type?: "text" | "number";
 }>();
 
 const emit = defineEmits<{

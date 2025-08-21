@@ -1,4 +1,3 @@
-<!-- BaseDialog.vue -->
 <template>
   <Dialog :open="modelValue" @update:open="emit('update:modelValue', $event)">
     <DialogTrigger as-child></DialogTrigger>

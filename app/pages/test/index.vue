@@ -1,16 +1,40 @@
-<script setup lang="ts">
-import { useColorMode } from "@vueuse/core";
-import { SunIcon, MoonIcon, Monitor } from "lucide-vue-next";
+<template>
+  <div>
+    <BaseDialog
+      v-model="open"
+      title="Delete Product"
+      description="Are you sure you want to delete this product?"
+      text="Delete"
+      bgButton="bg-red-500 text-white"
+      :showButton="true"
+    >
+      <!-- ✅ Custom trigger (optional) -->
+      <template #trigger>
+        <Button variant="destructive">Custom Trigger</Button>
+      </template>
 
-const colorMode = useColorMode(); // Ref<'light' | 'dark' | 'auto'>
+      <!-- ✅ Dialog content -->
+      <template #content>
+        <p class="px-4">
+          This action cannot be undone. It will permanently remove the product.
+        </p>
+      </template>
+
+      <!-- ✅ Footer -->
+      <template #footer>
+        <Button variant="outline" @click="open = false">Cancel</Button>
+        <Button variant="destructive" @click="confirmDelete">Confirm</Button>
+      </template>
+    </BaseDialog>
+  </div>
+</template>
+<script setup lang="ts">
+const open = ref(true);
+
+function confirmDelete() {
+  console.log("deleted!");
+  open.value = false;
+}
 </script>
 
-<template>
-  <Tabs v-model="colorMode" class="w-[400px]">
-    <TabsList>
-      <TabsTrigger value="light"><SunIcon /> </TabsTrigger>
-      <TabsTrigger value="dark"><MoonIcon /></TabsTrigger>
-      <TabsTrigger value="system"><Monitor /></TabsTrigger>
-    </TabsList>
-  </Tabs>
-</template>
+<style></style>

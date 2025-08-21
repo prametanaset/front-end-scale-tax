@@ -20,28 +20,19 @@
           class="file-card relative p-0"
           :class="[
             'cursor-pointer rounded-xl transition',
-            file.selected
-              ? 'ring-2 ring-primary/70 bg-primary/5'
-              : 'hover:bg-muted',
+            file.selected ? 'bg-primary/20' : 'hover:bg-muted',
           ]"
           @click="onItemClick(index, $event)"
         >
           <ContextMenu>
             <ContextMenuTrigger as-child>
               <div class="flex flex-col items-center p-3 py-6">
-                <!-- Checkbox มุมขวาบน -->
-                <Checkbox
-                  class="absolute top-2 right-2 z-10"
-                  :model-value="file.selected"
-                  @click.stop="toggleSingle(index)"
-                />
-
                 <!-- ไอคอน/รูป -->
                 <div
                   class="w-12 h-12 flex items-center justify-center rounded-lg"
                 >
                   <img
-                    src="~/assets/img/etax-by-email.png"
+                    src="/img/etax-by-email.png"
                     :alt="file.fileName"
                     rule="img"
                   />

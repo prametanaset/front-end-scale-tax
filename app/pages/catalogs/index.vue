@@ -25,9 +25,7 @@ definePageMeta({
 });
 
 const isLoading = ref(true);
-const note = ref("");
 const catalogStore = useCatalogStore();
-
 
 const data: Product[] = [
   {

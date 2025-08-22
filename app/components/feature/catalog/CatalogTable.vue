@@ -301,9 +301,9 @@ const table = useVueTable({
 
         <DropdownMenu v-if="screenSize === 'desktop'">
           <DropdownMenuTrigger as-child>
-            <Button variant="outline" class="ml-auto">
+            <BaseButton variant="outline" class="ml-auto">
               Columns <ChevronDown class="ml-2 h-4 w-4" />
-            </Button>
+            </BaseButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuCheckboxItem
@@ -311,7 +311,7 @@ const table = useVueTable({
                 .getAllColumns()
                 .filter((c) => c.getCanHide())"
               :key="column.id"
-              class="capitalize"
+              class="capitalize cursor-pointer"
               :model-value="column.getIsVisible()"
               @update:model-value="(value) => column.toggleVisibility(!!value)"
             >

@@ -44,66 +44,68 @@ const emit = defineEmits<{
 }>();
 
 const activeTab = ref<"person" | "corporate">("corporate");
+const active = ref(props.modelValue);
+
+watch(
+  () => props.modelValue,
+  (val) => (active.value = val)
+);
+watch(active, (val) => emit("update:modelValue", val));
 </script>
 
 <template>
-  <Dialog :open="modelValue" @update:open="emit('update:modelValue', $event)">
-    <!-- เปลี่ยนสี ความทึบ และเบลอของฉากหลังตรงนี้ -->
-
-    <DialogContent
-      class="sm:max-w-xl w-full max-h-[90dvh] bg-background overflow-hidden"
+  <BaseDialog
+    v-model="active"
+    :title="mode === 'edit' ? 'แก้ไขข้อมูลลูกค้า' : 'เพิ่มข้อมูลลูกค้า'"
+    description="เลือกประเภทและกรอกข้อมูลให้ครบถ้วน"
+  >
+    <template
+      #content
+      class="sm:max-w-[600px] max-h-[calc(100dvh-theme(spacing.20))] md:max-h-none overflow-hidden"
     >
-      <div class="grid gap-6">
-        <!-- Left: Tabs Form -->
-        <div>
-          <DialogHeader>
-            <DialogTitle>{{
-              props.mode === "edit" ? "แก้ไขข้อมูลลูกค้า" : "เพิ่มข้อมูลลูกค้า"
-            }}</DialogTitle>
-            <DialogDescription>
-              เลือกประเภทและกรอกข้อมูลให้ครบถ้วน
-            </DialogDescription>
-          </DialogHeader>
-
-          <Tabs v-model="activeTab" class="w-full mt-4">
-            <TabsList
-              :class="[
-                'grid w-full mb-4',
-                props.mode === 'edit' ? 'grid-cols-1' : 'grid-cols-2',
-              ]"
-            >
-              <!-- นิติบุคคล -->
-              <TabsTrigger
-                v-if="
-                  props.mode === 'create' || localCustomer.type === 'นิติบุคคล'
-                "
-                value="corporate"
+      <div
+        class="sm:max-w-xl w-full max-h-[calc(100vh-theme(spacing.20))] bg-background overflow-hidden"
+      >
+        <div class="grid gap-6 px-4">
+          <!-- Left: Tabs Form -->
+          <div>
+            <Tabs v-model="activeTab" class="w-full mt-4">
+              <TabsList
+                :class="[
+                  'grid w-full mb-4',
+                  props.mode === 'edit' ? 'grid-cols-1' : 'grid-cols-2',
+                ]"
               >
-                นิติบุคคล
-              </TabsTrigger>
+                <!-- นิติบุคคล -->
+                <TabsTrigger
+                  v-if="
+                    props.mode === 'create' ||
+                    localCustomer.type === 'นิติบุคคล'
+                  "
+                  value="corporate"
+                >
+                  นิติบุคคล
+                </TabsTrigger>
 
-              <!-- บุคคลธรรมดา -->
-              <TabsTrigger
-                v-if="
-                  props.mode === 'create' ||
-                  localCustomer.type === 'บุคคลธรรมดา'
-                "
-                value="person"
-              >
-                บุคคลธรรมดา
-              </TabsTrigger>
-            </TabsList>
+                <!-- บุคคลธรรมดา -->
+                <TabsTrigger
+                  v-if="
+                    props.mode === 'create' ||
+                    localCustomer.type === 'บุคคลธรรมดา'
+                  "
+                  value="person"
+                >
+                  บุคคลธรรมดา
+                </TabsTrigger>
+              </TabsList>
 
-            <!-- Corporate (นิติบุคคล) -->
-            <TabsContent value="corporate">
-              <Card>
-                <CardHeader>
-                  <CardTitle>นิติบุคคล</CardTitle>
-                  <CardDescription>
-                    กรอกชื่อร้านค้าและเลขประจำตัวผู้เสียภาษี
-                  </CardDescription>
-                </CardHeader>
-                <CardContent class="space-y-4">
+              <!-- Corporate (นิติบุคคล) -->
+              <TabsContent value="corporate" class="space-y-4">
+                <!-- <div>
+                  <h1>นิติบุคคล</h1>
+                  <p>กรอกชื่อร้านค้าและเลขประจำตัวผู้เสียภาษี</p>
+                </div> -->
+                <div class="space-y-4">
                   <div>
                     <BaseInput
                       id="storeName"
@@ -164,30 +166,23 @@ const activeTab = ref<"person" | "corporate">("corporate");
                       />
                     </div>
                   </div>
-                  <!-- <BaseLocationPicker
-                    @location-data="handleSelectLocation"
-                    :update-data="locationData"
-                  /> -->
-                </CardContent>
-                <CardFooter class="flex justify-end">
+                  <BaseLocationPicker />
+                </div>
+                <div class="flex justify-end">
                   <BaseButton>บันทึก</BaseButton>
                   <DialogClose as-child>
                     <BaseButton variant="ghost">ปิด</BaseButton>
                   </DialogClose>
-                </CardFooter>
-              </Card>
-            </TabsContent>
+                </div>
+              </TabsContent>
 
-            <!-- Personal (บุคคลธรรมดา) -->
-            <TabsContent value="person">
-              <Card>
-                <CardHeader>
-                  <CardTitle>บุคคลธรรมดา</CardTitle>
-                  <CardDescription>
-                    กรอกชื่อผู้ติดต่อและเลขบัตรประชาชน
-                  </CardDescription>
-                </CardHeader>
-                <CardContent class="space-y-4">
+              <!-- Personal (บุคคลธรรมดา) -->
+              <TabsContent value="person" class="space-y-4">
+                <!-- <div>
+                  <h1>บุคคลธรรมดา</h1>
+                  <p>กรอกชื่อผู้ติดต่อและเลขบัตรประชาชน</p>
+                </div> -->
+                <div class="space-y-4">
                   <div class="grid gap-4 grid-cols-2">
                     <div>
                       <BaseInput
@@ -249,22 +244,19 @@ const activeTab = ref<"person" | "corporate">("corporate");
                       />
                     </div>
                   </div>
-                  <!-- <BaseLocationPicker
-                    @location-data="handleSelectLocation"
-                    :update-data="locationData"
-                  /> -->
-                </CardContent>
-                <CardFooter class="flex justify-end">
+                  <BaseLocationPicker />
+                </div>
+                <div class="flex justify-end mt-4">
                   <BaseButton>บันทึก</BaseButton>
                   <DialogClose as-child>
                     <BaseButton variant="ghost">ปิด</BaseButton>
                   </DialogClose>
-                </CardFooter>
-              </Card>
-            </TabsContent>
-          </Tabs>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
       </div>
-    </DialogContent>
-  </Dialog>
+    </template>
+  </BaseDialog>
 </template>

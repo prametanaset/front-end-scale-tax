@@ -1,6 +1,6 @@
 <template>
   <ScrollArea class="max-h-[calc(100vh-theme(spacing.40))]">
-    <Table div-classname="min-h-0 max-h-[calc(100vh-theme(spacing.40))]">
+    <Table div-classname="min-h-0 max-h-[calc(100vh-theme(spacing.20)-1rem)]">
       <!-- ✅ header sticky -->
       <TableHeader class="sticky top-0 z-10 bg-background">
         <TableRow
@@ -10,7 +10,7 @@
           <TableHead
             v-for="header in headerGroup.headers"
             :key="header.id"
-            class="px-4 py-2"
+            class="px-4"
             :class="
               cn(
                 { 'sticky bg-background/95': header.column.getIsPinned() },
@@ -111,15 +111,15 @@ const emit = defineEmits<{
   (e: "update:files", files: FileItem[]): void;
 }>();
 
-const files = ref(props.files);
+const files = ref<FileItem[]>([]);
 
-const selectFileCount = computed(
-  () => files.value.filter((f) => f.selected).length
+watch(
+  () => props.files,
+  (newVal) => {
+    files.value = [...newVal]; // sync เมื่อ props เปลี่ยน
+  },
+  { immediate: true }
 );
-
-watch(selectFileCount, (count) => {
-  emit("selectFileCount", count);
-});
 
 const columns = [
   // ✅ Checkbox Select
@@ -174,7 +174,7 @@ const rowSelection = ref({});
 const expanded = ref<ExpandedState>({});
 
 const table = useVueTable({
-  data: files.value,
+  data: computed(() => files.value),
   columns,
   getCoreRowModel: getCoreRowModel(),
   getSortedRowModel: getSortedRowModel(),

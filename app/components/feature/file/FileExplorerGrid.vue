@@ -1,7 +1,14 @@
 <template>
-  <ScrollArea class="h-[calc(dvh-theme(spacing.40))]">
+  <ScrollArea class="h-[calc(dvh-theme(spacing.40))] p-2">
+    <div class="text-center" v-if="files.length === 0">ไม่พบไฟล์</div>
     <!-- ตัว container ที่เป็นพื้นที่ลาก-selection -->
-    <div ref="gridWrap" class="relative select-none" @mousedown="onMouseDown">
+    <div
+      v-else
+      ref="gridWrap"
+      class="relative select-none"
+      @mousedown="onMouseDown"
+      @click="onContainerClick"
+    >
       <!-- กรอบลาก (marquee box) -->
       <div
         v-show="isDragging"
@@ -12,17 +19,19 @@
       <!-- Grid ไฟล์ -->
       <div
         ref="grid"
-        class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 xl:grid-cols-8 gap-4 p-3"
+        class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 xl:grid-cols-8 gap-2"
       >
         <BaseCard
           v-for="(file, index) in files"
           :key="file.id"
           class="file-card relative p-0"
           :class="[
-            'cursor-pointer rounded-xl transition',
-            file.selected ? 'bg-primary/20' : 'hover:bg-muted',
+            'cursor-pointer rounded-xl',
+            file.selected
+              ? 'bg-primary/8 border border-primary/20'
+              : 'hover:bg-muted',
           ]"
-          @click="onItemClick(index, $event)"
+          @click.stop="onItemClick(index, $event)"
         >
           <ContextMenu>
             <ContextMenuTrigger as-child>
@@ -69,6 +78,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, onBeforeUnmount, computed } from "vue";
 import { Eye, CircleEllipsis, Download } from "lucide-vue-next";
+import AnimatedList from "~/components/ui/animated-list/AnimatedList.vue";
 
 type FileItem = {
   id: number;
@@ -87,15 +97,30 @@ const emit = defineEmits<{
   (e: "update:files", files: FileItem[]): void;
 }>();
 
-const files = ref(props.files);
+const files = ref<FileItem[]>([]);
+const fileStore = useFileExplorerStore();
+
+watch(
+  () => props.files,
+  (newVal) => {
+    files.value = [...newVal]; // sync เมื่อ props เปลี่ยน
+  },
+  { immediate: true }
+);
 
 const selectFileCount = computed(
   () => files.value.filter((f) => f.selected).length
 );
 
-watch(selectFileCount, (count) => {
-  emit("selectFileCount", count);
-});
+watch(
+  selectFileCount,
+  (count) => {
+    fileStore.setSelectFilesCount(count);
+  },
+  {
+    immediate: true,
+  }
+);
 
 const gridWrap = ref<HTMLElement | null>(null);
 const grid = ref<HTMLElement | null>(null);
@@ -128,6 +153,18 @@ function selectRange(a: number, b: number, { additive = false } = {}) {
   for (let i = start; i <= end; i++) {
     if (files.value[i] !== undefined) files.value[i]!.selected = true;
   }
+}
+
+function onContainerClick(e: MouseEvent) {
+  if (isDragging.value) return; // ถ้ากำลังลาก ไม่ต้องเคลียร์
+  const target = e.target as HTMLElement;
+  // ถ้าคลิกที่ไฟล์ ไม่ต้องเคลียร์
+  if (target.closest(".file-card")) return;
+
+  // เคลียร์ selection ทั้งหมด
+  files.value.forEach((f) => (f.selected = false));
+  startSelectedIndex.value = null;
+  lastSelectedIndex.value = null;
 }
 
 function onItemClick(index: number, e: MouseEvent) {

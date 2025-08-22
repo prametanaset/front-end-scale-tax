@@ -271,9 +271,9 @@ function getStickyLeftValue(columnId: string): string | undefined {
         >
         <DropdownMenu v-if="screenSize === 'desktop'">
           <DropdownMenuTrigger as-child>
-            <Button variant="outline" class="ml-auto">
+            <BaseButton variant="outline" class="ml-auto">
               Columns <ChevronDown class="ml-2 h-4 w-4" />
-            </Button>
+            </BaseButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuCheckboxItem
@@ -281,7 +281,7 @@ function getStickyLeftValue(columnId: string): string | undefined {
                 .getAllColumns()
                 .filter((column) => column.getCanHide())"
               :key="column.id"
-              class="capitalize"
+              class="capitalize cursor-pointer"
               :model-value="column.getIsVisible()"
               @update:model-value="
                 (value) => {

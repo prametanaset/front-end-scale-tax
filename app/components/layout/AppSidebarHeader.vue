@@ -9,7 +9,7 @@
     </div>
 
     <!-- Right: Actions or Filters -->
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 min-w-[50%]">
       <ToolsSwitcher />
     </div>
   </header>

@@ -21,18 +21,18 @@ const props = defineProps<{
       <Button variant="ghost" class="cursor-pointer"
         ><EllipsisVertical /> </Button
     ></DropdownMenuTrigger>
-    <DropdownMenuContent>
-      <!-- <DropdownMenuItem class="cursor-pointer"
+    <DropdownMenuContent class="min-w-40">
+      <DropdownMenuItem class="cursor-pointer"
         ><CircleEllipsis /> รายละเอียด</DropdownMenuItem
-      > -->
+      >
 
-      <DropdownMenuItem @click="activeEditProduct = true" class="cursor-pointer"
+      <DropdownMenuItem
+        @click="activeEditProduct = true"
+        class="cursor-pointer mb-1"
         ><Edit /> แก้ไข</DropdownMenuItem
       >
       <Separator />
-      <DropdownMenuItem class="cursor-pointer text-red-800"
-        ><Trash class="text-red-800" /> ลบ</DropdownMenuItem
-      >
+      <DropdownMenuItem class="cursor-pointer"><Trash /> ลบ</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 

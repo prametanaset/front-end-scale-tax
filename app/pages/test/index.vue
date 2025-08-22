@@ -1,40 +1,59 @@
 <template>
-  <div>
-    <BaseDialog
-      v-model="open"
-      title="Delete Product"
-      description="Are you sure you want to delete this product?"
-      text="Delete"
-      bgButton="bg-red-500 text-white"
-      :showButton="true"
-    >
-      <!-- ✅ Custom trigger (optional) -->
-      <template #trigger>
-        <Button variant="destructive">Custom Trigger</Button>
-      </template>
-
-      <!-- ✅ Dialog content -->
-      <template #content>
-        <p class="px-4">
-          This action cannot be undone. It will permanently remove the product.
-        </p>
-      </template>
-
-      <!-- ✅ Footer -->
-      <template #footer>
-        <Button variant="outline" @click="open = false">Cancel</Button>
-        <Button variant="destructive" @click="confirmDelete">Confirm</Button>
-      </template>
-    </BaseDialog>
-  </div>
+  <ClientOnly>
+    <div class="relative flex h-[500px] w-full flex-col overflow-hidden p-6">
+      <AnimatedList>
+        <template #default>
+          <Notification
+            v-for="(item, idx) in notifications"
+            :key="idx"
+            :name="item.name"
+            :description="item.description"
+            :icon="item.icon"
+            :color="item.color"
+            :time="item.time"
+          />
+        </template>
+      </AnimatedList>
+    </div>
+  </ClientOnly>
 </template>
+
 <script setup lang="ts">
-const open = ref(true);
-
-function confirmDelete() {
-  console.log("deleted!");
-  open.value = false;
-}
+const notifications = [
+  {
+    name: "Payment received",
+    description: "Inspira UI",
+    time: "15m ago",
+    icon: "💸",
+    color: "#00C9A7",
+  },
+  {
+    name: "User signed up",
+    description: "Inspira UI",
+    time: "10m ago",
+    icon: "👤",
+    color: "#FFB800",
+  },
+  {
+    name: "New message",
+    description: "Inspira UI",
+    time: "5m ago",
+    icon: "💬",
+    color: "#FF3D71",
+  },
+  {
+    name: "New event",
+    description: "Inspira UI",
+    time: "2m ago",
+    icon: "🗞️",
+    color: "#1E86FF",
+  },
+  {
+    name: "Task completed",
+    description: "Inspira UI",
+    time: "1m ago",
+    icon: "✅",
+    color: "#45B26B",
+  },
+];
 </script>
-
-<style></style>

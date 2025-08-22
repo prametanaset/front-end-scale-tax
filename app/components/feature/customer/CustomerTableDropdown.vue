@@ -48,10 +48,8 @@ const tabsActive = ref<"account" | "etax-history">("account");
         <DropdownMenuItem class="cursor-pointer" @click="editActive = true"
           ><Edit /> แก้ไข</DropdownMenuItem
         >
-        <Separator />
-        <DropdownMenuItem class="cursor-pointer text-red-800"
-          ><Trash class="text-red-800" /> ลบ</DropdownMenuItem
-        >
+        <Separator class="my-1" />
+        <DropdownMenuItem class="cursor-pointer"><Trash /> ลบ</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
     <CustomerDialogManage

@@ -26,12 +26,10 @@ const props = defineProps<{
         ><CircleEllipsis /> รายละเอียด</DropdownMenuItem
       >
 
-      <DropdownMenuItem
-        @click="activeEditProduct = true"
-        class="cursor-pointer mb-1"
+      <DropdownMenuItem @click="activeEditProduct = true" class="cursor-pointer"
         ><Edit /> แก้ไข</DropdownMenuItem
       >
-      <Separator />
+      <Separator class="my-1" />
       <DropdownMenuItem class="cursor-pointer"><Trash /> ลบ</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>

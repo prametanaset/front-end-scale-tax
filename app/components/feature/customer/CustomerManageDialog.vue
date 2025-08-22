@@ -168,12 +168,6 @@ watch(active, (val) => emit("update:modelValue", val));
                   </div>
                   <BaseLocationPicker />
                 </div>
-                <div class="flex justify-end">
-                  <BaseButton>บันทึก</BaseButton>
-                  <DialogClose as-child>
-                    <BaseButton variant="ghost">ปิด</BaseButton>
-                  </DialogClose>
-                </div>
               </TabsContent>
 
               <!-- Personal (บุคคลธรรมดา) -->
@@ -246,16 +240,18 @@ watch(active, (val) => emit("update:modelValue", val));
                   </div>
                   <BaseLocationPicker />
                 </div>
-                <div class="flex justify-end mt-4">
-                  <BaseButton>บันทึก</BaseButton>
-                  <DialogClose as-child>
-                    <BaseButton variant="ghost">ปิด</BaseButton>
-                  </DialogClose>
-                </div>
               </TabsContent>
             </Tabs>
           </div>
         </div>
+      </div>
+    </template>
+    <template #footer>
+      <div class="flex justify-end">
+        <BaseButton>บันทึก</BaseButton>
+        <DialogClose as-child>
+          <BaseButton variant="ghost">ปิด</BaseButton>
+        </DialogClose>
       </div>
     </template>
   </BaseDialog>

@@ -6,7 +6,9 @@
       class="flex flex-1 rounded-xl md:min-h-min items-center justify-center"
     >
       <div class="flex flex-col items-center justify-center">
-        <div class="absolute gradients-container w-screen h-dvh">
+        <div
+          class="absolute gradients-container w-screen h-dvh top-[64px] left-0"
+        >
           <div class="g1"></div>
           <div class="g2"></div>
           <div class="g3"></div>

@@ -1,23 +1,8 @@
 <template>
   <div
-    class="flex min-h-[calc(100dvh-theme(spacing.20))] overflow-hidden items-center justify-center"
+    class="relative flex flex-1 flex-col p-4 gap-4 md:min-h-[calc(100vh-theme(spacing.20))] min-h-[calc(100vh-4rem)] overflow-hidden"
   >
-    <div
-      class="flex flex-1 rounded-xl md:min-h-min items-center justify-center"
-    >
-      <div class="flex flex-col items-center justify-center">
-        <div
-          class="absolute gradients-container w-screen h-dvh top-[64px] left-0"
-        >
-          <div class="g1"></div>
-          <div class="g2"></div>
-          <div class="g3"></div>
-          <div class="g4"></div>
-          <div class="g5"></div>
-        </div>
-        <FeatureMailLogin />
-      </div>
-    </div>
+      <FeatureMailLogin />
   </div>
 </template>
 
@@ -26,81 +11,4 @@ definePageMeta({
   breadcrumb: [{ label: "อีเมล" }],
 });
 </script>
-<style scoped>
-.gradients-container > div {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(150px);
-  transform-origin: center;
-  mix-blend-mode: normal;
-  opacity: 0.5;
-  animation: float 4s ease-in-out infinite, hueShift 10s linear infinite;
-}
 
-/* ขยับเบาๆ ด้วย float */
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px) scale(1);
-  }
-  50% {
-    transform: translateY(-30px) scale(1.05);
-  }
-}
-
-/* เปลี่ยนสีด้วย hue-rotate */
-@keyframes hueShift {
-  0% {
-    filter: blur(150px) hue-rotate(0deg);
-  }
-  100% {
-    filter: blur(150px) hue-rotate(360deg);
-  }
-}
-
-/* แต่ละ g ใช้ขนาดและตำแหน่งต่างกัน + delay ต่างกัน */
-.g1 {
-  width: 800px;
-  height: 480px;
-  top: 20%;
-  left: 10%;
-  background: radial-gradient(circle, #7873f5, transparent 70%);
-  animation-delay: 0s, 0s;
-}
-
-.g2 {
-  width: 1000px;
-  height: 1200px;
-  top: 50%;
-  left: 30%;
-  background: radial-gradient(circle, #ff6ec4, transparent 70%);
-  animation-delay: 1s, 2s;
-}
-
-.g3 {
-  width: 480px;
-  height: 480px;
-  top: 70%;
-  left: 60%;
-  background: radial-gradient(circle, #e74c3c, transparent 100%);
-  animation-delay: 2s, 4s;
-}
-
-.g4 {
-  width: 360px;
-  height: 360px;
-  top: 35%;
-  left: 70%;
-  background: radial-gradient(circle, #3a86ff, transparent 70%);
-  animation-delay: 3s, 6s;
-}
-
-.g5 {
-  width: 1000px;
-  height: 1000px;
-  top: 10%;
-  left: 80%;
-  background: radial-gradient(circle, #f0c27b, transparent 50%);
-  animation-delay: 4s, 8s;
-}
-</style>

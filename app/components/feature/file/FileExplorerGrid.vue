@@ -35,7 +35,14 @@
         >
           <ContextMenu>
             <ContextMenuTrigger as-child>
-              <div class="flex flex-col items-center p-3 py-6">
+              <div class="relative flex flex-col items-center p-3 py-6">
+                <div class="absolute top-2 right-2">
+                  <Checkbox
+                    class="absolute top-2 right-2 z-10"
+                    :model-value="file.selected"
+                    @click.stop="toggleSingle(index)"
+                  />
+                </div>
                 <!-- ไอคอน/รูป -->
                 <div
                   class="w-12 h-12 flex items-center justify-center rounded-lg"

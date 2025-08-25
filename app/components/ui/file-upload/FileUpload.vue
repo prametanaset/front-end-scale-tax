@@ -9,13 +9,13 @@
       @mouseleave="handleLeave"
     >
       <div
-        class="group/file relative block w-full cursor-pointer overflow-hidden rounded-lg p-4"
-        @click="handleClick"
+        class="group/file relative block w-full overflow-hidden rounded-lg p-4"
       >
         <input
           ref="fileInputRef"
           type="file"
           class="hidden"
+          accept="image/*"
           @change="onFileChange"
         />
 
@@ -111,7 +111,8 @@
             <template v-if="!files.length">
               <Motion
                 as="div"
-                class="relative z-40 mx-auto mt-4 flex h-32 w-full max-w-32 items-center justify-center rounded-md bg-white shadow-[0px_10px_50px_rgba(0,0,0,0.1)] group-hover/file:shadow-2xl dark:bg-neutral-900"
+                class="relative z-40 mx-auto mt-4 flex h-32 w-full max-w-32 items-center justify-center rounded-md bg-white shadow-[0px_10px_50px_rgba(0,0,0,0.1)] group-hover/file:shadow-2xl dark:bg-neutral-900 cursor-pointer"
+                @click="handleClick"
                 :initial="{
                   x: 0,
                   y: 0,
@@ -181,9 +182,9 @@ function clearFiles() {
 }
 
 function handleFileChange(newFiles: File[]) {
-  // files.value = [...files.value, ...newFiles];
-  files.value = [...newFiles];
+  const imageFiles = newFiles.filter((file) => file.type.startsWith("image/"));
 
+  files.value = [...imageFiles];
   emit("onChange", files.value);
 }
 
@@ -208,7 +209,17 @@ function handleDrop(e: DragEvent) {
   const droppedFiles = e.dataTransfer?.files
     ? Array.from(e.dataTransfer.files)
     : [];
-  if (droppedFiles.length) handleFileChange(droppedFiles);
+
+  const imageFiles = droppedFiles.filter((file) =>
+    file.type.startsWith("image/")
+  );
+
+  if (!imageFiles.length) {
+    alert("กรุณาอัปโหลดเฉพาะไฟล์รูปภาพเท่านั้น");
+    return;
+  }
+
+  handleFileChange(imageFiles);
 }
 </script>
 

@@ -52,11 +52,10 @@
       <SidebarGroup class="mt-auto">
         <div class="space-y-1">
           <Transition name="fade">
-            <p
-              v-if="open"
-              class="text-sm group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:pointer-events-none"
+            <p v-if="open || isMobile"
+              class="text-sm md:group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:pointer-events-none"
             >
-              ใช้ไป 3.3GB จาก 10GB
+              ใช้ไป {{ storageUsed }} GB จาก 10GB
             </p>
           </Transition>
           <!-- html-validate-disable prefer-native-element -->
@@ -94,8 +93,10 @@ const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: "icon",
 });
 
-const progress = ref(33);
-const { open } = useSidebar();
+const storageUsed = ref(Math.floor(Math.random()*9 + 1))
+const progress = ref((storageUsed.value/10)*100);
+
+const { open, isMobile } = useSidebar();
 const data = {
   user: {
     name: "shadcn",

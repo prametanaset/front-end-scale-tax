@@ -19,10 +19,10 @@ const props = withDefaults(defineProps<SidebarProps>(), {
 
 const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
 
-const hydrated = ref(false)
-onMounted(() => { hydrated.value = true })
+// const hydrated = ref(false)
+// onMounted(() => { hydrated.value = true })
 
-const isMobileHydrated = computed(() => hydrated.value && isMobile.value)
+// const isMobileHydrated = computed(() => hydrated.value && isMobile.value)
 </script>
 
 <template>
@@ -35,7 +35,7 @@ const isMobileHydrated = computed(() => hydrated.value && isMobile.value)
     <slot />
   </div>
 
-  <Sheet v-else-if="isMobileHydrated" :open="openMobile" v-bind="$attrs" @update:open="setOpenMobile">
+  <Sheet v-else-if="isMobile" :open="openMobile" v-bind="$attrs" @update:open="setOpenMobile">
     <SheetContent
       data-sidebar="sidebar"
       data-slot="sidebar"

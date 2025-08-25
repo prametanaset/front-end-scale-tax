@@ -6,6 +6,11 @@ export default defineNuxtConfig({
   css: ["~/assets/css/tailwind.css"],
   ssr: true,
   vite: {
+    server: {
+      watch: {
+        usePolling: true,
+      },
+    },
     plugins: [
       tailwindcss(),
     ],
@@ -31,8 +36,19 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "@pinia/nuxt",
     "@nuxtjs/html-validator",
-    '@nuxtjs/google-fonts'
+    '@nuxtjs/google-fonts',
+    "@vite-pwa/nuxt"
   ],
+
+  $development: {
+    experimental: {
+      defaults: {
+        nuxtLink: {
+          prefetch: false,
+        },
+      },
+    },
+  },
 
   googleFonts: {
     families: {
@@ -93,6 +109,39 @@ export default defineNuxtConfig({
         'no-autoplay': 'off',
       }
     }
-  }
+  },
+
+  pwa: {
+    registerType: 'autoUpdate',
+    registerWebManifestInRouteRules: true,
+
+    devOptions: {
+      enabled: false, 
+      type: 'module'
+    },
+
+    client: {
+      registerPlugin: true,
+      installPrompt: true, 
+    },
+
+    manifest: {
+      name: "sunscaleup",
+      short_name: "sunscaleup",
+      theme_color: "#f1f5f9",
+      icons: [
+        {
+          src: "/Icon.png",
+          sizes: "192x192",
+          type: "image/png",
+        },
+        {
+          src: "/Icon.png",
+          sizes: "512x512",
+          type: "image/png",
+        },
+      ],
+    },
+  },
   
 });

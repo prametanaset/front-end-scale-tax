@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 onMounted(() => {
-  navigateTo("/login");
+  navigateTo("/test");
 });
 </script>
 

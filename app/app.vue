@@ -1,8 +1,17 @@
 <template>
   <NuxtLayout>
-      <NuxtPage />
+    <NuxtPage />
+    <!-- <LayoutMobileNav v-if="route.path !== '/login'" /> -->
+    <NuxtPwaManifest />
+    <Toaster class="pointer-events-auto" />
   </NuxtLayout>
 </template>
+
+<script setup lang="ts">
+const route = useRoute()
+
+</script>
+
 
 <style scoped>
 .page-enter-active,

@@ -10,13 +10,27 @@
           <slot />
         </div>
       </div>
+
+      <FeaturePwaInstall
+        title="ติดตั้ง e-Tax by Timestamp"
+        text="เพิ่มลงโฮมสกรีน ใช้งานสะดวกและรวดเร็วขึ้น"
+        confirmButton="ติดตั้งเลย"
+        cancelButton="ภายหลัง"
+      />
     </SidebarInset>
+
+    <LayoutMobileNav v-if="!isGreaterThanBreakpoint"/>
   </SidebarProvider>
 </template>
 
 <script lang="ts" setup>
 import { useMediaQuery } from "@vueuse/core";
 import AppSidebarHeader from "~/components/layout/AppSidebarHeader.vue";
+
+const bp = useBreakpointStore()
+const { isGreaterThanBreakpoint } = storeToRefs(bp)
+bp.setCompareBreakpoint('sm')
+
 const isStuck = ref(false);
 const sentinel = ref<HTMLElement | null>(null);
 const open = ref(true);

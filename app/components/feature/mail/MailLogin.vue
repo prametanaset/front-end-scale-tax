@@ -1,15 +1,15 @@
 <template>
   <div class="flex flex-col items-center justify-center inset-0">
-    <div class="flex flex-col items-center z-10">
-      <div
-        class="absolute gradients-container w-screen min-h-[calc(100dvh-theme(spacing.20))] top-0 left-0 overflow-hidden"
-      >
-        <div class="g1"></div>
-        <div class="g2"></div>
-        <div class="g3"></div>
-        <div class="g4"></div>
-        <div class="g5"></div>
-      </div>
+    <div
+      class="absolute gradients-container w-screen min-h-[calc(100dvh-theme(spacing.20))] top-0 left-0 overflow-hidden"
+    >
+      <div class="g1"></div>
+      <div class="g2"></div>
+      <div class="g3"></div>
+      <div class="g4"></div>
+      <div class="g5"></div>
+    </div>
+    <div class="absolute top-[50%] translate-y-[-50%] flex flex-col items-center z-10">
       <div class="mb-2">
         <!-- <Mail
           class="text-primary-500 w-[5rem] h-[5rem] bg-gradient-to-r from-indigo-600 to-cyan-400 text-transparent bg-clip-text"

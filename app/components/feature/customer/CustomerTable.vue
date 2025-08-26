@@ -21,6 +21,7 @@ import {
   ArrowUpDown,
   ChevronDown,
   ChevronsUpDown,
+  Columns3Cog,
   Mail,
   Plus,
   Search,
@@ -53,8 +54,7 @@ import type { Customer, CustomerTableRow } from "~/composables/types/customer";
 import { mapCustomersToTableRows } from "~/utils/format-customer-table-row";
 
 const activeStatus = ref("all");
-const searchQuery = ref("");
-const addCustomer = ref(false);
+const toolsStore = useToolsStore()
 
 const isMobile = useMediaQuery("(max-width: 660px)");
 const isTablet = useMediaQuery("(max-width: 968px)");
@@ -71,7 +71,7 @@ const data = customerStore.customersList;
 const tableRows = mapCustomersToTableRows(data);
 
 const filteredCustomers = computed(() => {
-  const q = searchQuery.value.trim().toLowerCase();
+  const q = toolsStore.query.trim().toLowerCase();
 
   // กรองจาก tab ก่อน
   let list = tableRows;
@@ -260,64 +260,55 @@ function getStickyLeftValue(columnId: string): string | undefined {
 
 <template>
   <div class="w-full">
-    <div class="flex items-center justify-between gap-4">
-      <BaseSearchInput
-        place-holder="ค้นหาด้วย หมายเลขผู้เสียภาษี หรือ ชื่อลูกค้า"
-        v-model="searchQuery"
-      />
-      <div class="flex gap-2">
-        <BaseButton @click="addCustomer = true"
-          ><Plus class="w-4 h-4" /> เพิ่มข้อมูลลูกค้า</BaseButton
-        >
-        <DropdownMenu v-if="screenSize === 'desktop'">
-          <DropdownMenuTrigger as-child>
-            <BaseButton variant="outline" class="ml-auto">
-              Columns <ChevronDown class="ml-2 h-4 w-4" />
-            </BaseButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuCheckboxItem
-              v-for="column in table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())"
-              :key="column.id"
-              class="capitalize cursor-pointer"
-              :model-value="column.getIsVisible()"
-              @update:model-value="
-                (value) => {
-                  column.toggleVisibility(!!value);
-                }
-              "
+    <div class="">
+      <div class="flex justify-between" v-if="screenSize == 'desktop'">
+        <Tabs v-model="activeStatus">
+          <TabsList class="inline-flex space-x-2 p-0 bg-transparent">
+            <TabsTrigger
+              value="all"
+              class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
             >
-              {{ column.columnDef.meta?.label }}
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              ทั้งหมด
+            </TabsTrigger>
+            <TabsTrigger
+              value="0"
+              class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
+            >
+              บุคคลธรรมดา
+            </TabsTrigger>
+            <TabsTrigger
+              value="1"
+              class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
+            >
+              นิติบุคคล
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <div class="flex">
+          <DropdownMenu v-if="screenSize === 'desktop'">
+            <DropdownMenuTrigger as-child>
+              <BaseButton variant="outline" class="ml-auto">
+                <Columns3Cog /> <ChevronDown class="ml-2 h-4 w-4" />
+              </BaseButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuCheckboxItem
+                v-for="column in table
+                  .getAllColumns()
+                  .filter((c) => c.getCanHide())"
+                :key="column.id"
+                class="capitalize cursor-pointer"
+                :model-value="column.getIsVisible()"
+                @update:model-value="
+                  (value) => column.toggleVisibility(!!value)
+                "
+              >
+                {{ column.columnDef.meta?.label }}
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
-    </div>
-    <div class="mt-2">
-      <Tabs v-if="screenSize == 'desktop'" v-model="activeStatus">
-        <TabsList class="inline-flex space-x-2 p-0 bg-transparent">
-          <TabsTrigger
-            value="all"
-            class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
-          >
-            ทั้งหมด
-          </TabsTrigger>
-          <TabsTrigger
-            value="0"
-            class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
-          >
-            บุคคลธรรมดา
-          </TabsTrigger>
-          <TabsTrigger
-            value="1"
-            class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
-          >
-            นิติบุคคล
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
       <Select v-else v-model="activeStatus">
         <SelectTrigger>
           <SelectValue placeholder="ทั้งหมด" />
@@ -407,7 +398,7 @@ function getStickyLeftValue(columnId: string): string | undefined {
         </TableBody>
       </Table>
     </div>
-    <div class="mt-2" v-else>
+    <div class="mt-2 max-h-[calc(100vh-theme(spacing.40)-1rem)] overflow-y-auto" v-else>
       <Tabs v-model="activeStatus">
         <TabsContent
           v-for="tab in ['all', '0', '1']"
@@ -501,7 +492,7 @@ function getStickyLeftValue(columnId: string): string | undefined {
       </Tabs>
     </div>
 
-    <div class="flex items-center justify-end space-x-2 py-4">
+    <div v-if="screenSize === 'desktop'" class="flex items-center justify-end space-x-2 py-4">
       <div class="flex-1 text-sm text-muted-foreground">
         เลือก {{ table.getFilteredSelectedRowModel().rows.length }} จาก
         {{ table.getFilteredRowModel().rows.length }}
@@ -525,6 +516,5 @@ function getStickyLeftValue(columnId: string): string | undefined {
         </Button>
       </div>
     </div>
-    <CustomerManageDialog mode="create" v-model="addCustomer" />
   </div>
 </template>

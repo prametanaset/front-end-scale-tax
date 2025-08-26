@@ -95,7 +95,7 @@ const data: Product[] = [
 ];
 
 onMounted(() => {
-  catalogStore.setProductList(data);
+  // catalogStore.setProductList(data);
   setTimeout(() => {
     isLoading.value = false;
   }, 1500);

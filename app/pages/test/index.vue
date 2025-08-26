@@ -1,116 +1,41 @@
 <template>
-  <div class="w-full max-w-md mx-auto p-4">
-    <Accordion type="single" class="w-full space-y-4" collapsible>
-      <AccordionItem
-        v-for="item in accordionItems"
-        :key="item.value"
-        :value="item.value"
-        class="border-b-0"
-      >
-        <!-- คลิกแล้วเปิด Drawer แทน -->
-        <AccordionTrigger
-          @click.stop.prevent="openDrawer(item)"
-          class="data-[state=open]:rounded-b-none shadow-md px-2 flex items-center justify-between hover:no-underline py-2 cursor-pointer"
-        >
-          <!-- ซ้าย: หัวข้อ + วันที่ -->
-          <div class="flex flex-col text-left gap-1">
-            <p class="font-medium">{{ item.title }}</p>
-            <p class="text-sm text-gray-500">{{ item.content }}</p>
-          </div>
-
-          <!-- ขวา: จำนวนเงิน + Badge -->
-          <template #icon>
-            <div class="flex flex-col text-right items-end gap-1">
-              <p>฿{{ formatBaht(item.amount) }}</p>
-              <Badge
-                variant="secondary"
-                :class="badgeColor(item.status)"
-                class="capitalize"
-              >
-                {{ item.status }}
-              </Badge>
-            </div>
-          </template>
-        </AccordionTrigger>
-
-        <!-- ไม่ใช้แล้วก็ซ่อนไว้ หรือจะลบออกเลยก็ได้ -->
-        <AccordionContent class="hidden" />
-      </AccordionItem>
-    </Accordion>
-  </div>
-
-  <!-- Drawer -->
-  <Drawer v-model:open="drawerOpen">
-    <DrawerContent>
-      <DrawerHeader>
-        <!-- <DrawerTitle class="flex justify-center">
-          <img
-            src="/img/invoice.png"
-            class="w-40 relative -bottom-10"
-            alt="logo-invoice"
-          />
-        </DrawerTitle> -->
-
-        <DrawerDescription class="flex flex-col pt-14">
-          <BaseCard class="bg-gray-100/20">
-            <CardHeader class="flex flex-col items-center relative gap-1 pt-12 border-b">
-               <img
-                src="/img/invoice.png"
-                class="w-40 absolute -top-20"
-                alt="logo-invoice"
-              />
-              <CardTitle class="text-4xl font-bold mt-12"
-                >{{ formatBaht(selectedItem?.amount ?? 0) }} บาท</CardTitle
-              >
-              <CardDescription
-                >No. {{ selectedItem?.invoiceNo ?? "-" }}</CardDescription
-              >
-            </CardHeader>
-
-            <CardContent class="flex items-start justify-between">
-              <div class="flex flex-col text-left gap-3">
-                <p class="font-medium">Status</p>
-                <p class="text-sm text-gray-500">Payment Date</p>
-              </div>
-
-              <div class="flex flex-col text-right items-end gap-3">
-                <Badge
-                  :class="badgeColor(selectedItem?.status ?? 'ยังไม่ส่ง')"
-                  class="capitalize"
-                >
-                  {{ selectedItem?.status ?? "ยังไม่ส่ง" }}
-                </Badge>
-                <span class="text-sm text-gray-500">{{
-                  selectedItem?.content ?? "-"
-                }}</span>
-              </div>
-            </CardContent>
-          </BaseCard>
-        </DrawerDescription>
-      </DrawerHeader>
-
-      <div class="px-6 pb-6 space-y-3">
-        <div class="flex justify-between">
-          <span>จำนวนเงิน</span>
-          <span class="font-medium"
-            >฿{{ selectedItem ? formatBaht(selectedItem.amount) : "" }}</span
-          >
-        </div>
-        <!-- ใส่รายละเอียดอื่น ๆ ที่ต้องการแสดงใน Drawer ได้ที่นี่ -->
+  <AuroraBackground>
+    <Motion
+      as="div"
+      :initial="{ opacity: 0, y: 40, filter: 'blur(10px)' }"
+      :while-in-view="{
+        opacity: 1,
+        y: 0,
+        filter: 'blur(0px)',
+      }"
+      :transition="{
+        delay: 0.3,
+        duration: 0.8,
+        ease: 'easeInOut',
+      }"
+      class="relative flex flex-col items-center justify-center gap-4 px-4"
+    >
+      <div class="text-center text-3xl font-bold md:text-7xl dark:text-white">
+        Background lights are cool you know.
       </div>
-
-      <DrawerFooter>
-        <div class="flex items-center justify-center w-full gap-4">
-          <BaseButton variant="outline"><Send /> Send Invoice</BaseButton>
-          <BaseButton variant="outline"><FileInput /> Export</BaseButton>
-        </div>
-      </DrawerFooter>
-    </DrawerContent>
-  </Drawer>
+      <div
+        class="py-4 text-base font-extralight md:text-4xl dark:text-neutral-200"
+      >
+        And this, is chemical burn.
+      </div>
+      <button
+        class="w-fit rounded-full bg-black px-4 py-2 text-white dark:bg-white dark:text-black"
+      >
+        Burn it now
+      </button>
+    </Motion>
+  </AuroraBackground>
 </template>
+
 
 <script setup lang="ts">
 import { FileInput, Send } from "lucide-vue-next";
+import { Motion } from "motion-v";
 type Status = "ส่งแล้ว" | "ยังไม่ส่ง" | "ยกเลิก";
 
 type InvoiceType = "ใบแจ้งหนี้" | "ใบเสร็จรับเงิน" | "ใบกำกับภาษี";

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative flex flex-1 flex-col min-h-[calc(100dvh-theme(spacing.20))] overflow-hidden"
+    class=" h-[calc(100vh-theme(spacing.20)+8px)] "
   >
       <FeatureMailLogin />
   </div>

@@ -1,35 +1,6 @@
 <template>
-  <AuroraBackground>
-    <Motion
-      as="div"
-      :initial="{ opacity: 0, y: 40, filter: 'blur(10px)' }"
-      :while-in-view="{
-        opacity: 1,
-        y: 0,
-        filter: 'blur(0px)',
-      }"
-      :transition="{
-        delay: 0.3,
-        duration: 0.8,
-        ease: 'easeInOut',
-      }"
-      class="relative flex flex-col items-center justify-center gap-4 px-4"
-    >
-      <div class="text-center text-3xl font-bold md:text-7xl dark:text-white">
-        Background lights are cool you know.
-      </div>
-      <div
-        class="py-4 text-base font-extralight md:text-4xl dark:text-neutral-200"
-      >
-        And this, is chemical burn.
-      </div>
-      <button
-        class="w-fit rounded-full bg-black px-4 py-2 text-white dark:bg-white dark:text-black"
-      >
-        Burn it now
-      </button>
-    </Motion>
-  </AuroraBackground>
+  <BaseDataTable :data="accordionItems" :column-name="colName" :sticky-col="stickyCol"
+  />
 </template>
 
 
@@ -135,6 +106,26 @@ const accordionItems: AccordionItem[] = [
     customerType: "นิติบุคคล",
   },
 ];
+
+
+const colName = {
+    value: "ค่า",
+    title: "หัวข้อ",
+    content: "วันที่",
+    amount: 'ราคา',
+    status: "สถานะ",
+    invoiceNo: "รหัส",
+    email: "อีเมล",
+    firstName: "ชื่อ",
+    lastName: "นามสกุล",
+    invoiceType: "ประเภท",
+    customerType: "ประเภทลูกค้า",
+}
+
+const stickyCol = [
+    { columnId: 'title', width: 200 },
+    { columnId: 'amount', width: 100 }
+  ]
 
 const drawerOpen = ref(false);
 const selectedItem = ref<(typeof accordionItems)[number] | null>(null);

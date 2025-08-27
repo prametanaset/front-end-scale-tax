@@ -1,64 +1,16 @@
 <script setup lang="ts">
-import type {
-  ColumnDef,
-  ColumnFiltersState,
-  ColumnPinningState,
-  ExpandedState,
-  SortingState,
-  VisibilityState,
-} from "@tanstack/vue-table";
-import {
-  createColumnHelper,
-  FlexRender,
-  getCoreRowModel,
-  getExpandedRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useVueTable,
-} from "@tanstack/vue-table";
-import {
-  ArrowUpDown,
-  ChevronDown,
-  ChevronsUpDown,
-  Columns3Cog,
-  Mail,
-  Plus,
-  Search,
-  X,
-} from "lucide-vue-next";
+import { Mail } from "lucide-vue-next";
 import { h, ref } from "vue";
-
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { cn, valueUpdater } from "~/lib/utils";
+
 import { useMediaQuery } from "@vueuse/core";
 import CustomerTableDropdown from "./CustomerTableDropdown.vue";
-import CustomerManageDialog from "./CustomerManageDialog.vue";
-import type { Customer, CustomerTableRow } from "~/composables/types/customer";
 import { mapCustomersToTableRows } from "~/utils/format-customer-table-row";
 
 const activeStatus = ref("all");
-const toolsStore = useToolsStore()
+const toolsStore = useToolsStore();
 
 const isMobile = useMediaQuery("(max-width: 660px)");
-const isTablet = useMediaQuery("(max-width: 968px)");
-const isPinningCol = useMediaQuery("(max-width: 767px)");
 
 const screenSize = computed(() => {
   if (isMobile.value) return "mobile";
@@ -69,10 +21,24 @@ const screenSize = computed(() => {
 const customerStore = useCustomerStore();
 const data = customerStore.customersList;
 const tableRows = mapCustomersToTableRows(data);
+const colName = {
+  id:'--hide--',
+  name : 'ชื่อ',
+  first_name: '--hide--',
+  last_name: '--hide--',
+  type: 'ประเภทลูกค้า',
+  email: 'อีเมล',
+  tin: 'หมายเลขผู้เสียภาษี',
+  phone: '--hide--',
+  addredd: '--hide--',
+  branch_no : '--hide--',
+  status: '--hide--',
+  created_at: '--hide--',
+  location_data: '--hide--'
+}
 
 const filteredCustomers = computed(() => {
   const q = toolsStore.query.trim().toLowerCase();
-
   // กรองจาก tab ก่อน
   let list = tableRows;
   if (activeStatus.value === "0") {
@@ -91,224 +57,12 @@ const filteredCustomers = computed(() => {
     );
   });
 });
-
-const columnHelper = createColumnHelper<CustomerTableRow>();
-
-const columns = [
-  // ✅ Checkbox Select
-  columnHelper.display({
-    id: "select",
-    header: ({ table }) =>
-      h(Checkbox, {
-        modelValue:
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate"),
-        "onUpdate:modelValue": (value) =>
-          table.toggleAllPageRowsSelected(!!value),
-        ariaLabel: "Select all",
-      }),
-    cell: ({ row }) =>
-      h(Checkbox, {
-        modelValue: row.getIsSelected(),
-        "onUpdate:modelValue": (value) => row.toggleSelected(!!value),
-        ariaLabel: "Select row",
-      }),
-    enableSorting: false,
-    enableHiding: false,
-    enablePinning: true,
-  }),
-
-  // ✅ หมายเลขผู้เสียภาษี (TIN)
-  columnHelper.accessor("tin", {
-    header: "หมายเลขผู้เสียภาษี",
-    meta: { label: "หมายเลขผู้เสียภาษี" },
-    cell: ({ row }) => h("div", {}, row.getValue("tin")),
-    enablePinning: true,
-  }),
-
-  // ✅ ชื่อ
-  columnHelper.accessor("name", {
-    header: "ชื่อ",
-    meta: { label: "ชื่อ" },
-    cell: ({ row }) =>
-      h(
-        "div",
-        { class: isPinningCol.value ? "sticky left-0 z-10" : "" },
-        row.getValue("name")
-      ),
-    enablePinning: true,
-  }),
-
-  // ✅ ประเภทลูกค้า
-  columnHelper.accessor("type", {
-    header: "ประเภทลูกค้า",
-    meta: { label: "ประเภทลูกค้า" },
-    cell: ({ row }) => h("div", {}, row.getValue("type")),
-    enableSorting: true,
-  }),
-
-  // ✅ เบอร์โทรศัพท์
-  columnHelper.accessor("phone", {
-    header: "เบอร์โทรศัพท์",
-    meta: { label: "เบอร์โทรศัพท์" },
-    cell: ({ row }) => h("div", {}, row.getValue("phone")),
-  }),
-
-  // ✅ อีเมล
-  columnHelper.accessor("email", {
-    header: "อีเมล",
-    meta: { label: "อีเมล" },
-    cell: ({ row }) => h("div", {}, row.getValue("email")),
-  }),
-
-  // ✅ ปุ่มการจัดการ (Edit/Delete)
-  columnHelper.display({
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) =>
-      h("div", { class: "flex justify-center" }, [
-        h(CustomerTableDropdown, { customer: row.original }),
-      ]),
-    enablePinning: false,
-  }),
-];
-
-const sorting = ref<SortingState>([]);
-const columnFilters = ref<ColumnFiltersState>([]);
-const columnVisibility = ref<VisibilityState>({});
-const rowSelection = ref({});
-const expanded = ref<ExpandedState>({});
-const columnPinning = ref<ColumnPinningState>({});
-
-const table = useVueTable({
-  data: filteredCustomers,
-  columns,
-  getCoreRowModel: getCoreRowModel(),
-  // getPaginationRowModel: getPaginationRowModel(),
-  getSortedRowModel: getSortedRowModel(),
-  getFilteredRowModel: getFilteredRowModel(),
-  getExpandedRowModel: getExpandedRowModel(),
-  onSortingChange: (updaterOrValue) => valueUpdater(updaterOrValue, sorting),
-  onColumnFiltersChange: (updaterOrValue) =>
-    valueUpdater(updaterOrValue, columnFilters),
-  onColumnVisibilityChange: (updaterOrValue) =>
-    valueUpdater(updaterOrValue, columnVisibility),
-  onRowSelectionChange: (updaterOrValue) =>
-    valueUpdater(updaterOrValue, rowSelection),
-  onExpandedChange: (updaterOrValue) => valueUpdater(updaterOrValue, expanded),
-  state: {
-    get sorting() {
-      return sorting.value;
-    },
-    get columnFilters() {
-      return columnFilters.value;
-    },
-    get columnVisibility() {
-      return columnVisibility.value;
-    },
-    get rowSelection() {
-      return rowSelection.value;
-    },
-    get expanded() {
-      return expanded.value;
-    },
-    get columnPinning() {
-      return columnPinning.value;
-    },
-  },
-});
-
-watch(
-  isPinningCol,
-  (pin) => {
-    if (pin) {
-      columnPinning.value = {
-        left: ["select", "name"],
-        right: ["actions"],
-      };
-    } else {
-      columnPinning.value = {
-        left: [],
-        right: [],
-      };
-    }
-  },
-  { immediate: true }
-);
-
-function getStickyLeftValue(columnId: string): string | undefined {
-  const widths = {
-    select: 24,
-    name: 200,
-  };
-
-  const order: (keyof typeof widths)[] = ["select", "name"];
-
-  if (!order.includes(columnId as keyof typeof widths)) {
-    return undefined;
-  }
-
-  let left = 0;
-  for (const id of order) {
-    if (id === columnId) break;
-    left += widths[id] ?? 0;
-  }
-
-  return `${left}px`;
-}
 </script>
 
 <template>
   <div class="w-full">
     <div class="">
-      <div class="flex justify-between" v-if="screenSize == 'desktop'">
-        <Tabs v-model="activeStatus">
-          <TabsList class="inline-flex space-x-2 p-0 bg-transparent">
-            <TabsTrigger
-              value="all"
-              class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
-            >
-              ทั้งหมด
-            </TabsTrigger>
-            <TabsTrigger
-              value="0"
-              class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
-            >
-              บุคคลธรรมดา
-            </TabsTrigger>
-            <TabsTrigger
-              value="1"
-              class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
-            >
-              นิติบุคคล
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-        <div class="flex">
-          <DropdownMenu v-if="screenSize === 'desktop'">
-            <DropdownMenuTrigger as-child>
-              <BaseButton variant="outline" class="ml-auto">
-                <Columns3Cog /> <ChevronDown class="ml-2 h-4 w-4" />
-              </BaseButton>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuCheckboxItem
-                v-for="column in table
-                  .getAllColumns()
-                  .filter((c) => c.getCanHide())"
-                :key="column.id"
-                class="capitalize cursor-pointer"
-                :model-value="column.getIsVisible()"
-                @update:model-value="
-                  (value) => column.toggleVisibility(!!value)
-                "
-              >
-                {{ column.columnDef.meta?.label }}
-              </DropdownMenuCheckboxItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
+      <div class="flex justify-between" v-if="screenSize == 'desktop'"></div>
       <Select v-else v-model="activeStatus">
         <SelectTrigger>
           <SelectValue placeholder="ทั้งหมด" />
@@ -322,83 +76,38 @@ function getStickyLeftValue(columnId: string): string | undefined {
         </SelectContent>
       </Select>
     </div>
-    <div v-if="screenSize === 'desktop'" class="rounded-md border mt-4">
-      <Table class="relative">
-        <TableHeader>
-          <TableRow
-            v-for="headerGroup in table.getHeaderGroups()"
-            :key="headerGroup.id"
-          >
-            <TableHead
-              v-for="header in headerGroup.headers"
-              :key="header.id"
-              :data-pinned="header.column.getIsPinned()"
-              :class="
-                cn({ 'sticky bg-background z-10': header.column.getIsPinned() })
-              "
-              :style="{
-                ...(header.column.getIsPinned() === 'left'
-                  ? { left: getStickyLeftValue(header.column.id) }
-                  : header.column.getIsPinned() === 'right'
-                  ? { right: '0px' }
-                  : {}),
-                ...(header.column.id === 'name'
-                  ? { borderRight: '2px solid red-500' }
-                  : {}),
-              }"
-            >
-              <FlexRender
-                v-if="!header.isPlaceholder"
-                :render="header.column.columnDef.header"
-                :props="header.getContext()"
-              />
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <template v-if="table.getRowModel().rows?.length">
-            <template v-for="row in table.getRowModel().rows" :key="row.id">
-              <TableRow :data-state="row.getIsSelected() && 'selected'">
-                <TableCell
-                  v-for="cell in row.getVisibleCells()"
-                  :key="cell.id"
-                  :data-pinned="cell.column.getIsPinned()"
-                  :class="
-                    cn({
-                      'sticky bg-background z-10': cell.column.getIsPinned(),
-                    })
-                  "
-                  :style="
-                    cell.column.getIsPinned() === 'left'
-                      ? { left: getStickyLeftValue(cell.column.id) }
-                      : cell.column.getIsPinned() === 'right'
-                      ? { right: '0px' }
-                      : {}
-                  "
-                >
-                  <FlexRender
-                    :render="cell.column.columnDef.cell"
-                    :props="cell.getContext()"
-                  />
-                </TableCell>
-              </TableRow>
-              <TableRow v-if="row.getIsExpanded()">
-                <TableCell :colspan="row.getAllCells().length">
-                  {{ JSON.stringify(row.original) }}
-                </TableCell>
-              </TableRow>
-            </template>
-          </template>
-
-          <TableRow v-else>
-            <TableCell :colspan="columns.length" class="h-24 text-center">
-              No results.
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+    <div v-if="screenSize === 'desktop'">
+      <BaseDataTable :data="filteredCustomers" :column-name="colName">
+        <template #tabs>
+          <Tabs v-model="activeStatus">
+            <TabsList class="inline-flex space-x-2 p-0 bg-transparent">
+              <TabsTrigger
+                value="all"
+                class="relative h-9  border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
+              >
+                ทั้งหมด
+              </TabsTrigger>
+              <TabsTrigger
+                value="0"
+                class="relative h-9  border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
+              >
+                บุคคลธรรมดา
+              </TabsTrigger>
+              <TabsTrigger
+                value="1"
+                class="relative h-9  border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
+              >
+                นิติบุคคล
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </template>
+      </BaseDataTable>
     </div>
-    <div class="mt-2 max-h-[calc(100vh-theme(spacing.40)-1rem)] overflow-y-auto" v-else>
+    <div
+      class="mt-2 max-h-[calc(100vh-theme(spacing.40)-1rem)] overflow-y-auto"
+      v-else
+    >
       <Tabs v-model="activeStatus">
         <TabsContent
           v-for="tab in ['all', '0', '1']"
@@ -413,7 +122,7 @@ function getStickyLeftValue(columnId: string): string | undefined {
               class="px-2 py-0 m-0 overflow-x-hidden"
             >
               <AccordionItem :value="`${customer.id}`" class="p-0 m-0">
-                <AccordionTrigger>
+                <AccordionTrigger >
                   <div class="flex items-center gap-4 w-full relative m-0">
                     <div
                       :class="[
@@ -491,30 +200,7 @@ function getStickyLeftValue(columnId: string): string | undefined {
         </TabsContent>
       </Tabs>
     </div>
-
-    <div v-if="screenSize === 'desktop'" class="flex items-center justify-end space-x-2 py-4">
-      <div class="flex-1 text-sm text-muted-foreground">
-        เลือก {{ table.getFilteredSelectedRowModel().rows.length }} จาก
-        {{ table.getFilteredRowModel().rows.length }}
-      </div>
-      <div class="space-x-2">
-        <Button
-          variant="outline"
-          size="sm"
-          :disabled="!table.getCanPreviousPage()"
-          @click="table.previousPage()"
-        >
-          ก่อนหน้า
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          :disabled="!table.getCanNextPage()"
-          @click="table.nextPage()"
-        >
-          ถัดไป
-        </Button>
-      </div>
-    </div>
   </div>
 </template>
+
+

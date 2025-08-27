@@ -3,7 +3,7 @@
     <Input
       name="input"
       :type="props.type"
-      class="max-w-md pl-10"
+      class="max-w-md pl-10 truncate overflow-hidden"
       :placeholder="placeHolder"
       v-model="qLocal"
     />

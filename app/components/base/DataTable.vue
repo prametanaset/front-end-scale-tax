@@ -1,24 +1,27 @@
 <template>
   <div class="space-y-2">
     <div class="flex justify-end w-full">
+      <slot name="tabs"/>
       <DropdownMenu>
-      <DropdownMenuTrigger as-child>
-        <BaseButton variant="outline" class="ml-auto">
-          <Columns3Cog /> <ChevronDown class="ml-2 h-4 w-4" />
-        </BaseButton>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuCheckboxItem
-          v-for="column in table.getAllColumns().filter((c) => c.getCanHide())"
-          :key="column.id"
-          class="capitalize cursor-pointer"
-          :model-value="column.getIsVisible()"
-          @update:model-value="(value) => column.toggleVisibility(!!value)"
-        >
-          {{ column.columnDef.header}}
-        </DropdownMenuCheckboxItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <BaseButton variant="outline" class="ml-auto">
+            <Columns3Cog /> <ChevronDown class="ml-2 h-4 w-4" />
+          </BaseButton>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuCheckboxItem
+            v-for="column in table
+              .getAllColumns()
+              .filter((c) => c.getCanHide())"
+            :key="column.id"
+            class="capitalize cursor-pointer"
+            :model-value="column.getIsVisible()"
+            @update:model-value="(value) => column.toggleVisibility(!!value)"
+          >
+            {{ column.columnDef.header }}
+          </DropdownMenuCheckboxItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
     <Table class="relative">
       <TableHeader>
@@ -52,10 +55,20 @@
           </TableHead>
         </TableRow>
       </TableHeader>
-      <TableBody @mousedown="handleMouseDown" @mousemove="handleMouseMove" @mouseup="handleMouseUp">
+      <TableBody
+        @mousedown="handleMouseDown"
+        @mousemove="handleMouseMove"
+        @mouseup="handleMouseUp"
+      >
         <template v-if="table.getRowModel().rows?.length">
-          <template v-for="(row,index) in table.getRowModel().rows" :key="row.id" >
-            <TableRow :data-state="row.getIsSelected() && 'selected'"  :data-index="index">
+          <template
+            v-for="(row, index) in table.getRowModel().rows"
+            :key="row.id"
+          >
+            <TableRow
+              :data-state="row.getIsSelected() && 'selected'"
+              :data-index="index"
+            >
               <TableCell
                 v-for="cell in row.getVisibleCells()"
                 :key="cell.id"
@@ -135,30 +148,34 @@ const expanded = ref<ExpandedState>({});
 const columnPinning = ref<ColumnPinningState>({});
 const columnHelper = createColumnHelper<Record<string, any>>();
 const rowSelection = ref<RowSelectionState>({});
+const dataRow = ref(props.data);
 
 const columns = computed(() => {
   if (!props.data || props.data.length === 0) return [];
 
   const keys = Object.keys(props.data[0]);
 
-  const dynamicCols = keys.map((key) => {
-  const stickyConfig = props.stickyCol?.find((c) => c.columnId === key);
-  const customName = props.columnName?.[key];
+  // ✅ filter keys ที่ไม่ใช่ "--hide--"
+  const filteredKeys = keys.filter((key) => props.columnName?.[key] !== "--hide--");
 
-  return columnHelper.accessor(key, {
-    header: customName || key.replace(/_/g, " ").toUpperCase(),
-    cell: (info) => {
-      const value = info.getValue();
-      return typeof value === "object" ? JSON.stringify(value) : value ?? "-";
-    },
-    enableSorting: true,
-    enableHiding: true,
-    size: stickyConfig ? stickyConfig.width : undefined,
-    meta: {
-      sticky: stickyConfig ? "left" : undefined, // ✅ เก็บตำแหน่ง
-    },
+  const dynamicCols = filteredKeys.map((key) => {
+    const stickyConfig = props.stickyCol?.find((c) => c.columnId === key);
+    const customName = props.columnName?.[key];
+
+    return columnHelper.accessor(key, {
+      header: customName || key.replace(/_/g, " ").toUpperCase(),
+      cell: (info) => {
+        const value = info.getValue();
+        return typeof value === "object" ? JSON.stringify(value) : value ?? "-";
+      },
+      enableSorting: true,
+      enableHiding: true,
+      size: stickyConfig ? stickyConfig.width : undefined,
+      meta: {
+        sticky: stickyConfig ? "left" : undefined,
+      },
+    });
   });
-});
 
   // ✅ Checkbox Column
   const selectCol = columnHelper.display({
@@ -168,14 +185,14 @@ const columns = computed(() => {
         modelValue:
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate"),
-        "onUpdate:modelValue": (value: boolean) =>
+        "onUpdate:modelValue": (value: boolean | "indeterminate") =>
           table.toggleAllPageRowsSelected(!!value),
         ariaLabel: "Select all",
       }),
     cell: ({ row }) =>
       h(Checkbox, {
         modelValue: row.getIsSelected(),
-        "onUpdate:modelValue": (value: boolean) => row.toggleSelected(!!value),
+        "onUpdate:modelValue": (value: boolean | "indeterminate") => row.toggleSelected(!!value),
         ariaLabel: "Select row",
       }),
     enableSorting: false,
@@ -186,9 +203,23 @@ const columns = computed(() => {
   return [selectCol, ...dynamicCols];
 });
 
+
+watch(
+  () => props.data,
+  (newData) => {
+    dataRow.value = newData; // ✅ update data ใน table
+  },
+  { deep: true }
+);
+const reactiveData = computed(() => dataRow.value);
+
 const table = useVueTable({
-  data: props.data,
-  columns: columns.value,
+  get data() {
+    return reactiveData.value; // ✅ reactive binding
+  },
+  get columns() {
+    return columns.value; // ✅ reactive binding
+  },
   enableRowSelection: true,
   getCoreRowModel: getCoreRowModel(),
   getSortedRowModel: getSortedRowModel(),
@@ -244,7 +275,6 @@ function getStickyLeftValue(columnId: string): string | undefined {
 
   return `${left}px`;
 }
-
 
 const isDragging = ref(false);
 const dragStartIndex = ref<number | null>(null);
@@ -303,7 +333,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener("mouseup", handleMouseUp);
 });
-
 </script>
 
 <style></style>

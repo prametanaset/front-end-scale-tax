@@ -20,6 +20,7 @@
 <script lang="ts" setup>
 const selectFileCount = ref(0);
 const fileStore = useFileExplorerStore();
+const toolsStore = useToolsStore();
 
 type FileItem = {
   id: number;
@@ -41,7 +42,7 @@ const files = ref<FileItem[]>(
 
 // ✅ คำนวณไฟล์ที่ต้องแสดง
 const filesShowDisplay = computed(() => {
-  const query = fileStore.searchQuery?.toLowerCase() ?? "";
+  const query = toolsStore.query?.toLowerCase() ?? "";
   if (!query) return files.value;
 
   var result = files.value.filter((file) =>

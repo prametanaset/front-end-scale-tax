@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-2">
     <div class="flex justify-end w-full">
-      <slot name="tabs"/>
+      <slot name="tabs" />
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <BaseButton variant="outline" class="ml-auto">
@@ -23,8 +23,11 @@
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-    <Table class="relative">
-      <TableHeader>
+    <Table
+      :class="cn('relative w-full overflow-auto')"
+      :div-classname="props.divClassname"
+    >
+      <TableHeader class="sticky top-0 z-10 bg-background">
         <TableRow
           v-for="headerGroup in table.getHeaderGroups()"
           :key="headerGroup.id"
@@ -131,12 +134,11 @@ import Checkbox from "../ui/checkbox/Checkbox.vue";
 import { ChevronDown, Columns3Cog } from "lucide-vue-next";
 
 const props = defineProps<{
+  divClassname?: string;
   data: any;
   columnName?: Record<string, string>;
-  stickyCol?: {
-    columnId: string;
-    width: number;
-  }[];
+  action?: Component;
+  stickyCol?: { columnId: string; width: number }[];
 }>();
 
 const toolsStore = useToolsStore();
@@ -156,7 +158,9 @@ const columns = computed(() => {
   const keys = Object.keys(props.data[0]);
 
   // ✅ filter keys ที่ไม่ใช่ "--hide--"
-  const filteredKeys = keys.filter((key) => props.columnName?.[key] !== "--hide--");
+  const filteredKeys = keys.filter(
+    (key) => props.columnName?.[key] !== "--hide--"
+  );
 
   const dynamicCols = filteredKeys.map((key) => {
     const stickyConfig = props.stickyCol?.find((c) => c.columnId === key);
@@ -171,9 +175,6 @@ const columns = computed(() => {
       enableSorting: true,
       enableHiding: true,
       size: stickyConfig ? stickyConfig.width : undefined,
-      meta: {
-        sticky: stickyConfig ? "left" : undefined,
-      },
     });
   });
 
@@ -192,7 +193,8 @@ const columns = computed(() => {
     cell: ({ row }) =>
       h(Checkbox, {
         modelValue: row.getIsSelected(),
-        "onUpdate:modelValue": (value: boolean | "indeterminate") => row.toggleSelected(!!value),
+        "onUpdate:modelValue": (value: boolean | "indeterminate") =>
+          row.toggleSelected(!!value),
         ariaLabel: "Select row",
       }),
     enableSorting: false,
@@ -200,9 +202,23 @@ const columns = computed(() => {
     enablePinning: true,
   });
 
-  return [selectCol, ...dynamicCols];
-});
+  const actionCol = props.action
+    ? columnHelper.display({
+        id: "actions",
+        header: "จัดการ",
+        cell: ({ row }) =>
+          h(props.action as any, {
+            customer: row.original, // ✅ ส่ง data ของ row ไปที่ component
+          }),
+        enableSorting: false,
+        enableHiding: false,
+      })
+    : null;
 
+  return actionCol
+    ? [selectCol, ...dynamicCols, actionCol]
+    : [selectCol, ...dynamicCols];
+});
 
 watch(
   () => props.data,
@@ -260,24 +276,21 @@ const table = useVueTable({
 function getStickyLeftValue(columnId: string): string | undefined {
   const order = props.stickyCol;
   if (!order) return undefined;
-
-  // สร้าง map เพื่อค้นหา width ตาม columnId
   const widthsMap = order.reduce((acc, col) => {
     acc[col.columnId] = col.width;
     return acc;
   }, {} as Record<string, number>);
-
   let left = 0;
   for (const col of order) {
     if (col.columnId === columnId) break;
     left += widthsMap[col.columnId] ?? 0;
   }
-
   return `${left}px`;
 }
 
 const isDragging = ref(false);
 const dragStartIndex = ref<number | null>(null);
+const lastSelectedIndex = ref<number | null>(null);
 
 function handleMouseDown(e: MouseEvent) {
   if (e.shiftKey) {

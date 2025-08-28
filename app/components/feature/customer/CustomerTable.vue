@@ -22,20 +22,26 @@ const customerStore = useCustomerStore();
 const data = customerStore.customersList;
 const tableRows = mapCustomersToTableRows(data);
 const colName = {
-  id:'--hide--',
-  name : 'ชื่อ',
-  first_name: '--hide--',
-  last_name: '--hide--',
-  type: 'ประเภทลูกค้า',
-  email: 'อีเมล',
-  tin: 'หมายเลขผู้เสียภาษี',
-  phone: '--hide--',
-  addredd: '--hide--',
-  branch_no : '--hide--',
-  status: '--hide--',
-  created_at: '--hide--',
-  location_data: '--hide--'
-}
+  id: "--hide--",
+  name: "ชื่อ",
+  first_name: "--hide--",
+  last_name: "--hide--",
+  type: "ประเภทลูกค้า",
+  email: "อีเมล",
+  tin: "หมายเลขผู้เสียภาษี",
+  phone: "--hide--",
+  address: "--hide--",
+  branch_no: "--hide--",
+  status: "--hide--",
+  created_at: "--hide--",
+  location_data: "--hide--",
+  actions: "จัดการ",
+};
+
+const stickyCol = {
+  name: 100,
+  actions: 50,
+};
 
 const filteredCustomers = computed(() => {
   const q = toolsStore.query.trim().toLowerCase();
@@ -77,28 +83,18 @@ const filteredCustomers = computed(() => {
       </Select>
     </div>
     <div v-if="screenSize === 'desktop'">
-      <BaseDataTable :data="filteredCustomers" :column-name="colName">
+      <BaseDataTable
+        :data="filteredCustomers"
+        :column-name="colName"
+        :action="CustomerTableDropdown"
+        :sticky-col="stickyCol"
+      >
         <template #tabs>
           <Tabs v-model="activeStatus">
             <TabsList class="inline-flex space-x-2 p-0 bg-transparent">
-              <TabsTrigger
-                value="all"
-                class="relative h-9  border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
-              >
-                ทั้งหมด
-              </TabsTrigger>
-              <TabsTrigger
-                value="0"
-                class="relative h-9  border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
-              >
-                บุคคลธรรมดา
-              </TabsTrigger>
-              <TabsTrigger
-                value="1"
-                class="relative h-9  border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
-              >
-                นิติบุคคล
-              </TabsTrigger>
+              <TabsTrigger value="all"> ทั้งหมด </TabsTrigger>
+              <TabsTrigger value="0"> บุคคลธรรมดา </TabsTrigger>
+              <TabsTrigger value="1"> นิติบุคคล </TabsTrigger>
             </TabsList>
           </Tabs>
         </template>
@@ -122,7 +118,7 @@ const filteredCustomers = computed(() => {
               class="px-2 py-0 m-0 overflow-x-hidden"
             >
               <AccordionItem :value="`${customer.id}`" class="p-0 m-0">
-                <AccordionTrigger >
+                <AccordionTrigger>
                   <div class="flex items-center gap-4 w-full relative m-0">
                     <div
                       :class="[
@@ -202,5 +198,3 @@ const filteredCustomers = computed(() => {
     </div>
   </div>
 </template>
-
-

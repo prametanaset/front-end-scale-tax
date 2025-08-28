@@ -1,8 +1,12 @@
 <template>
-  <BaseDataTable :data="accordionItems" :column-name="colName" :sticky-col="stickyCol"
-  />
+  <div class="">
+    <BaseDataTable
+      :data="accordionItems"
+      :column-name="colName"
+      :sticky-col="stickyCol"
+    />
+  </div>
 </template>
-
 
 <script setup lang="ts">
 import { FileInput, Send } from "lucide-vue-next";
@@ -107,25 +111,24 @@ const accordionItems: AccordionItem[] = [
   },
 ];
 
-
 const colName = {
-    value: "ค่า",
-    title: "หัวข้อ",
-    content: "วันที่",
-    amount: 'ราคา',
-    status: "สถานะ",
-    invoiceNo: "รหัส",
-    email: "อีเมล",
-    firstName: "ชื่อ",
-    lastName: "นามสกุล",
-    invoiceType: "ประเภท",
-    customerType: "ประเภทลูกค้า",
-}
+  value: "ค่า",
+  title: "หัวข้อ",
+  content: "วันที่",
+  amount: "ราคา",
+  status: "สถานะ",
+  invoiceNo: "รหัส",
+  email: "อีเมล",
+  firstName: "ชื่อ",
+  lastName: "นามสกุล",
+  invoiceType: "ประเภท",
+  customerType: "ประเภทลูกค้า",
+};
 
 const stickyCol = [
-    { columnId: 'title', width: 200 },
-    { columnId: 'amount', width: 100 }
-  ]
+  { columnId: "title", width: 200 },
+  { columnId: "amount", width: 100 },
+];
 
 const drawerOpen = ref(false);
 const selectedItem = ref<(typeof accordionItems)[number] | null>(null);

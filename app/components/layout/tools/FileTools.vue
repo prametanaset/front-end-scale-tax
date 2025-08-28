@@ -1,10 +1,6 @@
 <template>
   <div class="toolbar flex items-center justify-between gap-2 transition">
-    <BaseSearchInput
-      type="text"
-      place-holder="ค้นหาไฟล์"
-      v-model="searchInput"
-    />
+    <BaseSearchInput type="text" place-holder="ค้นหาไฟล์" v-model="q" />
     <div class="flex gap-4 items-center">
       <BaseButton
         class="text-sm transition"
@@ -35,7 +31,8 @@ import { useDebounceFn } from "@vueuse/core";
 import { Download, Grid2x2, List, X } from "lucide-vue-next";
 
 const fileStore = useFileExplorerStore();
-const searchInput = ref(fileStore.searchQuery);
+const toolsStore = useToolsStore();
+const q = ref("");
 
 function showView(v: "grid" | "list") {
   fileStore.setShowView(v);
@@ -43,12 +40,16 @@ function showView(v: "grid" | "list") {
 
 // ✅ debounce update ค่าใน store
 const updateSearchQuery = useDebounceFn((val: string) => {
-  fileStore.searchQuery = val;
+  toolsStore.setQuery(val);
 }, 300);
 
-watch(searchInput, (val) => {
-  updateSearchQuery(val);
-});
+watch(
+  q,
+  (val) => {
+    updateSearchQuery(val);
+  },
+  { immediate: true }
+);
 </script>
 
 <style></style>

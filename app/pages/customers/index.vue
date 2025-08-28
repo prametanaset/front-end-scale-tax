@@ -680,7 +680,7 @@ onMounted(() => {
   customerStore.setCustomerList(data);
   setTimeout(() => {
     isLoading.value = false;
-  }, 1500);
+  }, 10);
 });
 </script>
 

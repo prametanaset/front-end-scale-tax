@@ -26,7 +26,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 // ไอคอนจาก shadcn/vue (lucide)
-import { Home, Search, User, Settings } from 'lucide-vue-next'
+import { Home, Search, User, Settings, SquarePlus } from 'lucide-vue-next'
 
 type Item = { label: string; to: string; icon: any }
 
@@ -37,10 +37,10 @@ const props = defineProps<{
 const route = useRoute()
 
 const defaultItems: Item[] = [
-  { label: 'Home', to: '/dashboard', icon: Home },
-  { label: 'Customer', to: '/customers', icon: Search },
-  { label: 'Product', to: '/catalogs', icon: User },
-  { label: 'Settings', to: '/test', icon: Settings },
+  { label: 'หน้าหลัก', to: '/dashboard', icon: Home },
+  { label: 'ลูกค้า', to: '/customers', icon: Search },
+  { label: 'ออกใบกำกับ', to: '/test', icon: SquarePlus },
+  { label: 'สินค้า', to: '/catalogs', icon: User },
 ]
 
 const data = {

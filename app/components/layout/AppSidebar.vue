@@ -19,7 +19,7 @@
                 <Command class="size-4" />
               </div>
               <div class="grid flex-1 text-left text-sm leading-tight">
-                <span class="truncate font-semibold">Muji</span>
+                <span class="truncate font-semibold">Sunscaleup</span>
                 <span class="truncate text-xs">สำนักงานใหญ่</span>
               </div>
             </NuxtLink>
@@ -42,12 +42,21 @@
         </SidebarGroupContent>
       </SidebarGroup>
 
-      <SidebarGroup>
+      <DevOnly>
+        <SidebarGroup>
+          <SidebarGroupLabel>Dev Mode</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <NavSecondary :items="data.navDev" />
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </DevOnly>
+
+      <!-- <SidebarGroup>
         <SidebarGroupLabel>Collapsible</SidebarGroupLabel>
         <SidebarGroupContent>
           <NavCollapsible :items="data.navCollaps" />
         </SidebarGroupContent>
-      </SidebarGroup>
+      </SidebarGroup> -->
 
       <SidebarGroup class="mt-auto">
         <div class="space-y-1">
@@ -121,11 +130,6 @@ const data = {
       url: "/dashboard",
       icon: Home,
     },
-    // {
-    //   title: 'รายการใบแจ้งหนี้',
-    //   url: '/invoices',
-    //   icon: PieChart,
-    // },
     {
       title: "แคตตาล็อกสินค้า",
       url: "/catalogs",
@@ -137,10 +141,17 @@ const data = {
       icon: Users,
     },
     {
+      title: "โฟลเดอร์",
+      url: "/invoices/files",
+      icon: PieChart,
+    },
+  ],
+  navDev: [
+    {  
       title: "ทดสอบ",
       url: "/test",
       icon: FlaskConical,
-    },
+    }
   ],
   navCollaps: [
     {

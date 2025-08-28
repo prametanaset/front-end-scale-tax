@@ -11,7 +11,7 @@ import type { Product } from "~/composables/types/product";
 const activeEditProduct = ref(false);
 
 const props = defineProps<{
-  product: Product;
+  data: Product;
 }>();
 </script>
 
@@ -37,6 +37,6 @@ const props = defineProps<{
   <FeatureCatalogManageDialog
     mode="edit"
     v-model="activeEditProduct"
-    :product="props.product"
+    :product="props.data"
   />
 </template>

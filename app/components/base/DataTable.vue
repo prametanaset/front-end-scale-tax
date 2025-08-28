@@ -1,27 +1,29 @@
 <template>
-  <div class="space-y-2">
-    <div class="flex justify-end w-full">
+  <div class="space-y-2 max-w-screen">
+    <div class="flex justify-start gap-2">
       <slot name="tabs" />
-      <DropdownMenu>
-        <DropdownMenuTrigger as-child>
-          <BaseButton variant="outline" class="ml-auto">
-            <Columns3Cog /> <ChevronDown class="ml-2 h-4 w-4" />
-          </BaseButton>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuCheckboxItem
-            v-for="column in table
-              .getAllColumns()
-              .filter((c) => c.getCanHide())"
-            :key="column.id"
-            class="capitalize cursor-pointer"
-            :model-value="column.getIsVisible()"
-            @update:model-value="(value) => column.toggleVisibility(!!value)"
-          >
-            {{ column.columnDef.header }}
-          </DropdownMenuCheckboxItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div class="">
+        <DropdownMenu>
+          <DropdownMenuTrigger as-child>
+            <BaseButton variant="outline" class="ml-auto">
+              <Columns3Cog /> <ChevronDown class="ml-2 h-4 w-4" />
+            </BaseButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuCheckboxItem
+              v-for="column in table
+                .getAllColumns()
+                .filter((c) => c.getCanHide())"
+              :key="column.id"
+              class="capitalize cursor-pointer"
+              :model-value="column.getIsVisible()"
+              @update:model-value="(value) => column.toggleVisibility(!!value)"
+            >
+              {{ column.columnDef.header }}
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
     <Table
       :class="cn('relative w-full overflow-auto')"
@@ -194,13 +196,26 @@ const columns = computed(() => {
           table.toggleAllPageRowsSelected(!!value),
         ariaLabel: "Select all",
       }),
-    cell: ({ row, rowIndex }) =>
-      h(Checkbox, {
+    cell: ({ row }) => {
+      const rows = table.getRowModel().rows;
+      const rowIndex = rows.findIndex((r) => r.id === row.id);
+
+      return h(Checkbox, {
         modelValue: row.getIsSelected(),
-        "onUpdate:modelValue": (value: boolean) =>
-          handleCheckboxClick(rowIndex, value),
+        // ✅ ต้อง bind click event เพื่อจับ MouseEvent (Shift/Ctrl)
+        onClick: (e: MouseEvent) => {
+          e.stopPropagation();
+          const forceSelect = e.shiftKey; // ถ้า Shift → force select
+          handleCheckboxClick(
+            rowIndex,
+            forceSelect ? true : !row.getIsSelected(),
+            e
+          );
+        },
+
         ariaLabel: "Select row",
-      }),
+      });
+    },
     enableSorting: false,
     enableHiding: false,
     enablePinning: true,
@@ -212,7 +227,7 @@ const columns = computed(() => {
         header: "จัดการ",
         cell: ({ row }) =>
           h(props.action as any, {
-            customer: row.original, // ✅ ส่ง data ของ row ไปที่ component
+            data: row.original, // ✅ ส่ง data ของ row ไปที่ component
           }),
         enableSorting: false,
         enableHiding: false,
@@ -377,14 +392,15 @@ function handleRowClick(e: MouseEvent, index: number) {
 }
 
 function handleCheckboxClick(index: number, value: boolean, e?: MouseEvent) {
-  if (e) e.stopPropagation(); // ป้องกัน row click ซ้ำ
+  if (e) e.stopPropagation();
 
   const rows = table.getRowModel().rows;
   const row = rows[index];
   if (!row) return;
 
-  if (e?.shiftKey && lastSelectedIndex.value !== null) {
-    // Shift + click → select range
+  const isCurrentlySelected = rowSelection.value[row.id] ?? false;
+
+  if (e?.shiftKey && lastSelectedIndex.value !== null && value) {
     const [min, max] = [
       Math.min(lastSelectedIndex.value, index),
       Math.max(lastSelectedIndex.value, index),
@@ -396,15 +412,19 @@ function handleCheckboxClick(index: number, value: boolean, e?: MouseEvent) {
     }
     rowSelection.value = newSelection;
   } else if (e?.ctrlKey || e?.metaKey) {
-    // Ctrl + click → toggle
+    // Ctrl → toggle ตาม value
     rowSelection.value = {
       ...rowSelection.value,
-      [row.id]: !rowSelection.value[row.id],
+      [row.id]: value,
     };
     lastSelectedIndex.value = index;
   } else {
-    // คลิกปกติ
-    rowSelection.value = { [row.id]: true };
+    // Normal click → toggle (ถ้า value = false → clear)
+    if (isCurrentlySelected && !value) {
+      rowSelection.value = {};
+    } else {
+      rowSelection.value = { [row.id]: true };
+    }
     lastSelectedIndex.value = index;
   }
 }

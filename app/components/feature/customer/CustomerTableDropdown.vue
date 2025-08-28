@@ -17,7 +17,7 @@ import CustomerProfileDialog from "./CustomerProfileDialog.vue";
 import CustomerDialogManage from "./CustomerManageDialog.vue";
 
 const props = defineProps<{
-  customer: CustomerTableRow;
+  data: CustomerTableRow;
 }>();
 
 const detailActive = ref(false);
@@ -55,11 +55,11 @@ const tabsActive = ref<"account" | "etax-history">("account");
     <CustomerDialogManage
       v-model="editActive"
       mode="edit"
-      :customer="props.customer"
+      :customer="props.data"
     />
     <CustomerProfileDialog
       v-model="detailActive"
-      :customer="props.customer"
+      :customer="props.data"
       :tabActive="tabsActive"
     />
   </div>

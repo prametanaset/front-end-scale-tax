@@ -1,40 +1,8 @@
 <script setup lang="ts">
-import type {
-  ColumnDef,
-  ColumnFiltersState,
-  ExpandedState,
-  SortingState,
-  VisibilityState,
-} from "@tanstack/vue-table";
-import {
-  FlexRender,
-  getCoreRowModel,
-  // ⚠ เอา client pagination ออก ใช้ server-side
-  getFilteredRowModel,
-  getSortedRowModel,
-  getExpandedRowModel,
-  useVueTable,
-} from "@tanstack/vue-table";
-import { ArrowUpDown, ChevronDown, Columns3Cog, Plus } from "lucide-vue-next";
 import { h, ref, computed, watch } from "vue";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { valueUpdater } from "~/lib/utils";
 import CatalogTableDropdown from "./CatalogTableDropdown.vue";
 import { useMediaQuery, useDebounceFn } from "@vueuse/core";
 import type { Product } from "~/composables/types/product";
@@ -82,6 +50,18 @@ interface CatalogResponse {
   total: number;
   data: Product[];
 }
+
+const colName = {
+  id: "--hide--",
+  store_id: "--hide--",
+  created_at: "--hide--",
+  updated_at: "--hide--",
+  product_image: "--hide--",
+  name: "ชื่อสินค้า",
+  price: "ราคา",
+  vat_type: "ประเภทภาษี",
+  vat_rate: "อัตราภาษี",
+};
 
 const {
   data: apiRes,
@@ -136,211 +116,12 @@ const filteredProducts = computed(() => {
 
 // TanStack table: ใช้ข้อมูลที่ “แบ่งหน้าแล้ว” จาก server
 const data = filteredProducts; // <- reactive ref/comp
-
-const columns: ColumnDef<Product>[] = [
-  {
-    id: "select",
-    header: ({ table }) =>
-      h(Checkbox, {
-        modelValue:
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate"),
-        "onUpdate:modelValue": (value) =>
-          table.toggleAllPageRowsSelected(!!value),
-        ariaLabel: "Select all",
-      }),
-    cell: ({ row }) =>
-      h(Checkbox, {
-        modelValue: row.getIsSelected(),
-        "onUpdate:modelValue": (value) => row.toggleSelected(!!value),
-        ariaLabel: "Select row",
-      }),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "sku",
-    header: "SKU",
-    meta: { label: "SKU" as string },
-    cell: ({ row }) =>
-      h("div", { class: "capitalize" }, row.getValue("sku") ?? "-"),
-  },
-  {
-    accessorKey: "name",
-    header: "ชื่อสินค้า",
-    meta: { label: "ชื่อสินค้า" as string },
-    cell: ({ row }) =>
-      h("div", { class: "lowercase" }, row.getValue("name") ?? "-"),
-  },
-  {
-    accessorKey: "vat_type",
-    header: "ประเภทภาษี",
-    meta: { label: "ประเภทภาษี" as string },
-    cell: ({ row }) => {
-      const vt = row.getValue("vat_type");
-      const label =
-        vt === "include"
-          ? "รวมภาษี"
-          : vt === "exclude"
-          ? "ยังไม่รวมภาษี"
-          : "ไม่รวมภาษี";
-      const color =
-        vt === "include"
-          ? "bg-purple-500"
-          : vt === "exclude"
-          ? "bg-green-500"
-          : "bg-gray-500";
-      return h(Badge, { class: color }, () => label);
-    },
-  },
-  {
-    accessorKey: "vat_rate",
-    meta: { label: "ภาษี" as string },
-    header: ({ column }) =>
-      h("div", { class: "text-right" }, [
-        h(
-          Button,
-          {
-            variant: "ghost",
-            onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
-          },
-          () => ["ภาษี %", h(ArrowUpDown, { class: "ml-2 h-4 w-4" })]
-        ),
-      ]),
-    cell: ({ row }) =>
-      h("div", { class: "text-right" }, `${row.getValue("vat_rate") ?? "-"} %`),
-  },
-  {
-    accessorKey: "price",
-    meta: { label: "ราคา" as string },
-    header: ({ column }) =>
-      h("div", { class: "text-right" }, [
-        h(
-          Button,
-          {
-            variant: "ghost",
-            onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
-          },
-          () => ["ราคา", h(ArrowUpDown, { class: "ml-2 h-4 w-4" })]
-        ),
-      ]),
-    cell: ({ row }) => {
-      const amount = Number.parseFloat(row.getValue("price") ?? 0);
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "THB",
-      }).format(amount || 0);
-      return h("div", { class: "text-right font-medium" }, formatted);
-    },
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const product = row.original;
-      return h("div", { class: "flex justify-center" }, [
-        h(CatalogTableDropdown, { product }),
-      ]);
-    },
-  },
-];
-
-const sorting = ref<SortingState>([]);
-const columnFilters = ref<ColumnFiltersState>([]);
-const columnVisibility = ref<VisibilityState>({});
-const rowSelection = ref({});
-const expanded = ref<ExpandedState>({});
-
-const table = useVueTable({
-  data, // ข้อมูลจาก server ที่ถูก “แบ่งหน้าแล้ว”
-  columns,
-  getCoreRowModel: getCoreRowModel(),
-  getSortedRowModel: getSortedRowModel(),
-  getFilteredRowModel: getFilteredRowModel(),
-  getExpandedRowModel: getExpandedRowModel(),
-  // ❌ ตัด getPaginationRowModel ทิ้ง เพราะเราใช้ server-side
-  onSortingChange: (u) => valueUpdater(u, sorting),
-  onColumnFiltersChange: (u) => valueUpdater(u, columnFilters),
-  onColumnVisibilityChange: (u) => valueUpdater(u, columnVisibility),
-  onRowSelectionChange: (u) => valueUpdater(u, rowSelection),
-  onExpandedChange: (u) => valueUpdater(u, expanded),
-  state: {
-    get sorting() {
-      return sorting.value;
-    },
-    get columnFilters() {
-      return columnFilters.value;
-    },
-    get columnVisibility() {
-      return columnVisibility.value;
-    },
-    get rowSelection() {
-      return rowSelection.value;
-    },
-    get expanded() {
-      return expanded.value;
-    },
-  },
-});
 </script>
 
 <template>
   <div class="w-full">
     <div>
-      <div class="flex justify-between" v-if="screenSize === 'desktop'">
-        <Tabs v-model="activeStatus">
-          <TabsList class="inline-flex space-x-2 p-0 bg-transparent">
-            <TabsTrigger
-              value="all"
-              class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
-            >
-              ทั้งหมด
-            </TabsTrigger>
-            <TabsTrigger
-              value="0"
-              class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
-            >
-              รวมภาษี
-            </TabsTrigger>
-            <TabsTrigger
-              value="1"
-              class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
-            >
-              ยังไม่รวมภาษี
-            </TabsTrigger>
-            <TabsTrigger
-              value="2"
-              class="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-black dark:data-[state=active]:text-foreground data-[state=active]:shadow-none"
-            >
-              ไม่รวมภาษี
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-        <div class="flex">
-          <DropdownMenu v-if="screenSize === 'desktop'">
-            <DropdownMenuTrigger as-child>
-              <BaseButton variant="outline" class="ml-auto">
-                <Columns3Cog/> <ChevronDown class="ml-2 h-4 w-4" />
-              </BaseButton>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuCheckboxItem
-                v-for="column in table
-                  .getAllColumns()
-                  .filter((c) => c.getCanHide())"
-                :key="column.id"
-                class="capitalize cursor-pointer"
-                :model-value="column.getIsVisible()"
-                @update:model-value="
-                  (value) => column.toggleVisibility(!!value)
-                "
-              >
-                {{ column.columnDef.meta?.label }}
-              </DropdownMenuCheckboxItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
+      <div class="flex justify-between" v-if="screenSize === 'desktop'"></div>
       <Select v-else v-model="activeStatus">
         <SelectTrigger><SelectValue placeholder="ทั้งหมด" /></SelectTrigger>
         <SelectContent>
@@ -357,48 +138,28 @@ const table = useVueTable({
     <!-- ตาราง (desktop) -->
     <ScrollArea
       v-if="screenSize === 'desktop'"
-      class="rounded-md border max-h-[calc(100dvh-theme(spacing.20))] overflow-y-auto mt-4"
+      class="max-h-[calc(100dvh-theme(spacing.20))] overflow-y-auto"
     >
-      <Table div-classname="min-h-0 max-h-[calc(100vh-theme(spacing.60)-1rem)]">
-        <TableHeader class="sticky top-0 z-10 bg-background">
-          <TableRow
-            v-for="headerGroup in table.getHeaderGroups()"
-            :key="headerGroup.id"
-          >
-            <TableHead v-for="header in headerGroup.headers" :key="header.id">
-              <FlexRender
-                v-if="!header.isPlaceholder"
-                :render="header.column.columnDef.header"
-                :props="header.getContext()"
-              />
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <template v-if="table.getRowModel().rows?.length">
-            <template v-for="row in table.getRowModel().rows" :key="row.id">
-              <TableRow :data-state="row.getIsSelected() && 'selected'">
-                <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
-                  <FlexRender
-                    :render="cell.column.columnDef.cell"
-                    :props="cell.getContext()"
-                  />
-                </TableCell>
-              </TableRow>
-              <TableRow v-if="row.getIsExpanded()">
-                <TableCell :colspan="row.getAllCells().length">
-                  {{ JSON.stringify(row.original) }}
-                </TableCell>
-              </TableRow>
-            </template>
-          </template>
-          <TableRow v-else>
-            <TableCell :colspan="columns.length" class="h-24 text-center">
-              {{ pending ? "กำลังโหลด..." : "No results." }}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+      <BaseDataTable
+        :column-name="colName"
+        :data="data"
+        div-classname="min-h-0 max-h-[calc(100vh-theme(spacing.40)-4.5rem)]"
+        :action="CatalogTableDropdown"
+      >
+        <template #tabs>
+          <Select v-model="activeStatus">
+            <SelectTrigger><SelectValue placeholder="ทั้งหมด" /></SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="all">ทั้งหมด</SelectItem>
+                <SelectItem value="0">รวมภาษี</SelectItem>
+                <SelectItem value="1">ยังไม่รวมภาษี</SelectItem>
+                <SelectItem value="2">ไม่รวมภาษี</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </template>
+      </BaseDataTable>
     </ScrollArea>
 
     <!-- การ์ด (mobile) -->
@@ -462,7 +223,7 @@ const table = useVueTable({
                   <span><strong>ราคา :</strong> {{ product.price }} บาท</span>
                 </p>
                 <div class="ml-auto">
-                  <CatalogTableDropdown :product="product" />
+                  <CatalogTableDropdown :data="product" />
                 </div>
               </div>
             </div>
@@ -481,34 +242,39 @@ const table = useVueTable({
       </div>
 
       <!-- ตัวอย่างตัวเลือก perPage (ถ้ายังไม่มีที่อื่น) -->
-      <select
+      <Select
         class="border rounded px-2 py-1 text-sm"
-        :value="perPage"
+        v-model="perPage"
         @change="perPage = parseInt(($event.target as HTMLSelectElement).value)"
       >
-        <option :value="5">5</option>
-        <option :value="10">10</option>
-        <option :value="20">20</option>
-        <option :value="50">50</option>
-      </select>
+        <SelectTrigger>{{ perPage }}</SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem :value="5">5</SelectItem>
+            <SelectItem :value="10">10</SelectItem>
+            <SelectItem :value="20">20</SelectItem>
+            <SelectItem :value="50">50</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
 
       <div class="space-x-2">
-        <Button
+        <BaseButton
           variant="outline"
           size="sm"
           :disabled="page <= 1 || pending"
           @click="page = Math.max(1, page - 1)"
         >
           ก่อนหน้า
-        </Button>
-        <Button
+        </BaseButton>
+        <BaseButton
           variant="outline"
           size="sm"
           :disabled="page * perPage >= total || pending"
           @click="page = page + 1"
         >
           ถัดไป
-        </Button>
+        </BaseButton>
       </div>
     </div>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Mail } from "lucide-vue-next";
+import { ChevronDown, Columns3Cog, Mail } from "lucide-vue-next";
 import { h, ref } from "vue";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -82,15 +82,21 @@ const filteredCustomers = computed(() => {
         :data="filteredCustomers"
         :column-name="colName"
         :action="CustomerTableDropdown"
+        div-classname="min-h-0 max-h-[calc(100vh-theme(spacing.40)-4.5rem)]"
       >
         <template #tabs>
-          <Tabs v-model="activeStatus">
-            <TabsList class="inline-flex space-x-2 p-0 bg-transparent">
-              <TabsTrigger value="all"> ทั้งหมด </TabsTrigger>
-              <TabsTrigger value="0"> บุคคลธรรมดา </TabsTrigger>
-              <TabsTrigger value="1"> นิติบุคคล </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <Select v-model="activeStatus">
+            <SelectTrigger>
+              <SelectValue placeholder="ทั้งหมด" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="all"> ทั้งหมด </SelectItem>
+                <SelectItem value="0"> บุคคลธรรมดา </SelectItem>
+                <SelectItem value="1"> นิติบุคคล </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </template>
       </BaseDataTable>
     </div>
@@ -142,7 +148,7 @@ const filteredCustomers = computed(() => {
                     </p>
 
                     <div class="ml-auto" @click.stop>
-                      <CustomerTableDropdown :customer="customer" />
+                      <CustomerTableDropdown :data="customer" />
                     </div>
                   </div>
                 </AccordionTrigger>
@@ -189,6 +195,32 @@ const filteredCustomers = computed(() => {
           </Accordion>
         </TabsContent>
       </Tabs>
+    </div>
+    <div
+      v-if="screenSize === 'desktop'"
+      class="flex items-center justify-end gap-2 py-4"
+    >
+      <div class="flex-1 text-sm text-muted-foreground">
+        ทั้งหมด 55 รายการ • หน้า 1 • ต่อหน้า 3
+      </div>
+
+      <!-- ตัวอย่างตัวเลือก perPage (ถ้ายังไม่มีที่อื่น) -->
+      <Select>
+        <SelectTrigger>20</SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem :value="5">5</SelectItem>
+            <SelectItem :value="10">10</SelectItem>
+            <SelectItem :value="20">20</SelectItem>
+            <SelectItem :value="50">50</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+
+      <div class="space-x-2">
+        <BaseButton variant="outline" size="sm"> ก่อนหน้า </BaseButton>
+        <BaseButton variant="outline" size="sm"> ถัดไป </BaseButton>
+      </div>
     </div>
   </div>
 </template>

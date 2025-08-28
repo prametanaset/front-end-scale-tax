@@ -39,18 +39,11 @@
             :key="header.id"
             :data-pinned="header.column.getIsPinned()"
             :class="
-              cn({ 'sticky bg-background z-10': header.column.getIsPinned() })
+              cn(
+                { 'sticky bg-background/95': header.column.getIsPinned() },
+                header.column.getIsPinned() === 'left' ? 'left-0' : 'right-0'
+              )
             "
-            :style="{
-              ...(header.column.getIsPinned() === 'left'
-                ? { left: getStickyLeftValue(header.column.id) }
-                : header.column.getIsPinned() === 'right'
-                ? { right: '0px' }
-                : {}),
-              ...(header.column.id === 'name'
-                ? { borderRight: '2px solid red-500' }
-                : {}),
-            }"
           >
             <FlexRender
               v-if="!header.isPlaceholder"
@@ -80,16 +73,10 @@
                 :key="cell.id"
                 :data-pinned="cell.column.getIsPinned()"
                 :class="
-                  cn({
-                    'sticky bg-background z-10': cell.column.getIsPinned(),
-                  })
-                "
-                :style="
-                  cell.column.getIsPinned() === 'left'
-                    ? { left: getStickyLeftValue(cell.column.id) }
-                    : cell.column.getIsPinned() === 'right'
-                    ? { right: '0px' }
-                    : {}
+                  cn(
+                    { 'sticky bg-background/95': cell.column.getIsPinned() },
+                    cell.column.getIsPinned() === 'left' ? 'left-0' : 'right-0'
+                  )
                 "
               >
                 <FlexRender
@@ -144,7 +131,7 @@ const props = defineProps<{
   data: any;
   columnName?: Record<string, string>;
   action?: Component;
-  stickyCol?: { columnId: string; width: number }[];
+  stickyCol?: { columnId: string; side: string }[];
 }>();
 
 const toolsStore = useToolsStore();
@@ -153,7 +140,18 @@ const sorting = ref<SortingState>([]);
 const columnFilters = ref<ColumnFiltersState>([]);
 const columnVisibility = ref<VisibilityState>({});
 const expanded = ref<ExpandedState>({});
-const columnPinning = ref<ColumnPinningState>({});
+const columnPinning = computed<ColumnPinningState>(() => {
+  const state: ColumnPinningState = {};
+
+  props.stickyCol?.forEach(({ columnId, side }) => {
+    if (!state[side as "left" | "right"]) {
+      state[side as "left" | "right"] = [];
+    }
+    state[side as "left" | "right"]!.push(columnId);
+  });
+
+  return state;
+});
 const columnHelper = createColumnHelper<Record<string, any>>();
 const rowSelection = ref<RowSelectionState>({});
 const dataRow = ref(props.data);
@@ -169,7 +167,6 @@ const columns = computed(() => {
   );
 
   const dynamicCols = filteredKeys.map((key) => {
-    const stickyConfig = props.stickyCol?.find((c) => c.columnId === key);
     const customName = props.columnName?.[key];
 
     return columnHelper.accessor(key, {
@@ -180,7 +177,6 @@ const columns = computed(() => {
       },
       enableSorting: true,
       enableHiding: true,
-      size: stickyConfig ? stickyConfig.width : undefined,
     });
   });
 
@@ -291,21 +287,6 @@ const table = useVueTable({
     },
   },
 });
-
-function getStickyLeftValue(columnId: string): string | undefined {
-  const order = props.stickyCol;
-  if (!order) return undefined;
-  const widthsMap = order.reduce((acc, col) => {
-    acc[col.columnId] = col.width;
-    return acc;
-  }, {} as Record<string, number>);
-  let left = 0;
-  for (const col of order) {
-    if (col.columnId === columnId) break;
-    left += widthsMap[col.columnId] ?? 0;
-  }
-  return `${left}px`;
-}
 
 const isDragging = ref(false);
 const dragStartIndex = ref<number | null>(null);

@@ -63,6 +63,11 @@ const colName = {
   vat_rate: "อัตราภาษี",
 };
 
+const stickyCol = [
+  { columnId: "select", side: "left" },
+  { columnId: "actions", side: "right" },
+];
+
 const {
   data: apiRes,
   pending,
@@ -143,6 +148,7 @@ const data = filteredProducts; // <- reactive ref/comp
       <BaseDataTable
         :column-name="colName"
         :data="data"
+        :sticky-col="stickyCol"
         div-classname="min-h-0 max-h-[calc(100vh-theme(spacing.40)-4.5rem)]"
         :action="CatalogTableDropdown"
       >

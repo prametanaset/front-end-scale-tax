@@ -126,8 +126,8 @@ const colName = {
 };
 
 const stickyCol = [
-  { columnId: "title", width: 200 },
-  { columnId: "amount", width: 100 },
+  { columnId: "title", side: "left" },
+  { columnId: "amount", side: "right" },
 ];
 
 const drawerOpen = ref(false);

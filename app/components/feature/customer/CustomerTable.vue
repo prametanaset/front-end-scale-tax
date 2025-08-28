@@ -38,6 +38,11 @@ const colName = {
   actions: "จัดการ",
 };
 
+const stickyCol = [
+  { columnId: "select", side: "left" },
+  { columnId: "actions", side: "right" },
+];
+
 const filteredCustomers = computed(() => {
   const q = toolsStore.query.trim().toLowerCase();
   // กรองจาก tab ก่อน
@@ -82,6 +87,7 @@ const filteredCustomers = computed(() => {
         :data="filteredCustomers"
         :column-name="colName"
         :action="CustomerTableDropdown"
+        :sticky-col="stickyCol"
         div-classname="min-h-0 max-h-[calc(100vh-theme(spacing.40)-4.5rem)]"
       >
         <template #tabs>

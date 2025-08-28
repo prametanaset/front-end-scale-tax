@@ -29,7 +29,7 @@
     >
       <TableHeader class="sticky top-0 z-10 bg-background">
         <TableRow
-          v-for="headerGroup in table.getHeaderGroups()"
+          v-for="(headerGroup, index) in table.getHeaderGroups()"
           :key="headerGroup.id"
         >
           <TableHead
@@ -71,6 +71,7 @@
             <TableRow
               :data-state="row.getIsSelected() && 'selected'"
               :data-index="index"
+              @click="handleRowClick($event, index)"
             >
               <TableCell
                 v-for="cell in row.getVisibleCells()"
@@ -95,7 +96,10 @@
                 />
               </TableCell>
             </TableRow>
-            <TableRow v-if="row.getIsExpanded()">
+            <TableRow
+              v-if="row.getIsExpanded()"
+              @click="handleRowClick($event, index)"
+            >
               <TableCell :colspan="row.getAllCells().length">
                 {{ JSON.stringify(row.original) }}
               </TableCell>
@@ -190,11 +194,11 @@ const columns = computed(() => {
           table.toggleAllPageRowsSelected(!!value),
         ariaLabel: "Select all",
       }),
-    cell: ({ row }) =>
+    cell: ({ row, rowIndex }) =>
       h(Checkbox, {
         modelValue: row.getIsSelected(),
-        "onUpdate:modelValue": (value: boolean | "indeterminate") =>
-          row.toggleSelected(!!value),
+        "onUpdate:modelValue": (value: boolean) =>
+          handleCheckboxClick(rowIndex, value),
         ariaLabel: "Select row",
       }),
     enableSorting: false,
@@ -337,6 +341,72 @@ function selectRange(start: number, end: number) {
     newSelection[row.id] = true;
   }
   rowSelection.value = newSelection;
+}
+
+function handleRowClick(e: MouseEvent, index: number) {
+  const rows = table.getRowModel().rows;
+  const row = rows[index];
+  if (!row) return;
+
+  if (e.shiftKey && lastSelectedIndex.value !== null) {
+    // ✅ Shift + Click → เลือกช่วง
+    const [min, max] = [
+      Math.min(lastSelectedIndex.value, index),
+      Math.max(lastSelectedIndex.value, index),
+    ];
+    const newSelection: RowSelectionState = {};
+
+    for (let i = min; i <= max; i++) {
+      const r = rows[i];
+      if (r) newSelection[r.id] = true;
+    }
+    rowSelection.value = newSelection;
+  } else if (e.ctrlKey || e.metaKey) {
+    // ✅ Ctrl (หรือ Cmd) + Click → toggle
+    const current = rowSelection.value[row.id] ?? false;
+    rowSelection.value = {
+      ...rowSelection.value,
+      [row.id]: !current,
+    };
+    lastSelectedIndex.value = index; // update จุดเริ่ม
+  } else {
+    // ✅ คลิกปกติ → เลือกแถวเดียว
+    rowSelection.value = { [row.id]: true };
+    lastSelectedIndex.value = index;
+  }
+}
+
+function handleCheckboxClick(index: number, value: boolean, e?: MouseEvent) {
+  if (e) e.stopPropagation(); // ป้องกัน row click ซ้ำ
+
+  const rows = table.getRowModel().rows;
+  const row = rows[index];
+  if (!row) return;
+
+  if (e?.shiftKey && lastSelectedIndex.value !== null) {
+    // Shift + click → select range
+    const [min, max] = [
+      Math.min(lastSelectedIndex.value, index),
+      Math.max(lastSelectedIndex.value, index),
+    ];
+    const newSelection: RowSelectionState = { ...rowSelection.value };
+    for (let i = min; i <= max; i++) {
+      const r = rows[i];
+      if (r) newSelection[r.id] = true;
+    }
+    rowSelection.value = newSelection;
+  } else if (e?.ctrlKey || e?.metaKey) {
+    // Ctrl + click → toggle
+    rowSelection.value = {
+      ...rowSelection.value,
+      [row.id]: !rowSelection.value[row.id],
+    };
+    lastSelectedIndex.value = index;
+  } else {
+    // คลิกปกติ
+    rowSelection.value = { [row.id]: true };
+    lastSelectedIndex.value = index;
+  }
 }
 
 onMounted(() => {

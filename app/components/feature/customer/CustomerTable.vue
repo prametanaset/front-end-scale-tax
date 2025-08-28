@@ -38,11 +38,6 @@ const colName = {
   actions: "จัดการ",
 };
 
-const stickyCol = {
-  name: 100,
-  actions: 50,
-};
-
 const filteredCustomers = computed(() => {
   const q = toolsStore.query.trim().toLowerCase();
   // กรองจาก tab ก่อน
@@ -87,7 +82,6 @@ const filteredCustomers = computed(() => {
         :data="filteredCustomers"
         :column-name="colName"
         :action="CustomerTableDropdown"
-        :sticky-col="stickyCol"
       >
         <template #tabs>
           <Tabs v-model="activeStatus">

@@ -2,7 +2,7 @@
 import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   css: ["~/assets/css/tailwind.css"],
   ssr: true,
   vite: {
@@ -18,7 +18,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: "Nuxt", // default fallback title
+      title: "Sunscaleup", // default fallback title
       htmlAttrs: {
         lang: "en",
       },

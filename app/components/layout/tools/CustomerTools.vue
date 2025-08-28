@@ -8,7 +8,7 @@
 
     <div class="">
       <BaseButton @click="addCustomer = true"
-        ><Plus class="w-4 h-4" /> เพิ่มข้อมูลลูกค้า</BaseButton
+        ><Plus class="w-4 h-4" /> เพิ่มลูกค้า</BaseButton
       >
       <FeatureCustomerManageDialog mode="create" v-model="addCustomer" />
     </div>

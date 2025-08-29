@@ -67,7 +67,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, onBeforeUnmount, computed } from "vue";
 import { Eye, CircleEllipsis, Download } from "lucide-vue-next";
 
 type FileItem = {

@@ -235,8 +235,7 @@ const data = [
 ];
 const start = Date.UTC(2025, 6, 25)
 const days = Array.from({ length: 16 }, (_, i) => start + i * 24 * 3600 * 1000)
-const requests = days.map((x) => ({ x, y: 1 }))
-const tokens = days.map((x) => ({ x, y: 0 }))
+
 
 const highlightFrom = Date.UTC(2025, 6, 27, 0)
 const highlightTo = Date.UTC(2025, 6, 29, 0)

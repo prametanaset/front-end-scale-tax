@@ -7,7 +7,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ChevronDown, Columns3Cog } from "lucide-vue-next";
 
 const data = [
   {

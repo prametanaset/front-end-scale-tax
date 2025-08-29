@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, h } from "vue"
+import { h } from "vue"
 import { toast } from "vue-sonner"
 import { Button } from "@/components/ui/button"
 import { Download } from "lucide-vue-next"

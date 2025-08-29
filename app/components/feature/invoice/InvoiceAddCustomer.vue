@@ -131,7 +131,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick } from "vue"
 import { ChevronsUpDown, Search, Plus, Pencil, RefreshCw, Copy, Phone, Mail, MapPin, Hash } from "lucide-vue-next"
 
 type Customer = {

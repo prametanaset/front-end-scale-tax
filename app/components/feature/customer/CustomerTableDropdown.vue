@@ -1,11 +1,5 @@
 <script setup lang="ts">
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   CircleEllipsis,
   Edit,
   EllipsisVertical,

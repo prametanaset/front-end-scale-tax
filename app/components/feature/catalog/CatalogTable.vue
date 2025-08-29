@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import { h, ref, computed, watch } from "vue";
-
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import CatalogTableDropdown from "./CatalogTableDropdown.vue";
 import { useMediaQuery, useDebounceFn } from "@vueuse/core";
 import type { Product } from "~/composables/types/product";
-import { Badge } from "~/components/ui/badge";
 
 // ---- เพิ่ม: ซิงก์กับ URL + ดึง API ----
 const route = useRoute();

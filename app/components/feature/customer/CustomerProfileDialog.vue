@@ -111,16 +111,8 @@
 </template>
 
 <script setup lang="ts">
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { History, Pen, PersonStanding, Search, User } from "lucide-vue-next";
+
+import { History, PenOff } from "lucide-vue-next";
 import type { Customer, CustomerTableRow } from "~/composables/types/customer";
 import CustomerManageDialog from "./CustomerManageDialog.vue";
 
@@ -134,10 +126,6 @@ import { ref, watch } from "vue";
 
 const active = ref(props.tabActive);
 const editActive = ref(false);
-
-const customerData = customerStore.customersList.find(
-  (c) => c.id === props.customer.id
-) as Customer;
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: boolean): void;

@@ -20,7 +20,6 @@
 
 <script lang="ts" setup>
 import { onClickOutside } from "@vueuse/core";
-import { useTemplateRef } from "vue";
 
 const modalRef = useTemplateRef<HTMLElement>("modalRef");
 

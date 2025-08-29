@@ -6,11 +6,7 @@
           <AvatarImage :src="user.avatar" :alt="user.name" />
           <AvatarFallback class="rounded-full"> CN </AvatarFallback>
         </Avatar>
-        <!-- <span class="inline-grid flex-1 text-left text-sm leading-tight">
-              <span class="truncate font-semibold">{{ user.name }}</span>
-              <span class="truncate text-xs">{{ user.email }}</span>
-            </span>
-            <ChevronsUpDown class="ml-auto size-4" /> -->
+
     </DropdownMenuTrigger>
     <DropdownMenuContent
       class="w-[--reka-dropdown-menu-trigger-width] min-w-56 rounded-lg"
@@ -70,7 +66,6 @@
 import {
   BadgeCheck,
   Bell,
-  ChevronsUpDown,
   CreditCard,
   LogOut,
   Sparkles,

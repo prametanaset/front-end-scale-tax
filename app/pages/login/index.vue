@@ -8,15 +8,6 @@
         <!-- Sunscaleup -->
       </span>
 
-      <!-- พื้นหลัง -->
-      <!-- <ParticlesBg
-        class="absolute inset-0"
-        :quantity="100"
-        :ease="100"
-        :color="isDark ? '#FFF' : '#000'"
-        :staticity="10"
-        refresh
-      /> -->
       <video
         muted
         autoplay
@@ -60,10 +51,5 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import Command from "~/components/ui/command/Command.vue";
-import FluidCursor from "~/components/ui/fluid-cursor/FluidCursor.vue";
-const isDark = computed(() => useColorMode().value == "dark");
-
 definePageMeta({ layout: false });
 </script>

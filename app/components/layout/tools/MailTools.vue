@@ -30,11 +30,10 @@
 </template>
 
 <script lang="ts" setup>
-import { CalendarDate, type DateValue } from "@internationalized/date";
-import { Plus, Send, Search, CalendarIcon } from "lucide-vue-next";
+import { type DateValue } from "@internationalized/date";
+import {  CalendarIcon } from "lucide-vue-next";
 import { cn } from "~/lib/utils"; // Add this import for the cn utility
 
-const showMail = ref("all");
 const q = ref("");
 
 const dateRange = ref({

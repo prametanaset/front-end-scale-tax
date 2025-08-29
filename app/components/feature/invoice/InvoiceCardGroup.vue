@@ -24,7 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import { Store } from 'lucide-vue-next'
 const props = defineProps<{
   loading?: boolean
 }>()

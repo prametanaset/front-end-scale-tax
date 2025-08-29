@@ -77,7 +77,6 @@ import InvoiceRightPanel from "@/components/feature/invoice/InvoiceRightPanel.vu
 
 const paneStore = useRightPaneStore();
 const { isRightExpanded } = storeToRefs(paneStore);
-const { toggleExpand } = paneStore;
 
 definePageMeta({
   breadcrumb: [

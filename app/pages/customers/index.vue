@@ -26,7 +26,6 @@ definePageMeta({
 
 const customerStore = useCustomerStore();
 const isLoading = ref(true);
-const note = ref("");
 
 const data: Customer[] = [
   {

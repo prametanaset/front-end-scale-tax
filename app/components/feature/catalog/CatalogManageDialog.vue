@@ -93,7 +93,6 @@
 
 <script lang="ts" setup>
 import { BaseButton } from "#components";
-import { Plus } from "lucide-vue-next";
 import { computed, ref } from "vue";
 import type { Product } from "~/composables/types/product";
 

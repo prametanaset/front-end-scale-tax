@@ -14,7 +14,6 @@
 definePageMeta({
   breadcrumb: [{ label: "รายงานใบแจ้งหนี้" }],
 });
-const name = ref("");
 </script>
 
 <style></style>

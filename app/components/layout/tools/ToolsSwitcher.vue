@@ -6,7 +6,6 @@
 
 <script setup lang="ts">
 import InvoiceTools from "./InvoiceTools.vue";
-import MailTools from "./MailTools.vue";
 import FileTools from "./FileTools.vue";
 import CatalogTools from "./CatalogTools.vue";
 import CustomerTools from "./CustomerTools.vue";

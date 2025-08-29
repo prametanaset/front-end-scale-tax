@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { ChevronDown, Columns3Cog, Mail } from "lucide-vue-next";
-import { h, ref } from "vue";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Mail } from "lucide-vue-next";
 
 import { useMediaQuery } from "@vueuse/core";
 import CustomerTableDropdown from "./CustomerTableDropdown.vue";

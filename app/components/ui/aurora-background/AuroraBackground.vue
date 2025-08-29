@@ -59,4 +59,3 @@ const styles = computed(() => {
   };
 });
 </script>
-

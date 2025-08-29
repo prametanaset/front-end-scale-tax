@@ -61,7 +61,8 @@
       <SidebarGroup class="mt-auto">
         <div class="space-y-1">
           <Transition name="fade">
-            <p v-if="open || isMobile"
+            <p
+              v-if="open || isMobile"
               class="text-sm md:group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:pointer-events-none"
             >
               ใช้ไป {{ storageUsed }} GB จาก 10GB
@@ -70,7 +71,6 @@
           <!-- html-validate-disable prefer-native-element -->
           <Progress v-model="progress" class="w-[90%] mb-4" />
           <!-- html-validate-enable prefer-native-element -->
-
         </div>
         <SidebarGroupContent>
           <NavSecondary :items="data.navSecondary" />
@@ -102,8 +102,13 @@ const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: "icon",
 });
 
-const storageUsed = ref(Math.floor(Math.random()*9 + 1))
-const progress = ref((storageUsed.value/10)*100);
+const storageUsed = ref(0);
+const progress = ref(0);
+
+onMounted(() => {
+  storageUsed.value = Math.floor(Math.random() * 9 + 1);
+  progress.value = (storageUsed.value / 10) * 100;
+});
 
 const { open, isMobile } = useSidebar();
 const data = {
@@ -147,11 +152,11 @@ const data = {
     },
   ],
   navDev: [
-    {  
+    {
       title: "ทดสอบ",
       url: "/test",
       icon: FlaskConical,
-    }
+    },
   ],
   navCollaps: [
     {

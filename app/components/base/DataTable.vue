@@ -402,9 +402,15 @@ function handleCheckboxClick(index: number, value: boolean, e?: MouseEvent) {
   } else {
     // Normal click → toggle (ถ้า value = false → clear)
     if (isCurrentlySelected && !value) {
-      rowSelection.value = {};
+      rowSelection.value = {
+        ...rowSelection.value,
+        [row.id]: value,
+      };
     } else {
-      rowSelection.value = { [row.id]: true };
+      rowSelection.value = {
+        ...rowSelection.value,
+        [row.id]: value,
+      };
     }
     lastSelectedIndex.value = index;
   }

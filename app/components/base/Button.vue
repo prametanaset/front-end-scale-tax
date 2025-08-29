@@ -2,6 +2,7 @@
   <!-- มี to: เรนเดอร์เป็นลิงก์ด้วย asChild -->
   <Button
     v-if="to"
+    aria-label="button"
     :variant="variant"
     :disabled="disabled"
     :class="mergedClass"
@@ -17,6 +18,7 @@
   <Button
     v-else
     :type="type"
+    aria-label="button"
     :variant="variant"
     :disabled="disabled"
     :class="mergedClass"

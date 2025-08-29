@@ -2,7 +2,7 @@
   <Breadcrumb>
     <BreadcrumbList>
       <template v-for="(item, index) in breadcrumbItems" :key="item.href ?? item.label">
-        <BreadcrumbItem class="hidden md:block">
+        <BreadcrumbItem >
           <!-- ลิงก์ปกติ: ใช้ asChild ป้องกัน <a> ซ้อน <a> -->
           <BreadcrumbLink v-if="item.href" asChild>
             <NuxtLink :to="item.href">
@@ -14,7 +14,7 @@
           <span
             v-else
             aria-current="page"
-            class="text-foreground font-normal"
+            class="text-foreground md:font-normal"
           >
             {{ item.label }}
           </span>
@@ -22,7 +22,6 @@
 
         <BreadcrumbSeparator
           v-if="index < breadcrumbItems.length - 1"
-          class="hidden md:block"
         />
       </template>
     </BreadcrumbList>

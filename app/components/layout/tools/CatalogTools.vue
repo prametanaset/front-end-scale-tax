@@ -1,6 +1,7 @@
 <template>
   <div class="flex items-center justify-end w-full gap-4">
     <BaseSearchInput
+    class="h-8"
       v-model="q"
       place-holder="ค้นหาสินค้าด้วย SKU หรือ ชื่อสินค้า"
     />

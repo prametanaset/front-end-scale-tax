@@ -99,6 +99,9 @@ importers:
       nanoid:
         specifier: ^5.1.5
         version: 5.1.5
+      rollup-plugin-visualizer:
+        specifier: ^6.0.3
+        version: 6.0.3(rollup@4.45.3)
       tailwind-scrollbar:
         specifier: ^4.0.2
         version: 4.0.2(react@19.1.1)(tailwindcss@4.1.11)

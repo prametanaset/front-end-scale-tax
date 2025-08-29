@@ -1,9 +1,9 @@
 <template>
-  <ScrollArea class="max-h-[calc(100vh-theme(spacing.40))] pt-2">
+  <ScrollArea class="max-h-[calc(100vh-theme(spacing.40))] pt-2 p-4">
     <BaseDataTable
       :data="files"
       :column-name="colName"
-      div-classname="min-h-0 max-h-[calc(100vh-theme(spacing.20)-3rem)]"
+      div-classname="min-h-0 max-h-[calc(100vh-theme(spacing.20)-3.5rem)]"
     ></BaseDataTable>
   </ScrollArea>
 </template>

@@ -2,6 +2,7 @@
   <div class="space-y-3">
     <!-- Content -->
     <FeatureFileExplorerGrid
+      ref="modalRef"
       v-if="fileStore.showView === 'grid'"
       :files="filesShowDisplay"
       @select-file-count="handleFileSelect"
@@ -18,6 +19,15 @@
 </template>
 
 <script lang="ts" setup>
+import { onClickOutside } from "@vueuse/core";
+import { useTemplateRef } from "vue";
+
+const modalRef = useTemplateRef<HTMLElement>("modalRef");
+
+onClickOutside(modalRef, (event) => {
+  clearSelectFile();
+});
+
 const selectFileCount = ref(0);
 const fileStore = useFileExplorerStore();
 const toolsStore = useToolsStore();
@@ -53,6 +63,7 @@ const filesShowDisplay = computed(() => {
 
 function handleFileSelect(count: number) {
   selectFileCount.value = count;
+  fileStore.setSelectFilesCount(count);
 }
 
 function clearSelectFile() {

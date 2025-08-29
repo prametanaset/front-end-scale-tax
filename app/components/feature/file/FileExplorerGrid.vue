@@ -1,48 +1,32 @@
 <template>
-  <ScrollArea class="h-[calc(dvh-theme(spacing.40))] p-2">
-    <div class="text-center" v-if="files.length === 0">ไม่พบไฟล์</div>
+  <ScrollArea class="h-[calc(100vh-theme(spacing.20)-1rem)] p-2">
     <!-- ตัว container ที่เป็นพื้นที่ลาก-selection -->
-    <div
-      v-else
-      ref="gridWrap"
-      class="relative select-none"
-      @mousedown="onMouseDown"
-      @click="onContainerClick"
-    >
-      <!-- กรอบลาก (marquee box) -->
-      <div
-        v-show="isDragging"
-        class="absolute pointer-events-none"
-        :style="marqueeStyle"
-      />
-
+    <div ref="gridWrap" class="relative select-none" @mousedown="onMouseDown">
       <!-- Grid ไฟล์ -->
       <div
         ref="grid"
-        class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 xl:grid-cols-8 gap-2"
+        class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 xl:grid-cols-8 gap-3 p-3"
       >
-        <BaseCard
+        <div
           v-for="(file, index) in files"
           :key="file.id"
           class="file-card relative p-0"
           :class="[
-            'cursor-pointer rounded-xl',
-            file.selected
-              ? 'bg-primary/8 border border-primary/20'
-              : 'hover:bg-muted',
+            'cursor-pointer rounded-xl transition',
+            file.selected ? 'ring-2 ' : 'hover:bg-muted',
           ]"
-          @click.stop="onItemClick(index, $event)"
+          @click="onItemClick(index, $event)"
         >
           <ContextMenu>
             <ContextMenuTrigger as-child>
-              <div class="relative flex flex-col items-center p-3 py-6">
-                <div class="absolute top-2 right-2">
-                  <Checkbox
-                    class="absolute top-2 right-2 z-10"
-                    :model-value="file.selected"
-                    @click.stop="toggleSingle(index)"
-                  />
-                </div>
+              <div class="flex flex-col items-center p-3 py-6">
+                <!-- Checkbox มุมขวาบน -->
+                <Checkbox
+                  class="absolute top-2 right-2 z-10"
+                  :model-value="file.selected"
+                  @click.stop="toggleSingle(index)"
+                />
+
                 <!-- ไอคอน/รูป -->
                 <div
                   class="w-12 h-12 flex items-center justify-center rounded-lg"
@@ -76,13 +60,14 @@
               >
             </ContextMenuContent>
           </ContextMenu>
-        </BaseCard>
+        </div>
       </div>
     </div>
   </ScrollArea>
 </template>
+
 <script setup lang="ts">
-import { ref, reactive, onMounted, onBeforeUnmount, computed, watch } from "vue";
+import { ref, reactive, onMounted, onBeforeUnmount, computed } from "vue";
 import { Eye, CircleEllipsis, Download } from "lucide-vue-next";
 
 type FileItem = {
@@ -92,25 +77,25 @@ type FileItem = {
   size: string;
   selected: boolean;
 };
-
-const props = defineProps<{ files: FileItem[] }>();
+const props = defineProps<{
+  files: FileItem[];
+}>();
 
 const emit = defineEmits<{
   (e: "update:filter", value: string): void;
-  (e: "selectFileCount", count: number): void;
+  (selectFIleCount: "selectFileCount", count: number): void;
   (e: "update:files", files: FileItem[]): void;
 }>();
 
-const files = ref<FileItem[]>([]);
-watch(
-  () => props.files,
-  (v) => (files.value = [...v]),
-  { immediate: true }
+const files = ref(props.files);
+
+const selectFileCount = computed(
+  () => files.value.filter((f) => f.selected).length
 );
 
-const fileStore = useFileExplorerStore();
-const selectFileCount = computed(() => files.value.filter(f => f.selected).length);
-watch(selectFileCount, (c) => fileStore.setSelectFilesCount(c), { immediate: true });
+watch(selectFileCount, (count) => {
+  emit("selectFileCount", count);
+});
 
 const gridWrap = ref<HTMLElement | null>(null);
 const grid = ref<HTMLElement | null>(null);
@@ -119,35 +104,30 @@ const startSelectedIndex = ref<number | null>(null);
 const lastSelectedIndex = ref<number | null>(null);
 
 function clearAll() {
-  for (const f of files.value) f.selected = false;
+  files.value.forEach((f) => (f.selected = false));
 }
+
 function selectOnly(index: number) {
   clearAll();
-  const f = files.value[index];
-  if (f) {
-    f.selected = true;
+  if (files.value[index] !== undefined) {
+    files.value[index].selected = true;
     lastSelectedIndex.value = index;
   }
 }
+
 function toggleSingle(index: number) {
-  const f = files.value[index];
-  if (f) f.selected = !f.selected;
+  if (files.value[index] !== undefined)
+    files.value[index].selected = !files.value[index].selected;
   lastSelectedIndex.value = index;
 }
+
 function selectRange(a: number, b: number, { additive = false } = {}) {
   const start = Math.min(a, b);
   const end = Math.max(a, b);
   if (!additive) clearAll();
-  for (let i = start; i <= end; i++) files.value[i] && (files.value[i]!.selected = true);
-}
-
-function onContainerClick(e: MouseEvent) {
-  if (isDragging.value) return;
-  const target = e.target as HTMLElement;
-  if (target.closest(".file-card")) return;
-  clearAll();
-  startSelectedIndex.value = null;
-  lastSelectedIndex.value = null;
+  for (let i = start; i <= end; i++) {
+    if (files.value[i] !== undefined) files.value[i]!.selected = true;
+  }
 }
 
 function onItemClick(index: number, e: MouseEvent) {
@@ -155,126 +135,60 @@ function onItemClick(index: number, e: MouseEvent) {
   const withShift = e.shiftKey;
 
   if (withShift) {
-    if (startSelectedIndex.value === null) startSelectedIndex.value = index;
+    // ถ้าเพิ่งเริ่มกด shift ครั้งแรก -> เซ็ต start index
+    if (startSelectedIndex.value === null) {
+      startSelectedIndex.value = index;
+    }
+    // เลือกช่วงจาก start index -> index
     selectRange(startSelectedIndex.value, index, { additive });
     lastSelectedIndex.value = index;
   } else if (additive) {
+    // toggle แบบเลือกเพิ่ม/ลบ
     toggleSingle(index);
+    // อัพเดต start ให้ใช้เป็นฐานถ้า user จะ shift ต่อ
     startSelectedIndex.value = index;
     lastSelectedIndex.value = index;
   } else {
+    // เลือกใหม่ทั้งหมด
     selectOnly(index);
     startSelectedIndex.value = index;
     lastSelectedIndex.value = index;
   }
 }
 
-/* ============ Shift + Drag (Marquee) — O(N) → O(A) + rAF + Delta ============ */
+/* -------- Shift+Drag (Marquee selection) ---------- */
 const isDragging = ref(false);
 const dragStart = reactive({ x: 0, y: 0 });
 const dragEnd = reactive({ x: 0, y: 0 });
 let containerRect: DOMRect | null = null;
-
-// เก็บ selection ก่อนลาก (กรณี additive), และ selection ที่ apply ล่าสุดเพื่อทำ delta
-let baseSelected = new Set<number>();
-let lastApplied = new Set<number>();
-
-const marqueeStyle = computed(() => {
-  const left = Math.min(dragStart.x, dragEnd.x);
-  const top = Math.min(dragStart.y, dragEnd.y);
-  const width = Math.abs(dragEnd.x - dragStart.x);
-  const height = Math.abs(dragEnd.y - dragStart.y);
-  return { left: `${left}px`, top: `${top}px`, width: `${width}px`, height: `${height}px`, border: '1px dashed var(--border)', background: 'color-mix(in oklab, var(--primary) 12%, transparent)' };
-});
+let preSelected: Set<number> = new Set();
 
 function getLocalPoint(e: MouseEvent) {
-  if (!containerRect || !gridWrap.value) return { x: 0, y: 0 };
+  if (!containerRect) return { x: 0, y: 0 };
   return {
-    x: e.clientX - containerRect.left + gridWrap.value.scrollLeft,
-    y: e.clientY - containerRect.top + gridWrap.value.scrollTop,
+    x: e.clientX - containerRect.left + gridWrap.value!.scrollLeft,
+    y: e.clientY - containerRect.top + gridWrap.value!.scrollTop,
   };
 }
 
-/* -------- Metrics ของกริด (วัดครั้งเดียว/เมื่อ resize) -------- */
-const metrics = reactive({
-  cols: 1,
-  gapX: 0,
-  gapY: 0,
-  cardW: 0,
-  cardH: 0,
-  gridLeft: 0, // พิกัดซ้ายบนของกริดใน local container
-  gridTop: 0,
-});
-
-function computeGridMetrics() {
-  if (!grid.value || !gridWrap.value) return;
-  const cs = getComputedStyle(grid.value);
-  const cols = cs.gridTemplateColumns.split(" ").filter(Boolean).length || 1;
-  const gapX = parseFloat(cs.columnGap || "0") || 0;
-  const gapY = parseFloat(cs.rowGap || "0") || 0;
-
-  // วัดการ์ดใบแรก
-  const firstCard = grid.value.querySelector<HTMLElement>(".file-card");
-  const cardW = firstCard?.offsetWidth ?? 0;
-  const cardH = firstCard?.offsetHeight ?? 0;
-
-  const gRect = grid.value.getBoundingClientRect();
-  const cRect = gridWrap.value.getBoundingClientRect();
-  const gridLeft = gRect.left - cRect.left + gridWrap.value.scrollLeft;
-  const gridTop = gRect.top - cRect.top + gridWrap.value.scrollTop;
-
-  metrics.cols = Math.max(1, cols);
-  metrics.gapX = gapX;
-  metrics.gapY = gapY;
-  metrics.cardW = cardW;
-  metrics.cardH = cardH;
-  metrics.gridLeft = gridLeft;
-  metrics.gridTop = gridTop;
-}
-
-function clamp(n: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, n));
-}
-
-function xToCol(x: number) {
-  const dx = x - metrics.gridLeft;
-  const step = metrics.cardW + metrics.gapX;
-  return Math.floor(dx / (step || 1));
-}
-function yToRow(y: number) {
-  const dy = y - metrics.gridTop;
-  const step = metrics.cardH + metrics.gapY;
-  return Math.floor(dy / (step || 1));
-}
-
-// rAF throttle
-let rafPending = false;
-let lastEventForRAF: MouseEvent | null = null;
-
 function onMouseDown(e: MouseEvent) {
+  // เริ่มลากเฉพาะเมื่อกดซ้าย + กด Shift
   if (e.button !== 0 || !e.shiftKey) return;
-  if (!gridWrap.value) return;
 
-  containerRect = gridWrap.value.getBoundingClientRect();
-  computeGridMetrics();
-
+  containerRect = gridWrap.value!.getBoundingClientRect();
   const p = getLocalPoint(e);
   dragStart.x = p.x;
   dragStart.y = p.y;
   dragEnd.x = p.x;
   dragEnd.y = p.y;
-
   isDragging.value = true;
 
-  // เก็บ selection เดิม (สำหรับ additive เมื่อกด Ctrl/Meta พร้อม Shift)
-  baseSelected = new Set<number>();
-  files.value.forEach((f, i) => f.selected && baseSelected.add(i));
+  // เก็บ selection เดิมไว้ ถ้าผู้ใช้กด Ctrl/Meta = additive
+  preSelected = new Set(files.value.flatMap((f, i) => (f.selected ? [i] : [])));
 
-  // เริ่มจากสถานะที่ apply ล่าสุด = selection ปัจจุบัน
-  lastApplied = new Set(baseSelected);
-
+  // ป้องกัน text selection
   e.preventDefault();
-  window.addEventListener("mousemove", onMouseMove, { passive: true });
+  window.addEventListener("mousemove", onMouseMove);
   window.addEventListener("mouseup", onMouseUp, { once: true });
 }
 
@@ -283,18 +197,7 @@ function onMouseMove(e: MouseEvent) {
   const p = getLocalPoint(e);
   dragEnd.x = p.x;
   dragEnd.y = p.y;
-
-  lastEventForRAF = e;
-  if (!rafPending) {
-    rafPending = true;
-    requestAnimationFrame(() => {
-      rafPending = false;
-      if (lastEventForRAF) {
-        updateMarqueeSelection(lastEventForRAF);
-        lastEventForRAF = null;
-      }
-    });
-  }
+  updateMarqueeSelection(e);
 }
 
 function onMouseUp(e: MouseEvent) {
@@ -302,80 +205,45 @@ function onMouseUp(e: MouseEvent) {
   isDragging.value = false;
   window.removeEventListener("mousemove", onMouseMove);
 
-  // ตั้ง lastSelectedIndex เป็นใบสุดท้ายที่ยังถูกเลือก
-  for (let i = files.value.length - 1; i >= 0; i--) {
-    if (files.value[i]?.selected) {
-      lastSelectedIndex.value = i;
-      break;
-    }
-  }
-
-  // sync counter อีกครั้งหลังลากจบ
-  fileStore.setSelectFilesCount(selectFileCount.value);
+  // ตั้ง lastSelectedIndex เป็นไฟล์สุดท้ายที่โดนลาก (ถ้ามี)
+  const last = files.value.findLastIndex((f) => f.selected);
+  if (last !== -1) lastSelectedIndex.value = last;
 }
 
-// อัปเดต selection แบบ O(A) + Delta
 function updateMarqueeSelection(e: MouseEvent) {
-  if (!grid.value || !gridWrap.value) return;
+  if (!grid.value) return;
 
   const l = Math.min(dragStart.x, dragEnd.x);
   const r = Math.max(dragStart.x, dragEnd.x);
   const t = Math.min(dragStart.y, dragEnd.y);
   const b = Math.max(dragStart.y, dragEnd.y);
 
-  // แปลงพิกัด → ช่วงคอลัมน์/แถว
-  let c1 = xToCol(l), c2 = xToCol(r);
-  let r1 = yToRow(t), r2 = yToRow(b);
+  const additive = e.ctrlKey || e.metaKey; // Shift+Ctrl = additive
+  // เริ่มจาก selection เดิมถ้า additive, ไม่งั้นล้างก่อน
+  if (!additive) files.value.forEach((f) => (f.selected = false));
+  else files.value.forEach((f, i) => (f.selected = preSelected.has(i)));
 
-  const total = files.value.length;
-  const cols = metrics.cols;
-  const rows = Math.ceil(total / cols);
+  const cards = grid.value.querySelectorAll<HTMLElement>(".file-card");
+  cards.forEach((el, i) => {
+    const rect = el.getBoundingClientRect();
+    // แปลงเป็นพิกัดท้องถิ่น container (รวม scroll)
+    const x1 = rect.left - containerRect!.left + gridWrap.value!.scrollLeft;
+    const y1 = rect.top - containerRect!.top + gridWrap.value!.scrollTop;
+    const x2 = x1 + rect.width;
+    const y2 = y1 + rect.height;
 
-  c1 = clamp(c1, 0, cols - 1);
-  c2 = clamp(c2, 0, cols - 1);
-  r1 = clamp(r1, 0, rows - 1);
-  r2 = clamp(r2, 0, rows - 1);
-
-  if (c1 > c2) [c1, c2] = [c2, c1];
-  if (r1 > r2) [r1, r2] = [r2, r1];
-
-  const rectSet = new Set<number>();
-  for (let row = r1; row <= r2; row++) {
-    const rowStart = row * cols;
-    for (let col = c1; col <= c2; col++) {
-      const idx = rowStart + col;
-      if (idx < total) rectSet.add(idx);
-    }
-  }
-
-  const additive = e.ctrlKey || e.metaKey; // Shift+Ctrl/Meta = additive
-  const target = new Set<number>(additive ? baseSelected : []);
-  for (const i of rectSet) target.add(i);
-
-  // Delta apply: ปรับเฉพาะที่เปลี่ยน
-  for (const i of target) {
-    if (!lastApplied.has(i)) files.value[i] && (files.value[i]!.selected = true);
-  }
-  for (const i of lastApplied) {
-    if (!target.has(i)) files.value[i] && (files.value[i]!.selected = false);
-  }
-  lastApplied = target;
+    const overlap = l < x2 && r > x1 && t < y2 && b > y1;
+    if (overlap && files.value[i]) files.value[i].selected = true;
+  });
 }
 
 onMounted(() => {
+  // เผื่อคลิกนอกพื้นที่แล้ว mouseup ไม่เข้า container
   window.addEventListener("mouseup", onMouseUp);
-  window.addEventListener("resize", computeGridMetrics);
-  // คอยวัดใหม่เมื่อมีการ์ดเกิดขึ้นครั้งแรก
-  watch(
-    () => files.value.length,
-    () => computeGridMetrics(),
-    { immediate: true }
-  );
 });
+
 onBeforeUnmount(() => {
   window.removeEventListener("mouseup", onMouseUp);
   window.removeEventListener("mousemove", onMouseMove);
-  window.removeEventListener("resize", computeGridMetrics);
 });
 </script>
-

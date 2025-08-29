@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-end w-full gap-4">
+  <div class="flex items-center justify-end gap-4">
     <BaseSearchInput
       v-model="q"
       place-holder="ค้นหาด้วย หมายเลขผู้เสียภาษี หรือ ชื่อลูกค้า

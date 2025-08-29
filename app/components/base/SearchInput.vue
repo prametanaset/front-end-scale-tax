@@ -1,6 +1,38 @@
 <template>
   <div class="flex justify-end w-full">
-    <div class="relative w-full max-w-md items-center">
+    <div class="sm:hidden">
+      <Popover>
+        <PopoverTrigger>
+          <BaseButton variant="icon"
+            ><Search class="size-6 text-muted-foreground"
+          /></BaseButton>
+        </PopoverTrigger>
+        <PopoverContent class="left- w-screen">
+          <div class="relative w-full max-w-md items-center">
+            <Input
+              name="input"
+              :type="props.type"
+              :class="['pl-10 truncate overflow-hidden w-full']"
+              :placeholder="isMobile ? 'ค้นหา' : placeHolder"
+              v-model="qLocal"
+            />
+            <span
+              class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
+            >
+              <Search class="size-6 text-muted-foreground" />
+            </span>
+            <span
+              v-if="qLocal !== ''"
+              @click="qLocal = ''"
+              class="absolute end-0 inset-y-0 flex items-center justify-center px-2 cursor-pointer hover:bg-gray-500/20 rounded-2xl"
+            >
+              <X class="size-6 text-muted-foreground" />
+            </span>
+          </div>
+        </PopoverContent>
+      </Popover>
+    </div>
+    <div class="relative w-full max-w-md items-center hidden sm:block">
       <Input
         name="input"
         :type="props.type"

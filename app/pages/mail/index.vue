@@ -1,8 +1,6 @@
 <template>
-  <div
-    class=" h-[calc(100vh-theme(spacing.20)+8px)] "
-  >
-      <FeatureMailLogin />
+  <div class="h-[calc(100vh-theme(spacing.20)-1rem)]">
+    <FeatureMailLogin />
   </div>
 </template>
 
@@ -11,4 +9,3 @@ definePageMeta({
   breadcrumb: [{ label: "อีเมล" }],
 });
 </script>
-

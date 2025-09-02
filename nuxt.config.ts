@@ -23,7 +23,10 @@ export default defineNuxtConfig({
         lang: "en",
       },
       meta: [
-        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "mobile-web-app-capable", content: "yes"},
+        { name: "apple-mobile-web-app-capable", content: "yes"},
+        { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+        { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
         { name: "description", content: "Nuxt 4 Shadcn UI Example" },
       ],
       link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
@@ -116,7 +119,7 @@ export default defineNuxtConfig({
     registerWebManifestInRouteRules: true,
 
     devOptions: {
-      enabled: false, 
+      enabled: true, 
       type: 'module'
     },
 

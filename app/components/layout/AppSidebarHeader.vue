@@ -1,5 +1,5 @@
 <template>
-  <header class="flex h-14 shrink-0 items-center gap-2 border-b px-4">
+  <header class="flex h-14 shrink-0 items-center gap-2 border-b px-4 pt-[calc(env(safe-area-inset-top,0px)+25px)] pb-[env(safe-area-inset-bottom)]">
     <SidebarTrigger class="-ml-1 cursor-pointer" v-if="isGreaterThanBreakpoint" />
     <!-- Left: Title and Breadcrumb -->
     <div class="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">

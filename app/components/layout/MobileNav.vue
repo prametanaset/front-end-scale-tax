@@ -3,7 +3,7 @@
     aria-label="Bottom Navigation"
     class="fixed bottom-0 left-0 right-0 z-50 border-t bg-background"
   >
-    <div class="flex h-14 w-full items-center justify-around px-2 pb-[env(safe-area-inset-bottom)]">
+    <div class="flex h-14 w-full items-center justify-around px-2 pt-[env(safe-area-inset-bottom)] pb-[calc(env(safe-area-inset-bottom,0px)+8px)]">
       <NuxtLink
         v-for="item in resolvedItems"
         :key="item.label"

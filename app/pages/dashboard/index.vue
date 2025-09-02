@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-1 flex-col p-4 gap-4 h-[calc(100vh-theme(spacing.20))]">
+  <div class="flex flex-1 flex-col p-4 gap-4 h-[calc(100dvh-theme(spacing.20))]">
 
     <!-- Row 1: KPIs -->
     <div class="-mx-4 sm:mx-0">

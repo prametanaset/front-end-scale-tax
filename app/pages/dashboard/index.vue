@@ -2,21 +2,34 @@
   <div class="flex flex-1 flex-col p-4 gap-4 h-[calc(100vh-theme(spacing.20))]">
 
     <!-- Row 1: KPIs -->
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <div v-for="kpi in kpis" :key="kpi.label" class="rounded-xl border bg-card p-4">
-        <div class="flex items-center justify-between">
-          <p class="text-sm text-muted-foreground">{{ kpi.label }}</p>
-          <component :is="kpi.icon" class="h-4 w-4 opacity-60" />
+    <div class="-mx-4 sm:mx-0">
+      <div
+        class="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 sm:px-0 scroll-pl-6 no-scrollbar
+              sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:snap-none"
+      >
+        <div
+          v-for="kpi in kpis"
+          :key="kpi.label"
+          class="snap-start shrink-0 w-[85%] sm:w-auto rounded-xl border bg-card p-4"
+        >
+          <div class="flex items-center justify-between">
+            <p class="text-sm text-muted-foreground">{{ kpi.label }}</p>
+            <component :is="kpi.icon" class="h-4 w-4 opacity-60" />
+          </div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <p class="text-2xl font-bold tabular-nums">{{ kpi.value }}</p>
+            <span
+              :class="kpi.delta >= 0 ? 'text-emerald-600' : 'text-red-600'"
+              class="text-xs font-medium"
+            >
+              {{ kpi.delta >= 0 ? '+' : '' }}{{ kpi.delta }}%
+            </span>
+          </div>
+          <p class="mt-1 text-xs text-muted-foreground">{{ kpi.subtext }}</p>
         </div>
-        <div class="mt-2 flex items-baseline gap-2">
-          <p class="text-2xl font-bold tabular-nums">{{ kpi.value }}</p>
-          <span :class="kpi.delta >= 0 ? 'text-emerald-600' : 'text-red-600'" class="text-xs font-medium">
-            {{ kpi.delta >= 0 ? '+' : '' }}{{ kpi.delta }}%
-          </span>
-        </div>
-        <p class="mt-1 text-xs text-muted-foreground">{{ kpi.subtext }}</p>
       </div>
     </div>
+
 
     <!-- Row 2: Charts -->
     <div class="grid gap-4 lg:grid-cols-3">
